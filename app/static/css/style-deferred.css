@@ -1,424 +1,451 @@
 /* =========================================================================
    Capitán Nicolás Arias — Deferred CSS
-   Everything below the fold. Loaded asynchronously; critical.css is inlined.
+   Everything below the portada. Loaded asynchronously; critical.css is inline.
    ========================================================================= */
 
 /* -------------------------------------------------------------------------
-   1. PHOTO SLOTS — the frame, and what stands in for a photo not yet taken
+   1. PHOTOGRAPHS, AND THE GREY BOXES STANDING IN FOR THEM
    ------------------------------------------------------------------------- */
-.frame {
+.shot {
   position: relative;
   overflow: hidden;
-  border-radius: var(--radius-sm);
-  background: var(--paper-deep);
+  background: var(--sand-3);
 }
 
-.frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+.shot img { width: 100%; height: 100%; object-fit: cover; }
 
-/* The arch: a nod to the emblem's graduated bezel, used only where a person
-   is portrayed. One curve in the whole design, and it means something. */
-.frame-arch { border-radius: var(--arch); }
+.shot-circle { border-radius: 50%; }
 
-.frame-ratio-portrait { aspect-ratio: 3 / 4; }
-.frame-ratio-landscape { aspect-ratio: 4 / 3; }
-.frame-ratio-wide { aspect-ratio: 3 / 2; }
+.shot-square    { aspect-ratio: 1; }
+.shot-landscape { aspect-ratio: 4 / 3; }
+.shot-portrait  { aspect-ratio: 3 / 4; }
+.shot-wide      { aspect-ratio: 3 / 2; }
 
-/* A slot whose file has not arrived yet. Deliberately quiet and finished
-   looking — a site being shown to a client should not look broken because a
-   photograph is still on a camera. */
-.photo-pending {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.7rem;
-  height: 100%;
-  padding: 1.5rem;
+/* A slot with no file behind it: a grey box carrying the description of the
+   photograph that belongs there — the same words that will be its alt text.
+   It does not imitate a photograph and it does not hide what is missing. */
+.shot-empty {
+  display: grid;
+  place-items: center;
+  padding: clamp(14px, 3vw, 28px);
+  background: var(--box);
+  border: 1px solid var(--box-line);
   text-align: center;
-  color: var(--steel-deep);
-  background:
-    repeating-linear-gradient(
-      -45deg,
-      rgba(93, 142, 169, 0.09) 0 12px,
-      transparent 12px 24px
-    ),
-    var(--paper-deep);
-  border: 1px solid rgba(93, 142, 169, 0.28);
 }
 
-.on-ink .photo-pending {
-  color: var(--steel-pale);
-  background:
-    repeating-linear-gradient(
-      -45deg,
-      rgba(169, 198, 213, 0.07) 0 12px,
-      transparent 12px 24px
-    ),
-    var(--ink-soft);
-  border-color: rgba(169, 198, 213, 0.2);
-}
+.shot-empty.shot-circle { border-style: dashed; }
 
-.photo-pending-mark {
-  width: 30px;
-  height: 30px;
-  opacity: 0.75;
-}
-
-.photo-pending-label {
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  opacity: 0.85;
-}
-
-.photo-pending-caption {
-  font-family: var(--font-display);
-  font-size: 1.02rem;
-  line-height: 1.3;
+.shot-empty-text {
+  max-width: 26ch;
+  color: var(--box-text);
+  font-size: clamp(0.78rem, 1.6vw, 0.92rem);
+  line-height: 1.5;
 }
 
 /* -------------------------------------------------------------------------
-   2. SOBRE MÍ
+   2. SECTION HEADS
    ------------------------------------------------------------------------- */
-.about-grid {
+.head {
   display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  gap: clamp(32px, 6vw, 80px);
+  gap: 0.9rem;
+  max-width: 760px;
+  margin-bottom: clamp(38px, 5.5vw, 68px);
+}
+
+.head-mark {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.head-mark::after {
+  content: '';
+  flex: 1 1 auto;
+  max-width: 120px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.35;
+}
+
+.head-centred { justify-items: center; text-align: center; margin-inline: auto; }
+
+.head-centred .head-mark::after { display: none; }
+
+.head-centred .head-mark::before {
+  content: '';
+  flex: 0 0 40px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.35;
+}
+
+/* -------------------------------------------------------------------------
+   3. LA BITÁCORA (sobre mí)
+   Text on the left, instruments on the right: the ledger of credentials and
+   the gauge the figures are read off.
+   ------------------------------------------------------------------------- */
+.bitacora {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: clamp(36px, 6vw, 76px);
   align-items: start;
 }
 
-.about-portrait {
-  position: relative;
-  max-width: 420px;
-}
+.bitacora-body p + p { margin-top: 1.05rem; }
 
-/* A hairline square offset behind the portrait: the way a photograph sits on
-   a chart, not centred, not shadowed. */
-.about-portrait::before {
-  content: '';
-  position: absolute;
-  inset: 22px -22px -22px 22px;
-  border: 1px solid var(--brass);
-  opacity: 0.5;
-  z-index: 0;
-}
+.bitacora-body strong { font-weight: 700; }
 
-.about-portrait .frame { position: relative; z-index: 1; }
-
-.about-caption {
+.bitacora-sign {
   margin-top: 1.6rem;
-  font-family: var(--font-display);
-  font-size: 1rem;
+  font-family: var(--font-head);
   font-style: italic;
-  color: var(--text-on-paper-soft);
+  font-size: 1.3rem;
+  color: var(--copper-deep);
 }
 
-.about-body p + p { margin-top: 1.1rem; }
+/* The portrait sits with the instruments, not opposite the text: the column
+   reads top to bottom as who he is, what he holds and what he has done. */
+.bitacora-portrait { margin-bottom: 1.8rem; }
 
-.about-body strong { font-weight: 700; }
-
-.credentials {
-  margin-top: 2.2rem;
-  border-top: 1px solid var(--ink-line);
+.bitacora-portrait-caption {
+  margin-top: 0.6rem;
+  font-family: var(--font-seal);
+  font-size: 0.56rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--on-sand-soft);
 }
 
-.credential {
-  display: flex;
+.ledger { border-top: 1px solid var(--on-sand-line); }
+
+.ledger-row {
+  display: grid;
+  grid-template-columns: 118px minmax(0, 1fr);
   gap: 1rem;
   align-items: baseline;
-  padding-block: 0.85rem;
-  border-bottom: 1px solid var(--ink-line);
+  padding-block: 0.8rem;
+  border-bottom: 1px solid var(--on-sand-line);
 }
 
-.credential-key {
-  flex: 0 0 132px;
-  font-size: 0.64rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+.ledger-key {
+  font-family: var(--font-seal);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--brass-dark);
+  color: var(--copper-deep);
 }
 
-.credential-value { color: var(--text-on-paper); }
+.ledger-value { font-size: 0.98rem; }
 
-/* A row of three that stays a row of three: the labels wrap, the columns do
-   not, so the numbers keep reading as one line of evidence. */
-.stats {
+/* The gauge: three figures read off an open arc, the way a bearing is read
+   off a card. It replaces the row of big numbers every other site has. */
+.gauge {
+  position: relative;
+  margin-top: clamp(28px, 4vw, 44px);
+}
+
+.gauge-face { color: var(--seaglass); }
+
+.gauge-figures {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
-  gap: 22px clamp(20px, 3vw, 40px);
-  margin-top: 2.4rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: -6%;
 }
 
-.stat-number {
+.gauge-figure { text-align: center; }
+
+.gauge-number {
   display: block;
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 2.7rem);
+  font-family: var(--font-head);
+  font-size: clamp(1.6rem, 3.4vw, 2.3rem);
   line-height: 1;
-  color: var(--brass-dark);
+  color: var(--copper-deep);
 }
 
-.stat-label {
+.gauge-label {
   display: block;
-  margin-top: 0.4rem;
-  font-size: 0.64rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  margin-top: 0.45rem;
+  font-family: var(--font-seal);
+  font-size: 0.56rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--text-on-paper-soft);
+  color: var(--on-sand-soft);
 }
 
 /* -------------------------------------------------------------------------
-   3. SERVICIOS
+   4. SERVICIOS — full-width entries, not a row of cards
+   Each one is a medallion and a page of text, and they alternate sides.
    ------------------------------------------------------------------------- */
-.services-grid {
+.entry {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: clamp(24px, 3.4vw, 40px);
+  grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 72px);
+  align-items: center;
+  padding-block: clamp(38px, 5vw, 62px);
+  border-top: 1px solid var(--on-sand-line);
 }
 
-.service {
-  display: flex;
-  flex-direction: column;
-  background: var(--paper);
-  border: 1px solid var(--ink-line);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  transition: transform var(--transition-mid), box-shadow var(--transition-mid),
-              border-color var(--transition-mid);
+.entry:last-child { border-bottom: 1px solid var(--on-sand-line); }
+
+/* Entries alternate sides. The columns are swapped rather than one child
+   reordered, so the text keeps the wide column on both sides — reordering
+   inside a two-width grid cramped every other entry. */
+.entry:nth-of-type(even) { grid-template-columns: minmax(0, 1fr) minmax(0, 300px); }
+
+.entry:nth-of-type(even) .entry-media { grid-column: 2; grid-row: 1; }
+
+.entry:nth-of-type(even) .entry-body { grid-column: 1; grid-row: 1; }
+
+.entry-media { justify-self: center; width: min(300px, 70vw); }
+
+.entry-media .medallion { width: 100%; }
+
+.entry-number {
+  font-family: var(--font-seal);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  color: var(--copper-deep);
 }
 
-.service:hover {
-  transform: translateY(-6px);
-  border-color: rgba(196, 144, 47, 0.5);
-  box-shadow: var(--shadow-paper);
-}
-
-.service .frame { border-radius: 0; }
-
-.service-body {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  padding: clamp(22px, 3vw, 32px);
-}
-
-.service-index {
-  font-family: var(--font-display);
-  font-size: 0.78rem;
-  letter-spacing: 0.22em;
-  color: var(--brass-dark);
-}
-
-.service-title {
-  margin-top: 0.5rem;
-  font-family: var(--font-display);
+.entry-title {
+  margin-top: 0.4rem;
+  font-family: var(--font-head);
   font-weight: 400;
-  font-size: 1.6rem;
+  font-size: clamp(1.5rem, 3vw, 2.05rem);
   line-height: 1.2;
 }
 
-.service-desc {
-  margin-top: 0.9rem;
-  color: var(--text-on-paper-soft);
+.entry-desc {
+  margin-top: 0.85rem;
+  color: var(--on-sand-soft);
+  max-width: 54ch;
 }
 
-.service-points {
-  margin-top: 1.3rem;
+.entry-points {
   display: grid;
-  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 0.5rem 1.6rem;
+  margin-top: 1.3rem;
 }
 
-.service-points li {
+.entry-points li {
   position: relative;
-  padding-left: 1.35rem;
-  font-size: 0.94rem;
+  padding-left: 1.4rem;
+  font-size: 0.95rem;
 }
 
-/* A tick drawn in CSS: a small brass diamond, the mark on a chart. */
-.service-points li::before {
+/* The tick: the same mark the bezel is made of, at text size. */
+.entry-points li::before {
   content: '';
   position: absolute;
   left: 0;
-  top: 0.72em;
-  width: 6px;
-  height: 6px;
-  background: var(--brass);
-  transform: rotate(45deg);
+  top: 0.78em;
+  width: 9px;
+  height: 1px;
+  background: var(--copper);
 }
 
-.service-foot {
-  margin-top: auto;
-  padding-top: 1.6rem;
-}
-
-.service-link {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
+.entry-link {
+  display: inline-block;
+  margin-top: 1.5rem;
+  font-family: var(--font-seal);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--brass-dark);
+  color: var(--copper-deep);
   border-bottom: 1px solid currentColor;
   padding-bottom: 3px;
 }
 
-.service-link:hover { color: var(--ink); }
+.entry-link:hover { color: var(--on-sand); }
 
 /* -------------------------------------------------------------------------
-   4. CÓMO TRABAJO (proceso)
+   5. LA DERROTA (cómo trabajo) — waypoints along a line
    ------------------------------------------------------------------------- */
-.process {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: clamp(28px, 4vw, 48px);
-  counter-reset: step;
-}
-
-.step {
+.derrota {
   position: relative;
-  padding-top: 2.4rem;
-  border-top: 1px solid var(--ink-line);
-  counter-increment: step;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(20px, 3vw, 40px);
+  padding-top: 46px;
 }
 
-.step::before {
-  content: counter(step, decimal-leading-zero);
+.derrota::before {
+  content: '';
   position: absolute;
-  top: 0.9rem;
+  top: 14px;
   left: 0;
-  font-family: var(--font-display);
-  font-size: 0.8rem;
-  letter-spacing: 0.18em;
-  color: var(--brass-dark);
+  right: 0;
+  height: 1px;
+  background: var(--on-petrol-line);
 }
 
-.step-title {
-  font-family: var(--font-display);
+.waypoint { position: relative; }
+
+.waypoint::before {
+  content: '';
+  position: absolute;
+  top: -38px;
+  left: 0;
+  width: 9px;
+  height: 9px;
+  background: var(--copper);
+  transform: rotate(45deg);
+}
+
+.waypoint-index {
+  font-family: var(--font-seal);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  color: var(--copper-light);
+}
+
+.waypoint-title {
+  margin-top: 0.35rem;
+  font-family: var(--font-head);
   font-weight: 400;
-  font-size: 1.35rem;
+  font-size: 1.28rem;
 }
 
-.step-desc {
-  margin-top: 0.7rem;
-  color: var(--text-on-paper-soft);
-  font-size: 0.98rem;
+.waypoint-desc {
+  margin-top: 0.55rem;
+  font-size: 0.94rem;
+  color: var(--on-petrol-soft);
 }
 
 /* -------------------------------------------------------------------------
-   5. GALERÍA (on ink)
+   6. GALERÍA — a rail that scrolls sideways, with its own scale
    ------------------------------------------------------------------------- */
-.gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+.rail-wrap { position: relative; }
+
+.rail {
+  display: flex;
+  align-items: flex-end;
   gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding-bottom: 18px;
+  scrollbar-width: thin;
 }
 
-.gallery-item { position: relative; }
+.rail-item {
+  flex: 0 0 clamp(230px, 30vw, 340px);
+  scroll-snap-align: start;
+}
 
-.gallery-item .frame { aspect-ratio: 4 / 3; }
+/* Alternating heights: a wall of photographs sitting on one baseline rather
+   than a contact sheet. */
+.rail-item:nth-child(odd) .shot { aspect-ratio: 3 / 4; }
+.rail-item:nth-child(even) .shot { aspect-ratio: 1; }
 
-/* Six photographs, one ratio, two clean rows. The variation is in the
-   photographs; a staggered grid only ever left a hole at the bottom. */
-
-.gallery-caption {
+.rail-caption {
   margin-top: 0.7rem;
-  font-size: 0.68rem;
-  font-weight: 700;
+  font-family: var(--font-seal);
+  font-size: 0.58rem;
+  font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--text-on-ink-soft);
+  color: var(--on-sand-soft);
+}
+
+.band-petrol .rail-caption { color: var(--on-petrol-soft); }
+
+.rail-hint {
+  margin-top: 1.1rem;
+  font-family: var(--font-seal);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  opacity: 0.55;
 }
 
 /* -------------------------------------------------------------------------
-   6. CONTACTO
+   7. CONTACTO — one centred column, like a form filled in by hand
    ------------------------------------------------------------------------- */
-.contact-grid {
+.contacto-inner { max-width: 760px; margin-inline: auto; }
+
+.contacto-rows {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: clamp(36px, 6vw, 80px);
-  align-items: start;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1px;
+  margin-block: clamp(28px, 4vw, 44px);
+  background: var(--on-sand-line);
+  border: 1px solid var(--on-sand-line);
 }
 
-.contact-list { margin-top: 2rem; }
-
-.contact-row {
-  display: flex;
-  align-items: baseline;
-  gap: 1rem;
-  padding-block: 0.9rem;
-  border-bottom: 1px solid var(--ink-line);
+.contacto-cell {
+  background: var(--sand);
+  padding: 1.1rem 1.2rem;
+  text-align: center;
 }
 
-.contact-key {
-  flex: 0 0 108px;
-  font-size: 0.62rem;
-  font-weight: 700;
+.contacto-key {
+  display: block;
+  font-family: var(--font-seal);
+  font-size: 0.56rem;
+  font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--brass-dark);
+  color: var(--copper-deep);
 }
 
-.contact-value {
-  font-family: var(--font-display);
-  font-size: 1.12rem;
+.contacto-value {
+  display: block;
+  margin-top: 0.4rem;
+  font-family: var(--font-head);
+  font-size: 1.02rem;
   word-break: break-word;
 }
 
-a.contact-value:hover { color: var(--brass-dark); }
+a.contacto-value:hover { color: var(--copper-deep); }
 
-/* Underlined fields rather than boxes: a form that looks written, not filled. */
 .form-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.4rem;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1.3rem;
 }
 
-.field { margin-bottom: 1.6rem; }
+.field { margin-bottom: 1.5rem; }
 
 .field-label {
   display: block;
-  margin-bottom: 0.5rem;
-  font-size: 0.62rem;
-  font-weight: 700;
+  margin-bottom: 0.45rem;
+  font-family: var(--font-seal);
+  font-size: 0.58rem;
+  font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--text-on-paper-soft);
+  color: var(--on-sand-soft);
 }
+
+.field-label em { font-style: normal; opacity: 0.7; }
 
 .control {
   width: 100%;
-  padding: 0.65rem 0.1rem;
+  padding: 0.6rem 0.1rem;
   font-size: 1rem;
-  color: var(--text-on-paper);
+  color: var(--on-sand);
   background: transparent;
   border: none;
-  border-bottom: 1px solid rgba(20, 42, 58, 0.3);
-  transition: border-color var(--transition-fast);
+  border-bottom: 1px solid rgba(18, 48, 58, 0.32);
+  transition: border-color var(--fast);
 }
 
-.control::placeholder { color: rgba(20, 42, 58, 0.38); }
+.control::placeholder { color: rgba(18, 48, 58, 0.36); }
 
-.control:focus {
-  outline: none;
-  border-bottom-color: var(--brass);
-}
+.control:focus { outline: none; border-bottom-color: var(--copper); }
 
-textarea.control {
-  resize: vertical;
-  min-height: 130px;
-  line-height: 1.7;
-}
+textarea.control { resize: vertical; min-height: 128px; line-height: 1.7; }
 
-select.control {
-  appearance: none;
-  border-radius: 0;
-  cursor: pointer;
-}
+select.control { appearance: none; border-radius: 0; cursor: pointer; }
 
 .select-wrap { position: relative; }
 
@@ -430,235 +457,202 @@ select.control {
   width: 7px;
   height: 7px;
   margin-top: -6px;
-  border-right: 1px solid var(--brass-dark);
-  border-bottom: 1px solid var(--brass-dark);
+  border-right: 1px solid var(--copper-deep);
+  border-bottom: 1px solid var(--copper-deep);
   transform: rotate(45deg);
   pointer-events: none;
 }
 
 .field-error {
   display: block;
-  margin-top: 0.4rem;
-  min-height: 1.1rem;
+  margin-top: 0.35rem;
+  min-height: 1.05rem;
   font-size: 0.78rem;
-  color: #a8331f;
+  color: #9d2f1c;
 }
 
 .form-note {
-  margin-top: 1rem;
+  margin-top: 0.9rem;
   font-size: 0.82rem;
-  color: var(--text-on-paper-soft);
+  color: var(--on-sand-soft);
+  text-align: center;
 }
 
 .form-banner {
-  margin-top: 1.4rem;
-  padding: 0.95rem 1.1rem;
-  border-left: 3px solid var(--brass);
-  background: var(--paper-warm);
+  margin-top: 1.3rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--copper);
+  background: var(--sand-2);
   font-size: 0.94rem;
+  text-align: center;
 }
 
-.form-banner-error { border-left-color: #a8331f; }
+.form-banner-error { border-color: #9d2f1c; }
 
-.btn-submit {
-  width: 100%;
-  margin-top: 0.6rem;
-}
-
-.btn[disabled] {
-  opacity: 0.65;
-  cursor: progress;
-  transform: none;
-}
+.btn-submit { width: 100%; margin-top: 0.4rem; }
 
 /* -------------------------------------------------------------------------
-   7. FOOTER
+   8. PIE — centred, a seal and one line of links
    ------------------------------------------------------------------------- */
-.footer {
-  background: var(--ink-deep);
-  color: var(--text-on-ink);
-  padding-block: clamp(48px, 7vw, 80px) 28px;
+.pie {
+  background: var(--petrol-deep);
+  color: var(--on-petrol);
+  padding-block: clamp(48px, 6vw, 78px) 26px;
+  text-align: center;
 }
 
-.footer-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.3fr) repeat(auto-fit, minmax(150px, 1fr));
-  gap: clamp(28px, 5vw, 56px);
-  padding-bottom: 2.6rem;
-  border-bottom: 1px solid rgba(244, 236, 221, 0.12);
-}
+.pie-mark { width: 52px; height: 52px; margin-inline: auto; color: var(--copper); }
 
-.footer-logo {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-
-.footer-mark {
-  width: 40px;
-  height: 40px;
-  color: var(--brass);
-}
-
-.footer-name {
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  line-height: 1.2;
-}
-
-.footer-name small {
-  display: block;
-  font-family: var(--font-text);
-  font-size: 0.56rem;
-  font-weight: 700;
-  letter-spacing: 0.3em;
+.pie-name {
+  margin-top: 1rem;
+  font-family: var(--font-seal);
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.34em;
   text-transform: uppercase;
-  opacity: 0.65;
 }
 
-.footer-tagline {
-  margin-top: 1.1rem;
-  max-width: 34ch;
-  color: var(--text-on-ink-soft);
-  font-size: 0.94rem;
+.pie-role {
+  margin-top: 0.5rem;
+  font-family: var(--font-head);
+  font-style: italic;
+  color: var(--on-petrol-soft);
 }
 
-.footer-heading {
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--brass-light);
-  margin-bottom: 1rem;
-}
-
-.footer-links li + li { margin-top: 0.55rem; }
-
-.footer-links a {
-  font-size: 0.92rem;
-  color: var(--text-on-ink-soft);
-}
-
-.footer-links a:hover { color: var(--text-on-ink); }
-
-.footer-social {
-  display: flex;
-  gap: 0.7rem;
-}
-
-.social-icon {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border: 1px solid rgba(244, 236, 221, 0.2);
-  color: var(--text-on-ink);
-  transition: border-color var(--transition-fast), color var(--transition-fast),
-              background-color var(--transition-fast);
-}
-
-.social-icon:hover {
-  background: var(--brass);
-  border-color: var(--brass);
-  color: var(--ink-deep);
-}
-
-.footer-bottom {
+.pie-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem 1.4rem;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 1.6rem;
-  font-size: 0.76rem;
-  color: rgba(244, 236, 221, 0.5);
+  justify-content: center;
+  gap: 0.6rem 1.8rem;
+  margin-top: 2rem;
+  font-family: var(--font-seal);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
 }
 
-/* -------------------------------------------------------------------------
-   8. FLOATING WHATSAPP
-   ------------------------------------------------------------------------- */
-.whatsapp-float {
-  position: fixed;
-  right: clamp(16px, 3vw, 28px);
-  bottom: clamp(16px, 3vw, 28px);
-  z-index: 900;
+.pie-links a { color: var(--on-petrol-soft); }
+.pie-links a:hover { color: var(--copper-light); }
+
+.pie-social {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.8rem;
+}
+
+.pie-social a {
   display: grid;
   place-items: center;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: var(--brass);
-  color: var(--ink-deep);
-  font-size: 1.5rem;
-  box-shadow: var(--shadow-ink);
-  transition: transform var(--transition-fast), background-color var(--transition-fast);
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--on-petrol-line);
+  transition: border-color var(--fast), color var(--fast), background-color var(--fast);
 }
 
-.whatsapp-float:hover {
-  transform: translateY(-3px) scale(1.04);
-  background: var(--brass-light);
+.pie-social a:hover { background: var(--copper); border-color: var(--copper); color: var(--sand); }
+
+.pie-bottom {
+  margin-top: 2.4rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--on-petrol-line);
+  font-size: 0.74rem;
+  color: rgba(240, 231, 213, 0.45);
 }
 
 /* -------------------------------------------------------------------------
-   9. 404
+   9. THE WHATSAPP TAB — a squared tab, not a floating circle
+   ------------------------------------------------------------------------- */
+.wa-tab {
+  position: fixed;
+  right: 0;
+  bottom: clamp(24px, 12vh, 120px);
+  z-index: 900;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1rem;
+  background: var(--copper);
+  color: var(--sand);
+  font-family: var(--font-seal);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition: background-color var(--fast);
+}
+
+.wa-tab:hover { background: var(--copper-deep); }
+
+/* On a phone the tab is the icon alone: with the word it sat across whatever
+   button happened to be at that height. */
+@media (max-width: 720px) {
+  .wa-tab { padding: 0.7rem 0.75rem; }
+
+  .wa-tab span { display: none; }
+}
+
+/* -------------------------------------------------------------------------
+   10. 404
    ------------------------------------------------------------------------- */
 .lost {
   min-height: 100svh;
   display: grid;
   place-items: center;
   text-align: center;
-  background: var(--ink);
-  color: var(--text-on-ink);
   padding: var(--container-pad);
+  background: var(--petrol);
+  color: var(--on-petrol);
 }
 
+.lost-mark { width: 74px; height: 74px; margin-inline: auto; color: var(--copper-light); }
+
 .lost-code {
-  font-family: var(--font-display);
-  font-size: clamp(3.4rem, 12vw, 7rem);
-  line-height: 1;
-  color: var(--brass-light);
+  margin-top: 1.4rem;
+  font-family: var(--font-seal);
+  font-size: clamp(2rem, 7vw, 3.4rem);
+  letter-spacing: 0.3em;
 }
 
 .lost-title {
-  margin-top: 0.6rem;
-  font-family: var(--font-display);
-  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  margin-top: 0.8rem;
+  font-family: var(--font-head);
   font-weight: 400;
+  font-size: clamp(1.4rem, 3.6vw, 2rem);
 }
 
 .lost-text {
-  margin-top: 1rem;
-  max-width: 46ch;
-  margin-inline: auto;
-  color: var(--text-on-ink-soft);
+  margin: 1rem auto 0;
+  max-width: 44ch;
+  color: var(--on-petrol-soft);
 }
 
 .lost .btn { margin-top: 2rem; }
 
 /* -------------------------------------------------------------------------
-   10. RESPONSIVE
+   11. RESPONSIVE
    ------------------------------------------------------------------------- */
-@media (max-width: 980px) {
-  .about-grid,
-  .contact-grid { grid-template-columns: 1fr; }
+@media (max-width: 900px) {
+  .bitacora { grid-template-columns: 1fr; }
 
-  .about-portrait { max-width: 360px; }
+  .entry,
+  .entry:nth-of-type(even) { grid-template-columns: 1fr; }
 
-  .about-portrait::before { inset: 16px -16px -16px 16px; }
+  .entry:nth-of-type(even) .entry-media,
+  .entry:nth-of-type(even) .entry-body { grid-column: 1; grid-row: auto; }
+
+  .derrota { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 34px; }
 }
 
-@media (max-width: 980px) {
-  .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
+@media (max-width: 560px) {
+  .ledger-row { grid-template-columns: 1fr; gap: 0.15rem; }
 
-@media (max-width: 640px) {
-  .credential,
-  .contact-row { flex-direction: column; gap: 0.25rem; }
+  .derrota { grid-template-columns: 1fr; padding-top: 34px; }
 
-  .credential-key,
-  .contact-key { flex: none; }
+  .derrota::before { top: 6px; }
 
-  .gallery-grid { grid-template-columns: 1fr; }
+  .waypoint::before { top: -28px; }
 
-  .footer-grid { grid-template-columns: 1fr; }
+  .gauge-figures { margin-top: -2%; }
 }

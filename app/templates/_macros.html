@@ -1,60 +1,103 @@
 {# =========================================================================
    Shared markup fragments.
 
-   The brand mark and the photo frame both appear several times per page; the
-   mark also has to be identical in the navbar, the footer and the favicon, and
-   a photograph has to look the same whether or not the file has arrived yet.
-   Both are written once here.
+   The visual language is a compass bezel: a graduated ring, a needle, letters
+   set on an arc, three bands of water. Every one of those appears more than
+   once, and the geometry behind them comes from app/services/emblem.py rather
+   than from numbers typed into a template.
    ========================================================================= #}
 
-{# The mark: a needle over the horizon, inside a ring, with the water beneath.
-   Drawn from the same family of shapes as the captain's emblem — an arc, a
-   needle, three lines of water — but its own drawing: the needle is a slim
-   split diamond rather than a rose, the arc is open at the sides, and the
-   water is three strokes rather than a banner. #}
+{# The mark: a four-point needle inside a graduated ring. Its own drawing —
+   the shapes come from the same tradition as the captain's own emblem, not
+   from the emblem itself. #}
 {% macro mark(css_class='') -%}
-<svg class="{{ css_class }}" viewBox="0 0 64 64" fill="none" aria-hidden="true" focusable="false">
-  <circle cx="32" cy="32" r="29" stroke="currentColor" stroke-width="1.4" opacity="0.55"/>
-  <path d="M13 30a19 19 0 0 1 38 0" stroke="currentColor" stroke-width="2.6"
-        stroke-linecap="round"/>
-  <path d="M32 12v6M18.5 17.5l3.5 4.5M45.5 17.5 42 22" stroke="currentColor"
-        stroke-width="1.4" stroke-linecap="round" opacity="0.75"/>
-  <path d="M32 17 27 37h10L32 17Z" fill="currentColor" opacity="0.9"/>
-  <path d="M32 17v20" stroke="#fff" stroke-width="0.9" opacity="0.35"/>
-  <path d="M12 41c6.5 0 6.5 4 13 4s6.5-4 13-4 6.5 4 13 4" stroke="currentColor"
-        stroke-width="2" stroke-linecap="round" opacity="0.85"/>
-  <path d="M16 49c5.5 0 5.5 3.4 11 3.4s5.5-3.4 11-3.4 5.5 3.4 11 3.4" stroke="currentColor"
-        stroke-width="1.6" stroke-linecap="round" opacity="0.5"/>
+<svg class="{{ css_class }}" viewBox="0 0 100 100" fill="none" aria-hidden="true"
+     focusable="false">
+  <circle cx="50" cy="50" r="47" stroke="currentColor" stroke-width="1.6" opacity="0.45"/>
+  {%- for tick in bezel_ticks(24, 47, 43, 39, 6) %}
+  <line x1="{{ tick.x1 }}" y1="{{ tick.y1 }}" x2="{{ tick.x2 }}" y2="{{ tick.y2 }}"
+        stroke="currentColor" stroke-width="{{ '2.2' if tick.major else '1.2' }}"
+        opacity="{{ '0.95' if tick.major else '0.5' }}" stroke-linecap="round"/>
+  {%- endfor %}
+  <path d="M50 14 56 44 50 50 44 44Z" fill="currentColor"/>
+  <path d="M50 86 44 56 50 50 56 56Z" fill="currentColor" opacity="0.45"/>
+  <path d="M14 50 44 44 50 50 44 56Z" fill="currentColor" opacity="0.7"/>
+  <path d="M86 50 56 56 50 50 56 44Z" fill="currentColor" opacity="0.7"/>
 </svg>
 {%- endmacro %}
 
-{# A photo slot. Renders the photograph when its file is in
-   app/static/assets/photos/, and a finished-looking placeholder when it is
-   not — see app/services/media.py. `slot` is what photo()/photos() returns. #}
-{% macro frame(slot, ratio='landscape', arch=false, loading='lazy', sizes='') -%}
-<div class="frame frame-ratio-{{ ratio }}{% if arch %} frame-arch{% endif %}">
-  {%- if slot.available %}
-  <img src="{{ slot.url }}" alt="{{ slot.alt }}" loading="{{ loading }}"
-       decoding="async"{% if sizes %} sizes="{{ sizes }}"{% endif %} />
-  {%- else %}
-  <!-- Falta app/static/assets/photos/{{ slot.file }} -->
-  <div class="photo-pending" data-file="{{ slot.file }}">
-    <svg class="photo-pending-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-      <rect x="2.5" y="7.5" width="27" height="19" rx="2" stroke="currentColor"
-            stroke-width="1.4"/>
-      <circle cx="16" cy="17" r="6" stroke="currentColor" stroke-width="1.4"/>
-      <path d="M11 7.5 13 4h6l2 3.5" stroke="currentColor" stroke-width="1.4"
-            stroke-linejoin="round"/>
-    </svg>
-    <span class="photo-pending-label">Foto en camino</span>
-    <span class="photo-pending-caption">{{ slot.caption or slot.alt }}</span>
+{# The graduated ring on its own, for the medallions. #}
+{% macro bezel(count=72, css_class='') -%}
+<svg class="{{ css_class }}" viewBox="0 0 100 100" fill="none" aria-hidden="true"
+     focusable="false">
+  <circle cx="50" cy="50" r="49" stroke="currentColor" stroke-width="0.5" opacity="0.5"/>
+  <circle cx="50" cy="50" r="38.4" stroke="currentColor" stroke-width="0.5" opacity="0.5"/>
+  {%- for tick in bezel_ticks(count, 47.6, 43.6, 40.4, 6) %}
+  <line x1="{{ tick.x1 }}" y1="{{ tick.y1 }}" x2="{{ tick.x2 }}" y2="{{ tick.y2 }}"
+        stroke="currentColor" stroke-width="{{ '1.5' if tick.major else '0.7' }}"
+        opacity="{{ '0.95' if tick.major else '0.45' }}"/>
+  {%- endfor %}
+</svg>
+{%- endmacro %}
+
+{# Lettering set on an arc, the way a name runs around a seal.
+
+   The viewBox is cropped to the band the arc actually occupies — a full square
+   would hang most of its height below the letters and push everything under it
+   halfway down the screen. #}
+{% macro arc_text(text, id='arc', radius=46, span=46, view='13 1 74 21', css_class='') -%}
+<svg class="{{ css_class }}" viewBox="{{ view }}" aria-hidden="true" focusable="false">
+  <defs><path id="{{ id }}" d="{{ arc_path(radius, -span, span) }}" fill="none"/></defs>
+  <text><textPath startOffset="50%" text-anchor="middle" href="#{{ id }}"
+    >{{ text }}</textPath></text>
+</svg>
+{%- endmacro %}
+
+{# Three open strokes of water. Where another site would cut a wave-shaped hole
+   between two sections, this draws one. #}
+{% macro waterline(css_class='') -%}
+<svg class="waterline {{ css_class }}" viewBox="0 0 1440 48" preserveAspectRatio="none"
+     fill="none" aria-hidden="true" focusable="false">
+  <path d="M0 14c180 0 180 12 360 12s180-12 360-12 180 12 360 12 180-12 360-12"
+        stroke="currentColor" stroke-width="2" opacity="0.85"/>
+  <path d="M0 27c180 0 180 11 360 11s180-11 360-11 180 11 360 11 180-11 360-11"
+        stroke="currentColor" stroke-width="1.6" opacity="0.5"/>
+  <path d="M0 39c180 0 180 9 360 9s180-9 360-9 180 9 360 9 180-9 360-9"
+        stroke="currentColor" stroke-width="1.2" opacity="0.28"/>
+</svg>
+{%- endmacro %}
+
+{# A photo slot.
+
+   When the file is in app/static/assets/photos/ this is the photograph. When it
+   is not — which is every slot until the captain's own photographs arrive — it
+   is a plain grey box carrying the description of the picture that belongs
+   there, which is also that photograph's alt text. Nothing pretends to be a
+   photo, and nobody has to open a JSON file to find out what is missing. #}
+{% macro photo_box(slot, shape='rect', ratio='landscape', loading='lazy') -%}
+{%- if slot.available %}
+<div class="shot shot-{{ shape }} shot-{{ ratio }}">
+  <img src="{{ slot.url }}" alt="{{ slot.alt }}" loading="{{ loading }}" decoding="async"/>
+</div>
+{%- else %}
+<div class="shot shot-{{ shape }} shot-{{ ratio }} shot-empty" data-file="{{ slot.file }}">
+  <p class="shot-empty-text">{{ slot.alt }}</p>
+</div>
+{%- endif %}
+{%- endmacro %}
+
+{# A photograph inside the graduated ring. #}
+{% macro medallion(slot, css_class='', loading='lazy') -%}
+<div class="medallion {{ css_class }}">
+  {{ bezel(72, 'medallion-bezel') }}
+  <div class="medallion-window">
+    {{ photo_box(slot, shape='circle', ratio='square', loading=loading) }}
   </div>
-  {%- endif %}
 </div>
 {%- endmacro %}
 
 {% macro icon_whatsapp() -%}
-<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
   <path d="M12.04 2C6.6 2 2.2 6.4 2.2 11.84c0 1.74.46 3.44 1.32 4.94L2.1 22l5.36-1.4a9.8 9.8
            0 0 0 4.58 1.16h.01c5.43 0 9.84-4.4 9.84-9.84A9.78 9.78 0 0 0 12.04 2Zm0 17.93h-.01a8.2
            8.2 0 0 1-4.16-1.14l-.3-.18-3.18.83.85-3.1-.2-.32a8.13 8.13 0 0 1-1.25-4.35c0-4.5
@@ -67,7 +110,7 @@
 {%- endmacro %}
 
 {% macro icon_instagram() -%}
-<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor"
      stroke-width="1.6" aria-hidden="true">
   <rect x="3" y="3" width="18" height="18" rx="5"/>
   <circle cx="12" cy="12" r="4"/>
@@ -76,7 +119,7 @@
 {%- endmacro %}
 
 {% macro icon_mail() -%}
-<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor"
      stroke-width="1.6" aria-hidden="true">
   <rect x="2.5" y="5" width="19" height="14" rx="2"/>
   <path d="m3 7 9 6 9-6"/>

@@ -1,9 +1,10 @@
 # Fotos del sitio
 
 Acá van las fotos del capitán. **No hay que tocar ningún template**: el sitio lee
-`app/static/data/gallery.json`, y cada entrada de ese archivo dice qué nombre de
-archivo espera. Mientras el archivo no exista, esa foto se muestra como un marco
-con la leyenda "Foto en camino"; en cuanto aparece, se muestra la foto.
+`app/static/data/gallery.json`, y cada entrada dice qué nombre de archivo espera.
+Mientras el archivo no exista, ese lugar se muestra como un **cuadro gris con la
+descripción de la foto que va ahí** — la misma frase que después será su texto
+alternativo. En cuanto el archivo aparece, se muestra la foto.
 
 ## Cómo agregar una foto
 
@@ -13,17 +14,20 @@ con la leyenda "Foto en camino"; en cuanto aparece, se muestra la foto.
 
 Para ver qué falta: `make photos`
 
-## Qué espera cada slot
+## Qué espera cada lugar
 
-| Archivo | Dónde va | Formato sugerido |
+| Archivo | Dónde va | Cómo se recorta |
 |---|---|---|
-| `hero.webp` | Fondo de la portada | Horizontal 2400×1350, con aire arriba |
-| `retrato.webp` | Columna "Sobre mí" | Vertical 900×1200 |
-| `servicio-patron.webp` | Tarjeta "Patrón a bordo" | Horizontal 1200×900 |
-| `servicio-traslado.webp` | Tarjeta "Traslados" | Horizontal 1200×900 |
-| `servicio-salida.webp` | Tarjeta "Salidas" | Horizontal 1200×900 |
-| `galeria-01.webp` … `galeria-06.webp` | Galería | Horizontal 1600×1067 |
+| `hero.webp` | El medallón de la portada | **Círculo** — mandá una cuadrada, 1600×1600 |
+| `retrato.webp` | Columna de la bitácora | Vertical 3:4, 900×1200 |
+| `servicio-patron.webp` | Entrada "Patrón a bordo" | **Círculo** — cuadrada, 1200×1200 |
+| `servicio-traslado.webp` | Entrada "Traslados" | **Círculo** — cuadrada, 1200×1200 |
+| `servicio-salida.webp` | Entrada "Salidas" | **Círculo** — cuadrada, 1200×1200 |
+| `galeria-01.webp` … `galeria-06.webp` | La galería que se desliza | Alternan vertical 3:4 y cuadrada |
 | `og-image.jpg` | Vista previa al compartir el link | **1200×630 exactos** |
+
+En las que se recortan en círculo, dejá aire alrededor del motivo: lo que quede
+en las esquinas se pierde.
 
 ## Peso
 
@@ -34,6 +38,7 @@ dejarla en 150–250 KB sin diferencia visible.
 
 ## Textos alternativos
 
-El `alt` de cada foto está escrito en `gallery.json`. Si cambiás la foto por otra
-que muestra otra cosa, cambiá también ese texto: es lo que leen los buscadores y
-quienes navegan con lector de pantalla.
+La descripción de cada foto está en `gallery.json`. Es lo que se ve en el cuadro
+gris mientras la foto no está, y lo que leen los buscadores y los lectores de
+pantalla cuando ya está. Si cambiás una foto por otra que muestra otra cosa,
+cambiá también esa descripción.

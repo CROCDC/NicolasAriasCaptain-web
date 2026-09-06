@@ -1,10 +1,10 @@
 {
   "name": "Capitán Nicolás Arias — Patrón de yates",
-  "short_name": "Cap. N. Arias",
+  "short_name": "N. Arias",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#142a3a",
-  "theme_color": "#142a3a",
+  "background_color": "#10333a",
+  "theme_color": "#10333a",
   "icons": [
     {
       "src": "/static/assets/favicon.svg",

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="{{ site.description }}" />
-  <meta name="theme-color" content="#142a3a" />
+  <meta name="theme-color" content="#10333a" />
   <link rel="canonical" href="{{ site.url }}/" />
 
   <!-- Open Graph / WhatsApp -->
@@ -14,10 +14,10 @@
   <meta property="og:description" content="{{ site.description }}" />
   {%- set og = photo('og') %}
   {%- if og and og.available %}
-  <meta property="og:image"       content="{{ site.url }}{{ og.url }}" />
+  <meta property="og:image"        content="{{ site.url }}{{ og.url }}" />
   <meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt"   content="{{ og.alt }}" />
+  <meta property="og:image:alt"    content="{{ og.alt }}" />
   {%- endif %}
   <meta property="og:locale"      content="{{ site.locale }}" />
   <meta property="og:site_name"   content="{{ site.brand }}" />
@@ -37,22 +37,21 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="style"
-    href="https://fonts.googleapis.com/css2?family=Marcellus&family=Karla:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Fraunces:ital,wght@0,400;0,600;1,400&family=Karla:wght@300;400;600;700&display=swap"
     onload="this.onload=null;this.rel='stylesheet'" />
   <noscript>
     <link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Marcellus&family=Karla:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" />
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Fraunces:ital,wght@0,400;0,600;1,400&family=Karla:wght@300;400;600;700&display=swap" />
   </noscript>
 
-  <!-- Critical CSS inline: navbar + hero paint without a round trip -->
+  <!-- Critical CSS inline: the bar and the portada paint without a round trip -->
   <style>{{ critical_css }}</style>
 
-  <!-- Marks the page as scripted before it paints. The scroll-reveal starting
-       state hangs off this class, so a browser that runs no JavaScript gets the
-       finished page instead of an empty one. -->
+  <!-- Marks the page as scripted before it paints, so the reveal's starting
+       state never leaves a non-scripted browser with a blank page. -->
   <script>document.documentElement.classList.add('js');</script>
 
-  <!-- Everything below the fold, asynchronously -->
+  <!-- Everything below the portada, asynchronously -->
   <link rel="preload" as="style" href="{{ asset('css/style-deferred.css') }}"
         onload="this.onload=null;this.rel='stylesheet'" />
   <noscript>
@@ -61,139 +60,189 @@
 </head>
 <body>
 
-<a class="skip-link" href="#sobre-mi">Saltar al contenido</a>
+<a class="skip-link" href="#bitacora">Saltar al contenido</a>
 
 <!-- =====================================================================
-     NAVEGACIÓN
+     LA REGLA — barra fija: coordenadas, sello, y una sola perilla
 ====================================================================== -->
-<nav class="navbar" id="navbar">
-  <div class="nav-container">
-    <a href="#inicio" class="nav-logo" aria-label="{{ site.brand }} — inicio">
-      {{ ui.mark('nav-mark') }}
-      <span class="nav-logo-text">
-        {{ site.short_brand }}
-        <span class="nav-logo-sub">{{ site.role }}</span>
-      </span>
+<div class="bar" id="bar">
+  <div class="bar-inner">
+    <p class="bar-coords">34°28′ S · 58°30′ O</p>
+
+    <a href="#portada" class="bar-seal" aria-label="{{ site.brand }} — inicio">
+      {{ ui.mark('bar-mark') }}
+      <span class="bar-name">{{ site.brand_short }}</span>
     </a>
 
-    <ul class="nav-links" id="navLinks">
-      <li><a href="#sobre-mi"  class="nav-link">Sobre mí</a></li>
-      <li><a href="#servicios" class="nav-link">Servicios</a></li>
-      <li><a href="#a-bordo"   class="nav-link">A bordo</a></li>
-      <li><a href="#galeria"   class="nav-link">Galería</a></li>
-      <li><a href="#contacto"  class="nav-link nav-cta">Contacto</a></li>
-    </ul>
-
-    <button class="hamburger" id="hamburger" aria-label="Abrir menú"
-            aria-controls="navLinks" aria-expanded="false">
-      <span class="hamburger-bar"></span>
-      <span class="hamburger-bar"></span>
-      <span class="hamburger-bar"></span>
+    <button class="bar-menu" id="menuOpen" aria-expanded="false" aria-controls="menu">
+      <span>Índice</span>
+      <span class="bar-menu-bars" aria-hidden="true"><i></i><i></i><i></i></span>
     </button>
+  </div>
+</div>
+
+<!-- =====================================================================
+     EL ÍNDICE — pantalla completa, numerado como una carta
+====================================================================== -->
+<nav class="menu" id="menu" aria-label="Secciones" aria-hidden="true">
+  <div class="menu-head">
+    <button class="menu-close" id="menuClose">Cerrar ✕</button>
+  </div>
+
+  <ul class="menu-list">
+    <li class="menu-item">
+      <a class="menu-link" href="#bitacora"><span class="numeral">I</span> Bitácora</a>
+    </li>
+    <li class="menu-item">
+      <a class="menu-link" href="#servicios"><span class="numeral">II</span> Servicios</a>
+    </li>
+    <li class="menu-item">
+      <a class="menu-link" href="#derrota"><span class="numeral">III</span> La derrota</a>
+    </li>
+    <li class="menu-item">
+      <a class="menu-link" href="#galeria"><span class="numeral">IV</span> Galería</a>
+    </li>
+    <li class="menu-item">
+      <a class="menu-link" href="#contacto"><span class="numeral">V</span> Contacto</a>
+    </li>
+  </ul>
+
+  <div class="menu-foot">
+    <a href="https://wa.me/{{ site.whatsapp.number }}" target="_blank"
+       rel="noopener noreferrer">{{ site.whatsapp.display }}</a>
+    <a href="mailto:{{ site.email }}">{{ site.email }}</a>
+    <span>{{ site.base_port }}</span>
   </div>
 </nav>
 
-<div class="mobile-overlay" id="mobileOverlay"></div>
-
 <!-- =====================================================================
-     PORTADA
+     PORTADA — el medallón
 ====================================================================== -->
-{%- set hero = photo('hero') %}
-<header class="hero" id="inicio">
-  <div class="hero-bg{% if not hero.available %} hero-bg-fallback{% endif %}" id="heroBg"
-       {% if hero.available %}style="background-image: url('{{ hero.url }}')"{% endif %}
-       role="img" aria-label="{{ hero.alt }}"></div>
-  <div class="hero-overlay"></div>
+<header class="portada" id="portada">
+  {{ ui.arc_text('Patrón de yates · Río de la Plata', id='arc-portada',
+                 css_class='portada-arc reveal') }}
 
-  <!-- El meridiano: la marca propia del sitio -->
-  <div class="hero-meridian" aria-hidden="true">
-    <span>34°28′ S — 58°30′ O</span>
+  <div class="reveal" style="--delay: .05s">
+    {{ ui.medallion(photo('hero'), 'portada-medallion', loading='eager') }}
   </div>
 
-  <div class="hero-content">
-    <p class="hero-eyebrow reveal">Río de la Plata · {{ site.base_port.split(',')[0] }}</p>
-    <h1 class="hero-title reveal" style="--delay: .08s">
-      <span class="hero-title-line">Capitán</span>
-      <span class="hero-title-accent">Nicolás Arias</span>
-    </h1>
-    <p class="hero-role reveal" style="--delay: .16s">{{ site.role }}</p>
-    <p class="hero-tagline reveal" style="--delay: .24s">{{ site.tagline }}</p>
-    <div class="hero-actions reveal" style="--delay: .32s">
-      <a href="#servicios" class="btn btn-solid">Ver servicios</a>
-      <a href="#contacto" class="btn btn-line">Consultar fecha</a>
-    </div>
+  <h1 class="portada-name reveal" style="--delay: .12s">
+    Capitán<em>Nicolás Arias</em>
+  </h1>
+
+  {{ ui.waterline('portada-rule reveal') }}
+
+  <p class="portada-tagline reveal" style="--delay: .2s">{{ site.tagline }}</p>
+
+  <div class="portada-actions reveal" style="--delay: .26s">
+    <a class="btn btn-solid" href="#servicios">Qué hago</a>
+    <a class="btn btn-line" href="#contacto">Consultar una fecha</a>
   </div>
 
-  <div class="hero-wake" aria-hidden="true"><i></i><i></i><i></i></div>
-  <span class="scroll-cue" aria-hidden="true">Bajar</span>
+  <p class="portada-foot">
+    <span>{{ site.base_port }}</span>
+    <span aria-hidden="true">·</span>
+    <span>Salidas · Traslados · Patrón a bordo</span>
+  </p>
 </header>
+
+<div class="gradrule" aria-hidden="true"></div>
 
 <main>
 
 <!-- =====================================================================
-     I — SOBRE MÍ
+     I — BITÁCORA
 ====================================================================== -->
-<section class="section on-paper chart-grid" id="sobre-mi">
+<section class="band band-sand-2" id="bitacora">
   <div class="container">
-    <div class="about-grid">
+    <div class="bitacora">
 
-      <div class="about-portrait reveal">
-        {{ ui.frame(photo('retrato'), ratio='portrait', arch=true, sizes='(max-width: 980px) 90vw, 420px') }}
-        <p class="about-caption">{{ photo('retrato').caption }}</p>
+      <div class="bitacora-text reveal">
+        <p class="head-mark seal seal-copper">
+          <span class="numeral">I</span> Bitácora
+        </p>
+        <h2 class="headline">No alquilo un barco.<br /><em>Lo gobierno.</em></h2>
+
+        <div class="bitacora-body lead">
+          <p>
+            Me llamo Nicolás Arias y me gano la vida al timón. Empecé como
+            tripulante, aprendí mirando a gente que llevaba treinta años en el
+            agua y hoy gobierno barcos ajenos con el mismo cuidado con el que
+            gobernaría el propio: es el trabajo, y también es la parte que me
+            gusta.
+          </p>
+          <p>
+            El Río de la Plata no perdona la improvisación. Entra la sudestada
+            sin avisar, la bajante deja bancos donde ayer había agua y el canal
+            a las seis de la tarde se llena de tráfico que no te va a ceder el
+            paso. Conocer eso de memoria es la diferencia entre una salida
+            linda y una salida segura, y es exactamente lo que estás
+            contratando cuando me subís a bordo.
+          </p>
+          <p>
+            Trabajo con pocas salidas y sin apuro. Prefiero decirte que hoy no
+            es el día antes que forzar una jornada que después nadie disfruta:
+            el río está mañana también.
+          </p>
+          <p><strong>Vos salís a navegar. De lo demás me ocupo yo.</strong></p>
+          <p class="bitacora-sign">— Nicolás</p>
+        </div>
       </div>
 
-      <div class="about-text reveal" style="--delay: .1s">
-        <p class="section-mark"><span class="section-numeral">I</span> Sobre mí</p>
-        <h2 class="section-title">Un patrón, no<br /><em>un alquiler de barco</em></h2>
-        <span class="wake" aria-hidden="true"><span></span><span></span><span></span></span>
+      <div class="bitacora-instruments reveal" style="--delay: .12s">
+        <figure class="bitacora-portrait">
+          {{ ui.photo_box(photo('retrato'), ratio='portrait') }}
+          <figcaption class="bitacora-portrait-caption">{{ photo('retrato').caption }}</figcaption>
+        </figure>
 
-        <!-- TODO copy: reemplazar por la biografía real de Nicolás -->
-        <div class="about-body">
-          <p>
-            Me llamo Nicolás Arias y navego el Río de la Plata desde hace años.
-            Empecé como tripulante, seguí como timonel y hoy me gano la vida
-            gobernando barcos ajenos con el mismo cuidado con el que gobernaría
-            el propio.
-          </p>
-          <p>
-            Trabajo con lo que el río realmente te da: la sudestada que entra sin
-            avisar, el banco que aparece con bajante, el canal que a las seis de
-            la tarde se llena de tráfico. Conocer eso es la diferencia entre una
-            salida linda y una salida segura, y es exactamente lo que contratás
-            cuando me subís a bordo.
-          </p>
-          <p>
-            <strong>Salís a navegar. De lo demás me ocupo yo.</strong>
-          </p>
-        </div>
-
-        <!-- TODO datos: confirmar titulación, matrícula y años de experiencia -->
-        <div class="credentials">
-          <div class="credential">
-            <span class="credential-key">Titulación</span>
-            <span class="credential-value">Patrón de yate — Prefectura Naval Argentina</span>
+        <div class="ledger">
+          <div class="ledger-row">
+            <span class="ledger-key">Titulación</span>
+            <span class="ledger-value">Patrón de yate — Prefectura Naval Argentina</span>
           </div>
-          <div class="credential">
-            <span class="credential-key">Zona</span>
-            <span class="credential-value">Río de la Plata, Delta y costa atlántica</span>
+          <div class="ledger-row">
+            <span class="ledger-key">Zona</span>
+            <span class="ledger-value">Río de la Plata, Delta, Uruguay y costa atlántica</span>
           </div>
-          <div class="credential">
-            <span class="credential-key">Puerto base</span>
-            <span class="credential-value">{{ site.base_port }}</span>
+          <div class="ledger-row">
+            <span class="ledger-key">Puerto base</span>
+            <span class="ledger-value">{{ site.base_port }}</span>
           </div>
-          <div class="credential">
-            <span class="credential-key">Embarcaciones</span>
-            <span class="credential-value">Veleros y lanchas hasta 45 pies</span>
+          <div class="ledger-row">
+            <span class="ledger-key">Embarcaciones</span>
+            <span class="ledger-value">Veleros y lanchas hasta 45 pies</span>
+          </div>
+          <div class="ledger-row">
+            <span class="ledger-key">Temporada</span>
+            <span class="ledger-value">Todo el año, según pronóstico</span>
           </div>
         </div>
 
-        <div class="stats">
-          {%- for stat in site.stats %}
-          <div class="stat-item">
-            <span class="stat-number">{{ stat.number }}</span>
-            <span class="stat-label">{{ stat.label }}</span>
+        <!-- El instrumento: tres cifras leídas sobre un arco graduado -->
+        <div class="gauge">
+          <svg class="gauge-face" viewBox="0 2 100 42" fill="none" aria-hidden="true">
+            <path d="{{ arc_path(44, -74, 74) }}" stroke="currentColor"
+                  stroke-width="0.5" opacity="0.55"/>
+            {%- for tick in bezel_ticks(25, 46, 42.6, 39.6, 4, -74, 148) %}
+            <line x1="{{ tick.x1 }}" y1="{{ tick.y1 }}" x2="{{ tick.x2 }}" y2="{{ tick.y2 }}"
+                  stroke="currentColor" stroke-width="{{ '1.1' if tick.major else '0.5' }}"
+                  opacity="{{ '0.9' if tick.major else '0.4' }}"/>
+            {%- endfor %}
+            {%- for marker in gauge([0.12, 0.5, 0.88]) %}
+            <rect x="{{ marker.x - 1.3 }}" y="{{ marker.y - 1.3 }}" width="2.6" height="2.6"
+                  transform="rotate(45 {{ marker.x }} {{ marker.y }})"
+                  fill="var(--copper)"/>
+            {%- endfor %}
+          </svg>
+
+          <div class="gauge-figures">
+            {%- for stat in site.stats %}
+            <div class="gauge-figure">
+              <span class="gauge-number">{{ stat.number }}</span>
+              <span class="gauge-label">{{ stat.label }}</span>
+            </div>
+            {%- endfor %}
           </div>
-          {%- endfor %}
         </div>
       </div>
 
@@ -204,127 +253,125 @@
 <!-- =====================================================================
      II — SERVICIOS
 ====================================================================== -->
-<section class="section on-paper-warm" id="servicios">
+<section class="band band-sand" id="servicios">
   <div class="container">
-    <div class="section-header reveal">
-      <p class="section-mark"><span class="section-numeral">II</span> Servicios</p>
-      <h2 class="section-title">Tres formas de<br /><em>tenerme a bordo</em></h2>
-      <p class="section-lead">
-        Cada una se cotiza según el barco, la distancia y los días. Escribime y
-        te paso número cerrado, sin vueltas.
+    <div class="head reveal">
+      <p class="head-mark seal seal-copper"><span class="numeral">II</span> Servicios</p>
+      <h2 class="headline">Tres maneras de<br /><em>tenerme a bordo</em></h2>
+      <p class="lead">
+        Todo se cotiza igual: barco, distancia, días y pronóstico. Escribime con
+        esos cuatro datos y te paso un número cerrado, sin vueltas ni sorpresas
+        al final.
       </p>
     </div>
 
-    <div class="services-grid">
+    <article class="entry reveal">
+      <div class="entry-media">{{ ui.medallion(photo('servicio-patron')) }}</div>
+      <div class="entry-body">
+        <p class="entry-number">I</p>
+        <h3 class="entry-title">Patrón a bordo</h3>
+        <p class="entry-desc">
+          Tenés el barco, pero no la matrícula, el tiempo o las horas de agua
+          para esa salida en particular. Lo gobierno yo. Vos invitás, disfrutás
+          o mirás cómo se hace.
+        </p>
+        <ul class="entry-points">
+          <li>Por jornada o por medio día</li>
+          <li>Chequeo previo de motor, velas y seguridad</li>
+          <li>Plan de navegación según viento y marea</li>
+          <li>Práctica guiada al timón, si querés</li>
+        </ul>
+        <a class="entry-link" href="#contacto" data-service="patron">Consultar</a>
+      </div>
+    </article>
 
-      <article class="service reveal">
-        {{ ui.frame(photo('servicio-patron'), ratio='landscape') }}
-        <div class="service-body">
-          <p class="service-index">01</p>
-          <h3 class="service-title">Patrón a bordo</h3>
-          <p class="service-desc">
-            Tenés el barco pero no la matrícula, el tiempo o la experiencia para
-            esa salida. Yo lo gobierno; vos disfrutás o aprendés mirando.
-          </p>
-          <ul class="service-points">
-            <li>Salidas por día o por jornada completa</li>
-            <li>Chequeo previo de motor, velas y seguridad</li>
-            <li>Plan de navegación según viento y marea</li>
-            <li>Opción de práctica guiada al timón</li>
-          </ul>
-          <div class="service-foot">
-            <a href="#contacto" class="service-link" data-service="patron">Consultar</a>
-          </div>
-        </div>
-      </article>
+    <article class="entry reveal">
+      <div class="entry-media">{{ ui.medallion(photo('servicio-traslado')) }}</div>
+      <div class="entry-body">
+        <p class="entry-number">II</p>
+        <h3 class="entry-title">Traslados y deliveries</h3>
+        <p class="entry-desc">
+          Compraste en otro puerto, entrás a invernada o tenés que llegar a una
+          regata que empieza el viernes. Llevo el barco y te lo entrego donde lo
+          necesitás, en la fecha que acordamos.
+        </p>
+        <ul class="entry-points">
+          <li>Río de la Plata, Delta, Uruguay y costa atlántica</li>
+          <li>Parte de estado del barco antes de zarpar</li>
+          <li>Reporte de posición durante la travesía</li>
+          <li>Tripulación extra cuando la travesía lo pide</li>
+        </ul>
+        <a class="entry-link" href="#contacto" data-service="traslado">Cotizar</a>
+      </div>
+    </article>
 
-      <article class="service reveal" style="--delay: .1s">
-        {{ ui.frame(photo('servicio-traslado'), ratio='landscape') }}
-        <div class="service-body">
-          <p class="service-index">02</p>
-          <h3 class="service-title">Traslados y deliveries</h3>
-          <p class="service-desc">
-            Compraste en otro puerto, entrás a invernada o tenés que llegar a una
-            regata. Llevo el barco y te lo entrego donde lo necesitás.
-          </p>
-          <ul class="service-points">
-            <li>Río de la Plata, Delta, Uruguay y costa atlántica</li>
-            <li>Inspección y parte de estado antes de zarpar</li>
-            <li>Reporte de posición durante la travesía</li>
-            <li>Tripulación adicional si la travesía lo pide</li>
-          </ul>
-          <div class="service-foot">
-            <a href="#contacto" class="service-link" data-service="traslado">Cotizar</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="service reveal" style="--delay: .2s">
-        {{ ui.frame(photo('servicio-salida'), ratio='landscape') }}
-        <div class="service-body">
-          <p class="service-index">03</p>
-          <h3 class="service-title">Salidas y charters</h3>
-          <p class="service-desc">
-            Un día en el río con barco y patrón incluidos. Atardecer, cumpleaños,
-            un domingo largo o simplemente ganas de irse un rato.
-          </p>
-          <ul class="service-points">
-            <li>Grupos chicos, sin turnos apurados</li>
-            <li>Recorridos a medida por el río o el Delta</li>
-            <li>Fondeo para nadar o comer a bordo</li>
-            <li>Fechas sujetas a pronóstico, siempre</li>
-          </ul>
-          <div class="service-foot">
-            <a href="#contacto" class="service-link" data-service="salida">Reservar fecha</a>
-          </div>
-        </div>
-      </article>
-
-    </div>
+    <article class="entry reveal">
+      <div class="entry-media">{{ ui.medallion(photo('servicio-salida')) }}</div>
+      <div class="entry-body">
+        <p class="entry-number">III</p>
+        <h3 class="entry-title">Salidas y charters</h3>
+        <p class="entry-desc">
+          Un día en el río con barco y patrón incluidos. Un cumpleaños, un
+          atardecer, un domingo largo, o simplemente las ganas de irse un rato
+          de la ciudad sin subirse a un avión.
+        </p>
+        <ul class="entry-points">
+          <li>Grupos chicos, sin turnos apurados</li>
+          <li>Recorrido a medida por el río o el Delta</li>
+          <li>Fondeo para nadar o comer a bordo</li>
+          <li>Fecha sujeta a pronóstico, siempre</li>
+        </ul>
+        <a class="entry-link" href="#contacto" data-service="salida">Reservar una fecha</a>
+      </div>
+    </article>
   </div>
 </section>
 
 <!-- =====================================================================
-     III — A BORDO (cómo trabajo)
+     III — LA DERROTA
 ====================================================================== -->
-<section class="section on-paper" id="a-bordo">
+<section class="band band-petrol" id="derrota">
   <div class="container">
-    <div class="section-header reveal">
-      <p class="section-mark"><span class="section-numeral">III</span> A bordo</p>
-      <h2 class="section-title">Cómo trabajo</h2>
-      <p class="section-lead">
-        Nada de esto es improvisado. Es el mismo orden en cada salida, sea un
-        paseo de tres horas o una travesía de tres días.
+    <div class="head reveal">
+      <p class="head-mark seal seal-copper"><span class="numeral">III</span> La derrota</p>
+      <h2 class="headline">El mismo orden,<br /><em>siempre</em></h2>
+      <p class="lead">
+        Sea un paseo de tres horas o una travesía de tres días, la salida se
+        arma igual. Nada de esto se improvisa arriba del barco.
       </p>
     </div>
 
-    <div class="process">
-      <div class="step reveal">
-        <h3 class="step-title">Hablamos</h3>
-        <p class="step-desc">
-          Me contás qué barco es, qué querés hacer y cuándo. Te digo con
-          franqueza si conviene, si cambia el día o si no soy el indicado.
+    <div class="derrota">
+      <div class="waypoint reveal">
+        <p class="waypoint-index">01</p>
+        <h3 class="waypoint-title">Hablamos</h3>
+        <p class="waypoint-desc">
+          Qué barco es, qué querés hacer y cuándo. Si no conviene, te lo digo
+          en ese momento y no perdemos ninguno de los dos el tiempo.
         </p>
       </div>
-      <div class="step reveal" style="--delay: .08s">
-        <h3 class="step-title">Miro el tiempo</h3>
-        <p class="step-desc">
+      <div class="waypoint reveal" style="--delay: .08s">
+        <p class="waypoint-index">02</p>
+        <h3 class="waypoint-title">Miro el tiempo</h3>
+        <p class="waypoint-desc">
           Viento, altura del río y pronóstico a 48 horas. Si el día no da, se
-          mueve la fecha: el río está mañana también.
+          corre la fecha. Es la única regla que no negocio.
         </p>
       </div>
-      <div class="step reveal" style="--delay: .16s">
-        <h3 class="step-title">Reviso el barco</h3>
-        <p class="step-desc">
+      <div class="waypoint reveal" style="--delay: .16s">
+        <p class="waypoint-index">03</p>
+        <h3 class="waypoint-title">Reviso el barco</h3>
+        <p class="waypoint-desc">
           Motor, combustible, jarcia, luces, chalecos y balsa. Lo que falta se
-          resuelve antes de largar amarras, no en el medio del canal.
+          resuelve en el amarre, no en el medio del canal.
         </p>
       </div>
-      <div class="step reveal" style="--delay: .24s">
-        <h3 class="step-title">Navegamos</h3>
-        <p class="step-desc">
+      <div class="waypoint reveal" style="--delay: .24s">
+        <p class="waypoint-index">04</p>
+        <h3 class="waypoint-title">Navegamos</h3>
+        <p class="waypoint-desc">
           Al timón el tiempo que haga falta. Si querés aprender, se enseña; si
-          querés desconectar, no te enterás de que estoy trabajando.
+          querés desconectar, ni te enterás de que estoy trabajando.
         </p>
       </div>
     </div>
@@ -334,23 +381,26 @@
 <!-- =====================================================================
      IV — GALERÍA
 ====================================================================== -->
-<section class="section on-ink chart-grid" id="galeria">
+<section class="band band-sand-2" id="galeria">
   <div class="container">
-    <div class="section-header reveal">
-      <p class="section-mark"><span class="section-numeral">IV</span> Galería</p>
-      <h2 class="section-title">El río,<br /><em>desde cubierta</em></h2>
-      <p class="section-lead">
+    <div class="head reveal">
+      <p class="head-mark seal seal-copper"><span class="numeral">IV</span> Galería</p>
+      <h2 class="headline">El río,<br /><em>desde cubierta</em></h2>
+      <p class="lead">
         Fotos de salidas y travesías reales. Ninguna es de banco de imágenes.
       </p>
     </div>
 
-    <div class="gallery-grid">
-      {%- for slot in photos('gallery') %}
-      <figure class="gallery-item reveal" style="--delay: {{ loop.index0 * 0.06 }}s">
-        {{ ui.frame(slot) }}
-        <figcaption class="gallery-caption">{{ slot.caption }}</figcaption>
-      </figure>
-      {%- endfor %}
+    <div class="rail-wrap reveal">
+      <div class="rail" id="rail" tabindex="0" role="group" aria-label="Galería de fotos">
+        {%- for slot in photos('gallery') %}
+        <figure class="rail-item">
+          {{ ui.photo_box(slot) }}
+          <figcaption class="rail-caption">{{ slot.caption }}</figcaption>
+        </figure>
+        {%- endfor %}
+      </div>
+      <p class="rail-hint">Deslizá para ver más →</p>
     </div>
   </div>
 </section>
@@ -358,100 +408,93 @@
 <!-- =====================================================================
      V — CONTACTO
 ====================================================================== -->
-<section class="section on-paper" id="contacto">
+<section class="band band-sand" id="contacto">
   <div class="container">
-    <div class="contact-grid">
+    <div class="contacto-inner">
 
-      <div class="contact-info reveal">
-        <p class="section-mark"><span class="section-numeral">V</span> Contacto</p>
-        <h2 class="section-title">¿Cuándo<br /><em>zarpamos?</em></h2>
-        <span class="wake" aria-hidden="true"><span></span><span></span><span></span></span>
-        <p class="section-lead">
-          Contame el barco, la fecha y qué necesitás. Respondo el mismo día;
+      <div class="head head-centred reveal">
+        <p class="head-mark seal seal-copper"><span class="numeral">V</span> Contacto</p>
+        <h2 class="headline">¿Cuándo <em>zarpamos?</em></h2>
+        <p class="lead">
+          Contame el barco, la fecha y de dónde a dónde. Respondo el mismo día;
           por WhatsApp, casi siempre en el momento.
         </p>
+      </div>
 
-        <div class="contact-list">
-          <div class="contact-row">
-            <span class="contact-key">WhatsApp</span>
-            <a class="contact-value" href="https://wa.me/{{ site.whatsapp.number }}"
-               target="_blank" rel="noopener noreferrer">{{ site.whatsapp.display }}</a>
-          </div>
-          <div class="contact-row">
-            <span class="contact-key">Email</span>
-            <a class="contact-value" href="mailto:{{ site.email }}">{{ site.email }}</a>
-          </div>
-          <div class="contact-row">
-            <span class="contact-key">Instagram</span>
-            <a class="contact-value" href="{{ site.instagram.url }}"
-               target="_blank" rel="noopener noreferrer">{{ site.instagram.handle }}</a>
-          </div>
-          <div class="contact-row">
-            <span class="contact-key">Puerto base</span>
-            <span class="contact-value">{{ site.base_port }}</span>
-          </div>
+      <div class="contacto-rows reveal">
+        <div class="contacto-cell">
+          <span class="contacto-key">WhatsApp</span>
+          <a class="contacto-value" href="https://wa.me/{{ site.whatsapp.number }}"
+             target="_blank" rel="noopener noreferrer">{{ site.whatsapp.display }}</a>
+        </div>
+        <div class="contacto-cell">
+          <span class="contacto-key">Email</span>
+          <a class="contacto-value" href="mailto:{{ site.email }}">{{ site.email }}</a>
+        </div>
+        <div class="contacto-cell">
+          <span class="contacto-key">Puerto base</span>
+          <span class="contacto-value">{{ site.base_port }}</span>
         </div>
       </div>
 
-      <div class="contact-form-wrap reveal" style="--delay: .1s">
-        <form class="contact-form" id="contactForm" novalidate>
-          <div class="form-row">
-            <div class="field">
-              <label class="field-label" for="name">Nombre</label>
-              <input class="control" type="text" id="name" name="name"
-                     placeholder="Tu nombre" autocomplete="name" required />
-              <span class="field-error" id="nameError" aria-live="polite"></span>
-            </div>
-            <div class="field">
-              <label class="field-label" for="email">Email</label>
-              <input class="control" type="email" id="email" name="email"
-                     placeholder="tu@email.com" autocomplete="email" required />
-              <span class="field-error" id="emailError" aria-live="polite"></span>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="field">
-              <label class="field-label" for="phone">Teléfono <em>(opcional)</em></label>
-              <input class="control" type="tel" id="phone" name="phone"
-                     placeholder="+54 9 11 ..." autocomplete="tel" />
-              <span class="field-error" id="phoneError" aria-live="polite"></span>
-            </div>
-            <div class="field">
-              <label class="field-label" for="service_type">Qué necesitás</label>
-              <div class="select-wrap">
-                <select class="control" id="service_type" name="service_type" required>
-                  <option value="" disabled selected>Elegí una opción</option>
-                  <option value="patron">Patrón a bordo</option>
-                  <option value="traslado">Traslado / delivery</option>
-                  <option value="salida">Salida o charter</option>
-                  <option value="otro">Otra consulta</option>
-                </select>
-              </div>
-              <span class="field-error" id="serviceError" aria-live="polite"></span>
-            </div>
-          </div>
-
+      <form class="contact-form reveal" id="contactForm" novalidate>
+        <div class="form-row">
           <div class="field">
-            <label class="field-label" for="message">Mensaje</label>
-            <textarea class="control" id="message" name="message" rows="5"
-                      placeholder="Barco, fecha tentativa y de dónde a dónde." required></textarea>
-            <span class="field-error" id="messageError" aria-live="polite"></span>
+            <label class="field-label" for="name">Nombre</label>
+            <input class="control" type="text" id="name" name="name"
+                   placeholder="Tu nombre" autocomplete="name" required />
+            <span class="field-error" id="nameError" aria-live="polite"></span>
           </div>
+          <div class="field">
+            <label class="field-label" for="email">Email</label>
+            <input class="control" type="email" id="email" name="email"
+                   placeholder="tu@email.com" autocomplete="email" required />
+            <span class="field-error" id="emailError" aria-live="polite"></span>
+          </div>
+        </div>
 
-          <button class="btn btn-solid btn-submit" type="submit" id="submitBtn">
-            <span class="btn-text">Enviar consulta</span>
-          </button>
+        <div class="form-row">
+          <div class="field">
+            <label class="field-label" for="phone">Teléfono <em>(opcional)</em></label>
+            <input class="control" type="tel" id="phone" name="phone"
+                   placeholder="+54 9 11 ..." autocomplete="tel" />
+            <span class="field-error" id="phoneError" aria-live="polite"></span>
+          </div>
+          <div class="field">
+            <label class="field-label" for="service_type">Qué necesitás</label>
+            <div class="select-wrap">
+              <select class="control" id="service_type" name="service_type" required>
+                <option value="" disabled selected>Elegí una opción</option>
+                <option value="patron">Patrón a bordo</option>
+                <option value="traslado">Traslado / delivery</option>
+                <option value="salida">Salida o charter</option>
+                <option value="otro">Otra consulta</option>
+              </select>
+            </div>
+            <span class="field-error" id="serviceError" aria-live="polite"></span>
+          </div>
+        </div>
 
-          <p class="form-note">
-            Los datos quedan solo acá. No se comparten con nadie ni se usan para
-            enviarte publicidad.
-          </p>
+        <div class="field">
+          <label class="field-label" for="message">Mensaje</label>
+          <textarea class="control" id="message" name="message" rows="5"
+                    placeholder="Barco, fecha tentativa y de dónde a dónde."
+                    required></textarea>
+          <span class="field-error" id="messageError" aria-live="polite"></span>
+        </div>
 
-          <div class="form-banner" id="formSuccess" hidden aria-live="polite"></div>
-          <div class="form-banner form-banner-error" id="formError" hidden aria-live="polite"></div>
-        </form>
-      </div>
+        <button class="btn btn-solid btn-submit" type="submit" id="submitBtn">
+          <span class="btn-text">Enviar consulta</span>
+        </button>
+
+        <p class="form-note">
+          Los datos quedan solo acá. No se comparten ni se usan para mandarte
+          publicidad.
+        </p>
+
+        <div class="form-banner" id="formSuccess" hidden aria-live="polite"></div>
+        <div class="form-banner form-banner-error" id="formError" hidden aria-live="polite"></div>
+      </form>
 
     </div>
   </div>
@@ -462,61 +505,34 @@
 <!-- =====================================================================
      PIE
 ====================================================================== -->
-<footer class="footer">
+<footer class="pie">
   <div class="container">
-    <div class="footer-grid">
-      <div>
-        <a href="#inicio" class="footer-logo">
-          {{ ui.mark('footer-mark') }}
-          <span class="footer-name">
-            {{ site.brand }}
-            <small>{{ site.role }}</small>
-          </span>
-        </a>
-        <p class="footer-tagline">{{ site.tagline }}</p>
-      </div>
+    {{ ui.mark('pie-mark') }}
+    <p class="pie-name">{{ site.brand }}</p>
+    <p class="pie-role">{{ site.role }} · {{ site.base_port }}</p>
 
-      <div>
-        <h2 class="footer-heading">Servicios</h2>
-        <ul class="footer-links">
-          <li><a href="#servicios">Patrón a bordo</a></li>
-          <li><a href="#servicios">Traslados</a></li>
-          <li><a href="#servicios">Salidas y charters</a></li>
-        </ul>
-      </div>
+    <ul class="pie-links">
+      <li><a href="#bitacora">Bitácora</a></li>
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#derrota">La derrota</a></li>
+      <li><a href="#galeria">Galería</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
 
-      <div>
-        <h2 class="footer-heading">El sitio</h2>
-        <ul class="footer-links">
-          <li><a href="#sobre-mi">Sobre mí</a></li>
-          <li><a href="#a-bordo">Cómo trabajo</a></li>
-          <li><a href="#galeria">Galería</a></li>
-          <li><a href="#contacto">Contacto</a></li>
-        </ul>
-      </div>
-
-      <div>
-        <h2 class="footer-heading">Seguime</h2>
-        <div class="footer-social">
-          <a class="social-icon" href="{{ site.instagram.url }}" target="_blank"
-             rel="noopener noreferrer" aria-label="Instagram">{{ ui.icon_instagram() }}</a>
-          <a class="social-icon" href="https://wa.me/{{ site.whatsapp.number }}" target="_blank"
-             rel="noopener noreferrer" aria-label="WhatsApp">{{ ui.icon_whatsapp() }}</a>
-          <a class="social-icon" href="mailto:{{ site.email }}"
-             aria-label="Email">{{ ui.icon_mail() }}</a>
-        </div>
-      </div>
+    <div class="pie-social">
+      <a href="https://wa.me/{{ site.whatsapp.number }}" target="_blank"
+         rel="noopener noreferrer" aria-label="WhatsApp">{{ ui.icon_whatsapp() }}</a>
+      <a href="mailto:{{ site.email }}" aria-label="Email">{{ ui.icon_mail() }}</a>
     </div>
 
-    <div class="footer-bottom">
-      <p>&copy; <span id="currentYear">2026</span> {{ site.brand }}. Todos los derechos reservados.</p>
-      <p>{{ site.base_port }}</p>
-    </div>
+    <p class="pie-bottom">
+      &copy; <span id="currentYear">2026</span> {{ site.brand }}. Todos los derechos reservados.
+    </p>
   </div>
 </footer>
 
-<a class="whatsapp-float" href="https://wa.me/{{ site.whatsapp.number }}" target="_blank"
-   rel="noopener noreferrer" aria-label="Escribir por WhatsApp">{{ ui.icon_whatsapp() }}</a>
+<a class="wa-tab" href="https://wa.me/{{ site.whatsapp.number }}" target="_blank"
+   rel="noopener noreferrer">{{ ui.icon_whatsapp() }} <span>WhatsApp</span></a>
 
 <script src="{{ asset('js/main.js') }}" defer></script>
 </body>

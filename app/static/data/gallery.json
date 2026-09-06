@@ -5,7 +5,7 @@
     "file": "hero.webp",
     "alt": "El capitán Nicolás Arias al timón",
     "caption": "Al timón, rumbo al río abierto",
-    "notes": "Horizontal, bien ancha (2400x1350 o más). Es el fondo de la portada: dejá aire arriba, el título va encima."
+    "notes": "Se recorta en círculo dentro del medallón de la portada: mandá una cuadrada o casi (1600x1600). Que el capitán no quede pegado al borde."
   },
   {
     "id": "retrato",
@@ -21,7 +21,7 @@
     "file": "servicio-patron.webp",
     "alt": "El capitán gobernando el yate durante una salida",
     "caption": "Patrón a bordo",
-    "notes": "Horizontal 4:3 (1200x900)."
+    "notes": "Se recorta en círculo (1200x1200)."
   },
   {
     "id": "servicio-traslado",
@@ -29,7 +29,7 @@
     "file": "servicio-traslado.webp",
     "alt": "Yate navegando en travesía de traslado",
     "caption": "Traslados de embarcaciones",
-    "notes": "Horizontal 4:3 (1200x900)."
+    "notes": "Se recorta en círculo (1200x1200)."
   },
   {
     "id": "servicio-salida",
@@ -37,7 +37,7 @@
     "file": "servicio-salida.webp",
     "alt": "Invitados a bordo durante una salida por el río",
     "caption": "Salidas y charters",
-    "notes": "Horizontal 4:3 (1200x900)."
+    "notes": "Se recorta en círculo (1200x1200)."
   },
   {
     "id": "galeria-01",

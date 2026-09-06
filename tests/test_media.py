@@ -72,8 +72,10 @@ def test_an_unknown_slot_is_none_rather_than_an_error(app_context: Any) -> None:
 
 def test_the_page_renders_a_placeholder_and_not_a_broken_image(client: Any) -> None:
     body = client.get("/").get_data(as_text=True)
-    assert "photo-pending" in body
-    assert "Foto en camino" in body
+    assert "shot-empty" in body
+    # The box carries the description of the photograph that belongs there —
+    # which is that photograph's alt text.
+    assert "Retrato del capitán Nicolás Arias a bordo" in body
     # Nothing points at a file that is not there. (The markup does name the
     # missing files, in an HTML comment for whoever has to supply them — what
     # must not appear is a src.)

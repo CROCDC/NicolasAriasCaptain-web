@@ -118,6 +118,14 @@ def create_app() -> Flask:
     app.jinja_env.globals["photos"] = lambda kind: media.photos(app, kind)
     app.jinja_env.globals["photo"] = lambda slot_id: media.photo(app, slot_id)
 
+    # The geometry the emblem motifs are drawn from: the graduated ring, the
+    # arc the lettering is set on, the gauge the figures are read off. Computed
+    # in Python because trigonometry in a template is unreadable and untestable.
+    from app.services import emblem
+    app.jinja_env.globals["bezel_ticks"] = emblem.bezel_ticks
+    app.jinja_env.globals["arc_path"] = emblem.arc_path
+    app.jinja_env.globals["gauge"] = emblem.gauge
+
     # --- Register routes inside app context ---
     with app.app_context():
         # Import models so SQLAlchemy is aware of them

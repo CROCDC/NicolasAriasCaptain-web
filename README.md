@@ -60,36 +60,51 @@ Detalle de tamaños y pesos: `app/static/assets/photos/README.md`.
 | `app/templates/index.html` | Los bloques marcados con `TODO copy` y `TODO datos`: la biografía real y la titulación exacta. |
 | `docker-compose.yml` | `VIRTUAL_HOST` / `LETSENCRYPT_HOST` con el dominio real. |
 | `app/static/assets/photos/` | Las fotos (ver arriba). |
-| `app/static/assets/favicon.svg` | Si se usa el emblema propio en lugar de la marca dibujada en CSS/SVG. |
+| `app/static/assets/favicon.svg` | Solo si más adelante se quiere otro ícono. |
 
-El logo circular ("Orza del Plata") no se copió: la marca del sitio —el
-`{{ ui.mark() }}` del navbar, el pie y el favicon— es un dibujo propio de la
-misma familia (arco, aguja, tres líneas de agua). Si el emblema real tiene que
-aparecer tal cual, se agrega como `app/static/assets/logo.svg` y se cambia esa
-macro por un `<img>`.
+El emblema que pasaste quedó **solo como inspiración**: no está en el sitio ni
+se lo nombra en ningún lado. La marca del sello, el pie y el favicon son un
+dibujo propio (aguja de cuatro puntas dentro de un anillo graduado).
 
 ---
 
 ## Identidad visual
 
-Deliberadamente distinta a la de Kailua: allá es un sitio oscuro con vidrio y
-curvas; acá es **papel y tinta**, como una carta náutica anotada.
+El punto de partida fue el emblema circular del capitán: **inspiración, no
+copia**. De ahí sale el vocabulario — un anillo graduado, una aguja, letras
+montadas sobre un arco, tres líneas de agua — y de ahí sale la gama, corrida a
+propósito para no repetir sus colores exactos.
+
+Todo el sitio está construido sobre esa idea: **una rosa de los vientos**.
 
 | Rol | Color |
 |---|---|
-| Papel | `#f4ecdd` / `#ece0cb` |
-| Tinta | `#142a3a` / `#0d1d29` |
-| Latón (acento) | `#c4902f` |
-| Acero (agua) | `#5d8ea9` |
+| Arena (fondo claro) | `#f0e7d5` / `#e5d9c2` |
+| Petróleo (fondo oscuro) | `#10333a` / `#0a2329` |
+| Cobre (el grabado) | `#b8762e` |
+| Vidrio de mar (el agua) | `#6a97a0` |
 
-Tipografías: **Marcellus** para títulos, **Karla** para texto.
+Tipografías: **Cinzel** para el sello y la numeración, **Fraunces** para los
+títulos, **Karla** para el texto.
 
-Marcas propias del diseño: el meridiano vertical con las coordenadas del puerto
-en la portada, la numeración romana de las secciones (I a V), las tres
-hairlines de estela en lugar de olas recortadas, el arco sobre el retrato y la
-grilla de carta apenas visible en el fondo.
+Qué hace que no se parezca a Kailua Sailing:
 
----
+- **Portada clara con un medallón**, no una foto oscura a pantalla completa con
+  parallax. La foto va *dentro* del anillo graduado, con el oficio escrito en
+  arco por encima.
+- **La barra no tiene links**: coordenadas, sello y una sola perilla. La
+  navegación es un **índice a pantalla completa** numerado en romanos, igual en
+  celular que en escritorio.
+- **Los servicios son entradas de ancho completo** que alternan lados, no tres
+  tarjetas en fila.
+- **Las cifras se leen sobre un arco graduado**, no en una fila de números
+  grandes.
+- **La galería es un riel que se desliza** con dos alturas sobre una misma
+  línea de base, no una grilla.
+- **El pie es un sello centrado**, no cuatro columnas de links.
+- La regla graduada que separa secciones, la marca de la aguja y las tres
+  líneas de agua se dibujan con la geometría de `app/services/emblem.py`, no
+  con números escritos a mano en un template.
 
 ## Estructura
 

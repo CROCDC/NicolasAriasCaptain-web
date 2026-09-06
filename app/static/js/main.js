@@ -1,10 +1,9 @@
 /**
  * Capitán Nicolás Arias — Main JavaScript
  *
- * Navbar state, mobile menu, smooth scrolling, scroll reveal, hero parallax,
- * scroll spy, the service links that preselect the form, and the contact form
- * itself. No framework and no dependencies: everything here is a few dozen
- * lines of DOM.
+ * The bar's stuck state, the full-screen index, smooth scrolling, the reveal,
+ * the links that preselect the form, the form itself. No framework and no
+ * dependencies: the whole file is DOM.
  */
 
 /* =========================================================================
@@ -42,61 +41,84 @@ function qsa(selector, context = document) {
 const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* =========================================================================
-   2. NAVBAR
+   2. THE BAR
    ========================================================================= */
-(function initNavbar() {
-  const navbar = qs('#navbar');
-  if (!navbar) return;
+(function initBar() {
+  const bar = qs('#bar');
+  if (!bar) return;
 
-  const THRESHOLD = 60; // px scrolled before the bar turns to paper
+  const THRESHOLD = 40; // px scrolled before the bar takes a ground of its own
 
   function update() {
-    navbar.classList.toggle('scrolled', window.scrollY > THRESHOLD);
+    bar.classList.toggle('stuck', window.scrollY > THRESHOLD);
   }
 
   requestAnimationFrame(update);
-  window.addEventListener('scroll', throttle(update, 50), { passive: true });
+  window.addEventListener('scroll', throttle(update, 60), { passive: true });
 })();
 
 /* =========================================================================
-   3. MOBILE MENU
+   3. THE INDEX — one full-screen overlay, at every width
    ========================================================================= */
-(function initMobileMenu() {
-  const hamburger = qs('#hamburger');
-  const navLinks = qs('#navLinks');
-  const overlay = qs('#mobileOverlay');
-  if (!hamburger || !navLinks || !overlay) return;
+// There is no row of links in the bar to fall back on, so this has to work:
+// focus is moved into the overlay, kept there while it is open, and handed
+// back to the button that opened it.
+(function initMenu() {
+  const menu = qs('#menu');
+  const openButton = qs('#menuOpen');
+  const closeButton = qs('#menuClose');
+  if (!menu || !openButton || !closeButton) return;
+
+  const focusable = () => qsa('a[href], button', menu);
 
   function open() {
-    hamburger.classList.add('open');
-    hamburger.setAttribute('aria-expanded', 'true');
-    hamburger.setAttribute('aria-label', 'Cerrar menú');
-    navLinks.classList.add('open');
-    overlay.style.display = 'block';
-    requestAnimationFrame(() => overlay.classList.add('visible'));
-    document.body.style.overflow = 'hidden';
+    menu.classList.add('open');
+    menu.setAttribute('aria-hidden', 'false');
+    openButton.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('menu-open');
+    closeButton.focus();
   }
 
-  function close() {
-    hamburger.classList.remove('open');
-    hamburger.setAttribute('aria-expanded', 'false');
-    hamburger.setAttribute('aria-label', 'Abrir menú');
-    navLinks.classList.remove('open');
-    overlay.classList.remove('visible');
-    document.body.style.overflow = '';
-    setTimeout(() => { overlay.style.display = 'none'; }, 400);
+  function close({ restoreFocus = true } = {}) {
+    menu.classList.remove('open');
+    menu.setAttribute('aria-hidden', 'true');
+    openButton.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('menu-open');
+    if (restoreFocus) openButton.focus();
   }
 
-  hamburger.addEventListener('click', () => {
-    navLinks.classList.contains('open') ? close() : open();
+  openButton.addEventListener('click', open);
+  closeButton.addEventListener('click', () => close());
+
+  // A section link closes the overlay and lets the smooth scroll take over,
+  // so focus goes to the page rather than back to the button.
+  qsa('.menu-link', menu).forEach((link) => {
+    link.addEventListener('click', () => close({ restoreFocus: false }));
   });
 
-  overlay.addEventListener('click', close);
-
-  qsa('.nav-link', navLinks).forEach((link) => link.addEventListener('click', close));
-
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && navLinks.classList.contains('open')) close();
+    if (!menu.classList.contains('open')) return;
+
+    if (event.key === 'Escape') {
+      close();
+      return;
+    }
+
+    if (event.key !== 'Tab') return;
+
+    const items = focusable();
+    if (!items.length) return;
+
+    const first = items[0];
+    const last = items[items.length - 1];
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
   });
 })();
 
@@ -104,7 +126,7 @@ const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').mat
    4. SMOOTH SCROLL
    ========================================================================= */
 (function initSmoothScroll() {
-  const NAV_OFFSET = 78; // the fixed navbar's height
+  const BAR_OFFSET = 64; // the fixed bar's height
 
   document.addEventListener('click', (event) => {
     const anchor = event.target.closest('a[href^="#"]');
@@ -117,19 +139,19 @@ const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').mat
     if (!target) return;
 
     event.preventDefault();
-    const top = target.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
+    const top = target.getBoundingClientRect().top + window.scrollY - BAR_OFFSET;
     window.scrollTo({ top, behavior: REDUCED_MOTION ? 'auto' : 'smooth' });
   });
 })();
 
 /* =========================================================================
-   5. SCROLL REVEAL
+   5. REVEAL ON SCROLL
    ========================================================================= */
-(function initScrollReveal() {
+(function initReveal() {
   const elements = qsa('.reveal');
   if (!elements.length) return;
 
-  // No IntersectionObserver (or no motion wanted): show everything at once
+  // No IntersectionObserver, or no motion wanted: show everything at once
   // rather than leave the page blank.
   if (!('IntersectionObserver' in window) || REDUCED_MOTION) {
     elements.forEach((el) => el.classList.add('visible'));
@@ -142,66 +164,34 @@ const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').mat
       entry.target.classList.add('visible');
       observer.unobserve(entry.target);
     });
-  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  }, { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
 
   elements.forEach((el) => observer.observe(el));
 })();
 
 /* =========================================================================
-   6. HERO PARALLAX
+   6. THE GALLERY RAIL
    ========================================================================= */
-(function initParallax() {
-  const heroBg = qs('#heroBg');
-  if (!heroBg || REDUCED_MOTION) return;
+// The rail scrolls natively; this only teaches it the arrow keys, because a
+// horizontal scroller that a keyboard cannot move is a gallery some people
+// simply cannot see.
+(function initRail() {
+  const rail = qs('#rail');
+  if (!rail) return;
 
-  let ticking = false;
-
-  function apply() {
-    const scrolled = window.scrollY;
-    if (scrolled < window.innerHeight) {
-      heroBg.style.transform = `translate3d(0, ${scrolled * 0.35}px, 0)`;
-    }
-    ticking = false;
-  }
-
-  window.addEventListener('scroll', () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(apply);
-  }, { passive: true });
+  rail.addEventListener('keydown', (event) => {
+    if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+    event.preventDefault();
+    const step = rail.clientWidth * 0.6;
+    rail.scrollBy({
+      left: event.key === 'ArrowRight' ? step : -step,
+      behavior: REDUCED_MOTION ? 'auto' : 'smooth',
+    });
+  });
 })();
 
 /* =========================================================================
-   7. SCROLL SPY
-   ========================================================================= */
-(function initScrollSpy() {
-  const sections = qsa('section[id], header[id]');
-  const links = qsa('.nav-link');
-  if (!sections.length || !links.length) return;
-
-  const OFFSET = 140;
-
-  function update() {
-    const y = window.scrollY + OFFSET;
-    let current = '';
-
-    sections.forEach((section) => {
-      if (y >= section.offsetTop && y < section.offsetTop + section.offsetHeight) {
-        current = section.id;
-      }
-    });
-
-    links.forEach((link) => {
-      link.classList.toggle('active', link.getAttribute('href') === `#${current}`);
-    });
-  }
-
-  requestAnimationFrame(update);
-  window.addEventListener('scroll', throttle(update, 120), { passive: true });
-})();
-
-/* =========================================================================
-   8. SERVICE LINKS PRESELECT THE FORM
+   7. SERVICE LINKS PRESELECT THE FORM
    ========================================================================= */
 // "Cotizar" under Traslados should land on a form that already says Traslado.
 // Somebody who has to choose the service twice is somebody who half fills the
@@ -219,7 +209,7 @@ const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').mat
 })();
 
 /* =========================================================================
-   9. CONTACT FORM
+   8. CONTACT FORM
    ========================================================================= */
 (function initContactForm() {
   const form = qs('#contactForm');
@@ -322,7 +312,7 @@ const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').mat
 })();
 
 /* =========================================================================
-   10. FOOTER YEAR
+   9. FOOTER YEAR
    ========================================================================= */
 (function initYear() {
   const target = qs('#currentYear');

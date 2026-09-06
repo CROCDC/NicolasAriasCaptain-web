@@ -20,7 +20,7 @@ def test_home_carries_the_captain_and_the_contact_form(client: Any) -> None:
     assert 'id="contactForm"' in body
     # The critical CSS is inlined rather than linked; a page that lost it would
     # still be 200 and would paint unstyled.
-    assert "--brass" in body
+    assert "--copper" in body
 
 
 def test_health_is_json_ok(client: Any) -> None:

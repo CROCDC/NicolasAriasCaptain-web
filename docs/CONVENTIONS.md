@@ -55,11 +55,16 @@ no altera tablas existentes — para eso está esa lista.
 ## Frontend
 
 - Variables CSS para todos los tokens de diseño; ningún color escrito a mano en una regla.
+- La geometría de los motivos (anillo graduado, arco de letras, indicador) sale
+  de `app/services/emblem.py`: trigonometría en un template no se lee ni se
+  testea.
 - `critical.css` va embebido en el `<head>`; el resto se carga asíncrono.
 - Sin jQuery ni frameworks. `fetch()` para los formularios, JSON de ida y de vuelta.
 - El estado inicial de las animaciones cuelga de la clase `js` en `<html>`: sin
   JavaScript la página se ve entera, nunca en blanco.
-- Breakpoints: 980 px (tablet), 900 px (menú móvil), 640 px (teléfono).
+- Breakpoints: 900 px (columnas a una sola), 720 px (barra compacta), 560 px (teléfono).
+- El índice es una capa a pantalla completa en todos los anchos: al abrirlo el
+  foco entra y queda atrapado adentro, y al cerrarlo vuelve al botón.
 
 ## Fotos
 

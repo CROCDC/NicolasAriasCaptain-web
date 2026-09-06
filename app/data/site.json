@@ -1,9 +1,9 @@
 {
   "brand": "Capitán Nicolás Arias",
-  "short_brand": "N. Arias",
+  "brand_short": "Nicolás Arias",
   "role": "Patrón de yates",
   "tagline": "El barco en manos de un patrón. El día, en las tuyas.",
-  "description": "Capitán Nicolás Arias — patrón de yates. Salidas, traslados de embarcaciones y patrón profesional a bordo en el Río de la Plata y el Delta.",
+  "description": "Nicolás Arias, patrón de yates. Patrón a bordo, traslados de embarcaciones y salidas por el Río de la Plata, el Delta y la costa atlántica.",
   "url": "https://capitannicolasarias.com.ar",
   "locale": "es_AR",
   "base_port": "San Isidro, Río de la Plata",
@@ -12,22 +12,16 @@
     "number": "5491100000000",
     "display": "+54 9 11 0000-0000"
   },
-  "instagram": {
-    "url": "https://www.instagram.com/",
-    "handle": "@capitannicolasarias"
-  },
   "stats": [
     { "number": "10+", "label": "Años en el agua" },
-    { "number": "40+", "label": "Traslados completados" },
-    { "number": "100%", "label": "Barcos entregados en tiempo" }
+    { "number": "40+", "label": "Traslados hechos" },
+    { "number": "100%", "label": "Entregas en fecha" }
   ],
   "placeholders": [
     "url",
     "email",
     "whatsapp.number",
     "whatsapp.display",
-    "instagram.url",
-    "instagram.handle",
     "stats"
   ]
 }

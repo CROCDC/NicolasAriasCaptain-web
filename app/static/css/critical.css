@@ -1,141 +1,113 @@
 /* =========================================================================
    Capitán Nicolás Arias — Critical CSS (inlined in <head>)
-   Everything above the fold: tokens, reset, layout, navbar, hero, motifs.
+   Tokens, reset, the bezel bar, the full-screen menu and the medallion hero.
 
-   Direction: a ship's log rather than a brochure. Warm paper for the reading
-   sections, deep ink for the ones that carry photographs, ochre brass for the
-   marks a hand would make on a chart, steel blue for water. The arc, the
-   needle and the three wave lines are an echo of the captain's emblem — the
-   same family of shapes, drawn differently and never traced.
+   The whole site is built on one idea: a compass card. A graduated ring, a
+   needle, lettering set on an arc, three bands of water, and figures read off
+   a gauge. Sand and petrol are the two grounds; copper is the engraving.
 
-   Paper #f4ecdd | Ink #142a3a | Brass #c4902f | Steel #5d8ea9
-   Type: Marcellus (display) | Karla (text)
+   Sand #f0e7d5 | Petrol #10333a | Copper #b8762e | Sea glass #6a97a0
+   Type: Cinzel (seal) | Fraunces (headlines) | Karla (text)
    ========================================================================= */
 
 /* -------------------------------------------------------------------------
-   1. CSS CUSTOM PROPERTIES
+   1. TOKENS
    ------------------------------------------------------------------------- */
 :root {
-  /* Paper family — the light half of the site */
-  --paper:        #f4ecdd;
-  --paper-warm:   #ece0cb;
-  --paper-deep:   #e2d3ba;
+  /* Sand — the light ground */
+  --sand:    #f0e7d5;
+  --sand-2:  #e5d9c2;
+  --sand-3:  #d7c8ab;
 
-  /* Ink family — the dark half */
-  --ink:          #142a3a;
-  --ink-deep:     #0d1d29;
-  --ink-soft:     #1e3d51;
-  --ink-line:     rgba(20, 42, 58, 0.16);
+  /* Petrol — the dark ground */
+  --petrol:      #10333a;
+  --petrol-deep: #0a2329;
+  --petrol-soft: #1c4a52;
 
-  /* Accents */
-  --brass:        #c4902f;
-  --brass-light:  #e0b463;
-  --brass-dark:   #9c6f1f;
-  --steel:        #5d8ea9;
-  --steel-deep:   #3f6f8a;
-  --steel-pale:   #a9c6d5;
+  /* Engraving and water */
+  --copper:       #b8762e;
+  --copper-light: #d59a5c;
+  --copper-deep:  #8c561e;
+  --seaglass:     #6a97a0;
+  --seaglass-pale:#a9c7ca;
+
+  /* A photograph that has not arrived is a grey box, and reads as one. */
+  --box:      #c6c3bd;
+  --box-line: #a8a49c;
+  --box-text: #454545;
 
   /* Text roles */
-  --text-on-paper:      #142a3a;
-  --text-on-paper-soft: rgba(20, 42, 58, 0.68);
-  --text-on-ink:        #f4ecdd;
-  --text-on-ink-soft:   rgba(244, 236, 221, 0.66);
+  --on-sand:        #12303a;
+  --on-sand-soft:   rgba(18, 48, 58, 0.66);
+  --on-sand-line:   rgba(18, 48, 58, 0.18);
+  --on-petrol:      #f0e7d5;
+  --on-petrol-soft: rgba(240, 231, 213, 0.66);
+  --on-petrol-line: rgba(240, 231, 213, 0.18);
 
-  /* Typography */
-  --font-display: 'Marcellus', 'Palatino Linotype', 'Book Antiqua', serif;
-  --font-text:    'Karla', 'Helvetica Neue', Arial, sans-serif;
+  /* Type */
+  --font-seal:  'Cinzel', 'Trajan Pro', Georgia, serif;
+  --font-head:  'Fraunces', 'Georgia', serif;
+  --font-text:  'Karla', 'Helvetica Neue', Arial, sans-serif;
 
-  /* Spacing */
-  --section-padding: clamp(84px, 10vw, 148px);
-  --container-max:   1160px;
+  /* Measure */
+  --bar-height:      64px;
+  --section-padding: clamp(76px, 9vw, 132px);
+  --container-max:   1140px;
   --container-pad:   clamp(20px, 5vw, 56px);
-  --nav-height:      78px;
 
-  /* Transitions */
-  --transition-fast: 0.2s ease;
-  --transition-mid:  0.4s ease;
-  --transition-slow: 0.8s cubic-bezier(0.22, 0.75, 0.25, 1);
-
-  /* Shadows — soft and warm, never a grey drop shadow on paper */
-  --shadow-paper: 0 18px 40px rgba(20, 42, 58, 0.12);
-  --shadow-ink:   0 20px 50px rgba(5, 14, 22, 0.45);
-
-  /* Corners: near-square. The one curve in the design is the arch. */
-  --radius-xs: 2px;
-  --radius-sm: 4px;
-  --arch:      52% 52% 6px 6px / 34% 34% 6px 6px;
+  /* Motion */
+  --fast: 0.2s ease;
+  --mid:  0.4s ease;
+  --slow: 0.85s cubic-bezier(0.2, 0.7, 0.25, 1);
 }
 
 /* -------------------------------------------------------------------------
-   2. RESET & BASE
+   2. RESET
    ------------------------------------------------------------------------- */
 *,
 *::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+*::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html {
-  scroll-behavior: smooth;
-  font-size: 16px;
-}
+html { font-size: 16px; scroll-behavior: smooth; }
 
 body {
-  background-color: var(--paper);
-  color: var(--text-on-paper);
+  background: var(--sand);
+  color: var(--on-sand);
   font-family: var(--font-text);
-  font-weight: 400;
   font-size: 1.0625rem;
-  line-height: 1.75;
+  line-height: 1.72;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-img,
-svg { display: block; max-width: 100%; }
+img, svg { display: block; max-width: 100%; }
 
-a {
-  color: inherit;
-  text-decoration: none;
-  transition: color var(--transition-fast);
-}
+a { color: inherit; text-decoration: none; transition: color var(--fast); }
 
 ul { list-style: none; }
 
-button {
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-family: inherit;
-}
+button { cursor: pointer; border: none; background: none; font-family: inherit; color: inherit; }
 
-input,
-textarea,
-select { font-family: var(--font-text); }
+input, textarea, select { font-family: var(--font-text); }
 
-:focus-visible {
-  outline: 2px solid var(--brass);
-  outline-offset: 3px;
-}
+:focus-visible { outline: 2px solid var(--copper); outline-offset: 3px; }
 
 .skip-link {
   position: absolute;
   left: -9999px;
   top: 0;
-  z-index: 2000;
+  z-index: 3000;
   padding: 0.8rem 1.4rem;
-  background: var(--brass);
-  color: var(--ink-deep);
+  background: var(--copper);
+  color: var(--petrol-deep);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
 }
 
 .skip-link:focus { left: 0; }
 
 /* -------------------------------------------------------------------------
-   3. LAYOUT
+   3. GROUNDS AND LAYOUT
    ------------------------------------------------------------------------- */
 .container {
   max-width: var(--container-max);
@@ -143,504 +115,390 @@ select { font-family: var(--font-text); }
   padding-inline: var(--container-pad);
 }
 
-.section {
+.band {
   position: relative;
   padding-block: var(--section-padding);
 }
 
-/* The two grounds. Sections alternate, and each one declares which it is —
-   there is no third background tone in the design. */
-.on-paper {
-  background-color: var(--paper);
-  color: var(--text-on-paper);
-}
+.band-sand   { background: var(--sand); color: var(--on-sand); }
+.band-sand-2 { background: var(--sand-2); color: var(--on-sand); }
+.band-petrol { background: var(--petrol); color: var(--on-petrol); }
 
-.on-paper-warm {
-  background-color: var(--paper-warm);
-  color: var(--text-on-paper);
-}
-
-.on-ink {
-  background-color: var(--ink);
-  color: var(--text-on-ink);
-}
-
-/* Faint chart grid, the paper's texture. Drawn rather than an image so it
-   costs nothing and scales to any screen. */
-.chart-grid::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.5;
+/* -------------------------------------------------------------------------
+   4. THE GRADUATED RULE
+   A ruler, not a border: it is the bezel unrolled, and it separates
+   everything the way the ring encloses everything.
+   ------------------------------------------------------------------------- */
+.gradrule {
+  height: 9px;
   background-image:
-    linear-gradient(var(--ink-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--ink-line) 1px, transparent 1px);
-  background-size: 64px 64px;
-  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000, transparent 75%);
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000, transparent 75%);
-}
-
-.on-ink.chart-grid::before {
-  background-image:
-    linear-gradient(rgba(244, 236, 221, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(244, 236, 221, 0.07) 1px, transparent 1px);
+    linear-gradient(to right, currentColor 1px, transparent 1px);
+  background-size: 12px 4px;
+  background-repeat: repeat-x;
+  background-position: 0 100%;
+  border-bottom: 1px solid currentColor;
+  opacity: 0.32;
 }
 
 /* -------------------------------------------------------------------------
-   4. SECTION CHROME — the log-book marks
+   5. SEAL TYPE — the small lettering that behaves like engraving
    ------------------------------------------------------------------------- */
-.section-mark {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  font-family: var(--font-text);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.34em;
-  text-transform: uppercase;
-  color: var(--brass-dark);
-  margin-bottom: 1.1rem;
-}
-
-.on-ink .section-mark { color: var(--brass-light); }
-
-.section-mark::after {
-  content: '';
-  flex: 0 0 56px;
-  height: 1px;
-  background: currentColor;
-  opacity: 0.55;
-}
-
-.section-numeral {
-  font-family: var(--font-display);
-  font-size: 0.95rem;
-  letter-spacing: 0.12em;
-}
-
-.section-title {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(2.05rem, 4.6vw, 3.3rem);
-  line-height: 1.14;
-  letter-spacing: 0.005em;
-}
-
-.section-title em {
-  font-style: italic;
-  color: var(--brass-dark);
-}
-
-.on-ink .section-title em { color: var(--brass-light); }
-
-.section-lead {
-  max-width: 58ch;
-  margin-top: 1.25rem;
-  color: var(--text-on-paper-soft);
-}
-
-.on-ink .section-lead { color: var(--text-on-ink-soft); }
-
-.section-header { margin-bottom: clamp(40px, 6vw, 76px); }
-
-/* The wake: three hairlines, tapering. Used where another site would put a
-   wave divider — an echo of the emblem's water, in one dimension. */
-.wake {
-  display: block;
-  width: 84px;
-  margin-block: 1.6rem;
-}
-
-.wake span {
-  display: block;
-  height: 1px;
-  background: var(--steel);
-  opacity: 0.9;
-}
-
-.wake span + span { margin-top: 5px; width: 68%; opacity: 0.6; }
-.wake span + span + span { width: 40%; opacity: 0.35; }
-
-.wake-center { margin-inline: auto; }
-.wake-center span { margin-inline: auto; }
-
-/* -------------------------------------------------------------------------
-   5. BUTTONS — squared, with a rule that draws itself on hover
-   ------------------------------------------------------------------------- */
-.btn {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.65rem;
-  padding: 0.95rem 1.9rem;
-  border-radius: var(--radius-xs);
-  font-family: var(--font-text);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  text-align: center;
-  transition: background-color var(--transition-fast), color var(--transition-fast),
-              border-color var(--transition-fast), transform var(--transition-fast);
-}
-
-.btn:hover { transform: translateY(-2px); }
-
-.btn-solid {
-  background: var(--brass);
-  color: var(--ink-deep);
-}
-
-.btn-solid:hover { background: var(--brass-light); }
-
-.btn-line {
-  border: 1px solid currentColor;
-  color: var(--text-on-paper);
-}
-
-.on-ink .btn-line,
-.hero .btn-line { color: var(--text-on-ink); }
-
-.btn-line:hover {
-  background: var(--brass);
-  border-color: var(--brass);
-  color: var(--ink-deep);
-}
-
-/* -------------------------------------------------------------------------
-   6. NAVBAR
-   ------------------------------------------------------------------------- */
-.navbar {
-  position: fixed;
-  inset: 0 0 auto 0;
-  z-index: 1000;
-  height: var(--nav-height);
-  display: flex;
-  align-items: center;
-  color: var(--text-on-ink);
-  transition: background-color var(--transition-mid), color var(--transition-mid),
-              box-shadow var(--transition-mid);
-}
-
-/* Past the hero the bar becomes paper, so it can be read over paper. */
-.navbar.scrolled {
-  background: rgba(244, 236, 221, 0.96);
-  backdrop-filter: blur(10px);
-  color: var(--text-on-paper);
-  box-shadow: 0 1px 0 var(--ink-line);
-}
-
-.nav-container {
-  width: 100%;
-  max-width: var(--container-max);
-  margin-inline: auto;
-  padding-inline: var(--container-pad);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-}
-
-.nav-logo {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-
-.nav-mark {
-  width: 38px;
-  height: 38px;
-  flex: 0 0 38px;
-  color: var(--brass);
-}
-
-.nav-logo-text {
-  font-family: var(--font-display);
-  font-size: 1.08rem;
-  line-height: 1.15;
-  letter-spacing: 0.04em;
-}
-
-.nav-logo-sub {
-  display: block;
-  font-family: var(--font-text);
-  font-size: 0.56rem;
-  font-weight: 700;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  opacity: 0.7;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 2.1rem;
-}
-
-.nav-link {
-  position: relative;
-  font-size: 0.74rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  opacity: 0.75;
-}
-
-.nav-link::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -7px;
-  width: 0;
-  height: 1px;
-  background: var(--brass);
-  transition: width var(--transition-mid);
-}
-
-.nav-link:hover,
-.nav-link.active { opacity: 1; }
-
-.nav-link:hover::after,
-.nav-link.active::after { width: 100%; }
-
-.nav-cta {
-  padding: 0.55rem 1.2rem;
-  border: 1px solid var(--brass);
-  color: var(--brass);
-  opacity: 1;
-}
-
-.nav-cta::after { display: none; }
-
-.nav-cta:hover {
-  background: var(--brass);
-  color: var(--ink-deep);
-}
-
-.hamburger {
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-  padding: 8px;
-}
-
-.hamburger-bar {
-  display: block;
-  width: 24px;
-  height: 2px;
-  background: currentColor;
-  transition: transform var(--transition-fast), opacity var(--transition-fast);
-}
-
-.hamburger.open .hamburger-bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.hamburger.open .hamburger-bar:nth-child(2) { opacity: 0; }
-.hamburger.open .hamburger-bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-.mobile-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 900;
-  background: rgba(13, 29, 41, 0.6);
-  opacity: 0;
-  transition: opacity var(--transition-mid);
-}
-
-.mobile-overlay.visible { opacity: 1; }
-
-/* -------------------------------------------------------------------------
-   7. HERO
-   ------------------------------------------------------------------------- */
-.hero {
-  position: relative;
-  min-height: 100svh;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  background: var(--ink-deep);
-  color: var(--text-on-ink);
-}
-
-.hero-bg {
-  position: absolute;
-  inset: -8% 0 0 0;
-  height: 112%;
-  background-size: cover;
-  background-position: center;
-  will-change: transform;
-}
-
-/* Until the photograph arrives: a painted horizon, not a grey box. Warm light
-   low on the right where the sun would be, cold water to the left. */
-.hero-bg-fallback {
-  background-image:
-    radial-gradient(ellipse 60% 42% at 74% 30%, rgba(196, 144, 47, 0.26), transparent 62%),
-    radial-gradient(ellipse 80% 55% at 18% 76%, rgba(93, 142, 169, 0.24), transparent 65%),
-    linear-gradient(178deg, #0b1926 0%, #142a3a 58%, #0d1d29 100%);
-}
-
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    100deg,
-    rgba(13, 29, 41, 0.86) 0%,
-    rgba(13, 29, 41, 0.62) 46%,
-    rgba(13, 29, 41, 0.42) 100%
-  );
-}
-
-.hero-content {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  max-width: var(--container-max);
-  margin-inline: auto;
-  padding-inline: var(--container-pad);
-  padding-block: calc(var(--nav-height) + 48px) 132px;
-}
-
-/* The meridian: a hairline down the left margin carrying the port's
-   coordinates, set vertically. The site's signature mark. */
-.hero-meridian {
-  position: absolute;
-  left: calc(var(--container-pad) - 26px);
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  z-index: 2;
-  color: rgba(244, 236, 221, 0.5);
-}
-
-.hero-meridian span {
-  writing-mode: vertical-rl;
-  font-size: 0.6rem;
-  font-weight: 700;
+.seal {
+  font-family: var(--font-seal);
+  font-size: 0.7rem;
+  font-weight: 600;
   letter-spacing: 0.32em;
   text-transform: uppercase;
 }
 
-.hero-meridian::before,
-.hero-meridian::after {
-  content: '';
-  width: 1px;
-  height: 54px;
-  background: linear-gradient(var(--brass), transparent);
+.seal-copper { color: var(--copper-deep); }
+
+.band-petrol .seal-copper { color: var(--copper-light); }
+
+.numeral {
+  font-family: var(--font-seal);
+  font-weight: 600;
+  letter-spacing: 0.14em;
 }
 
-.hero-meridian::after { background: linear-gradient(transparent, var(--brass)); }
-
-.hero-eyebrow {
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.36em;
-  text-transform: uppercase;
-  color: var(--brass-light);
-  margin-bottom: 1.4rem;
-}
-
-.hero-title {
-  font-family: var(--font-display);
+.headline {
+  font-family: var(--font-head);
   font-weight: 400;
-  font-size: clamp(2.7rem, 8.4vw, 5.2rem);
-  line-height: 1.04;
-  letter-spacing: 0.01em;
+  font-size: clamp(2rem, 4.4vw, 3.15rem);
+  line-height: 1.16;
+  letter-spacing: -0.01em;
 }
 
-.hero-title-line { display: block; }
+.headline em { font-style: italic; color: var(--copper-deep); }
 
-.hero-title-accent {
-  display: block;
-  font-style: italic;
-  color: var(--brass-light);
+.band-petrol .headline em { color: var(--copper-light); }
+
+.lead {
+  max-width: 56ch;
+  margin-top: 1.1rem;
+  color: var(--on-sand-soft);
 }
 
-.hero-role {
-  margin-top: 1.4rem;
+.band-petrol .lead { color: var(--on-petrol-soft); }
+
+/* -------------------------------------------------------------------------
+   6. BUTTONS
+   ------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1.8rem;
+  font-family: var(--font-seal);
   font-size: 0.72rem;
-  font-weight: 700;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  transition: background-color var(--fast), color var(--fast), border-color var(--fast);
+}
+
+.btn-solid { background: var(--copper); color: var(--sand); }
+.btn-solid:hover { background: var(--copper-deep); }
+
+.btn-line { border-color: currentColor; }
+.btn-line:hover { background: var(--copper); border-color: var(--copper); color: var(--sand); }
+
+.btn[disabled] { opacity: 0.6; cursor: progress; }
+
+/* -------------------------------------------------------------------------
+   7. THE BAR — a bezel strip, not a navigation bar
+   Coordinates on the left, the seal in the middle, one control on the right.
+   Every section link lives in the overlay the control opens.
+   ------------------------------------------------------------------------- */
+.bar {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 1000;
+  height: var(--bar-height);
+  display: flex;
+  align-items: center;
+  color: var(--on-sand);
+  transition: background-color var(--mid), color var(--mid), box-shadow var(--mid);
+}
+
+.bar-inner {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+}
+
+.bar.stuck {
+  background: rgba(240, 231, 213, 0.94);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 1px 0 var(--on-sand-line);
+}
+
+.bar-coords {
+  font-family: var(--font-seal);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  opacity: 0.7;
+}
+
+.bar-seal {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  justify-self: center;
+}
+
+.bar-mark { width: 30px; height: 30px; color: var(--copper); }
+
+.bar-name {
+  font-family: var(--font-seal);
+  font-size: 0.78rem;
+  font-weight: 600;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--steel-pale);
+  white-space: nowrap;
 }
 
-.hero-tagline {
-  max-width: 44ch;
-  margin-top: 1.6rem;
-  font-size: clamp(1.02rem, 2.1vw, 1.2rem);
-  color: var(--text-on-ink-soft);
+.bar-menu {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-family: var(--font-seal);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  padding: 0.5rem 0.2rem;
 }
 
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.9rem;
-  margin-top: 2.6rem;
-}
-
-/* The hero ends in three hairlines rather than a wave cut-out. */
-.hero-wake {
-  position: absolute;
-  inset: auto 0 42px 0;
-  z-index: 2;
-  display: flex;
+.bar-menu-bars {
+  display: inline-flex;
   flex-direction: column;
-  gap: 7px;
-  padding-inline: var(--container-pad);
-  pointer-events: none;
+  gap: 4px;
+  width: 22px;
 }
 
-.hero-wake i {
+.bar-menu-bars i {
   display: block;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(169, 198, 213, 0.55), transparent);
+  background: currentColor;
+  transition: transform var(--fast), opacity var(--fast);
 }
 
-.hero-wake i:nth-child(2) { width: 72%; }
-.hero-wake i:nth-child(3) { width: 46%; }
+.bar-menu-bars i:nth-child(2) { width: 70%; }
 
-.scroll-cue {
-  position: absolute;
-  left: 50%;
-  bottom: 16px;
-  z-index: 3;
-  transform: translateX(-50%);
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.3em;
+.bar-menu:hover .bar-menu-bars i:nth-child(2) { width: 100%; }
+
+/* -------------------------------------------------------------------------
+   8. THE MENU — full screen, numbered like a chart index
+   ------------------------------------------------------------------------- */
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  display: grid;
+  grid-template-rows: var(--bar-height) 1fr auto;
+  background: var(--petrol-deep);
+  color: var(--on-petrol);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--mid), visibility var(--mid);
+}
+
+.menu.open { opacity: 1; visibility: visible; }
+
+.menu-head {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  max-width: var(--container-max);
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+}
+
+.menu-close {
+  font-family: var(--font-seal);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: rgba(244, 236, 221, 0.55);
-  animation: cue-drift 2.6s ease-in-out infinite;
 }
 
-@keyframes cue-drift {
-  0%, 100% { transform: translate(-50%, 0); opacity: 0.55; }
-  50%      { transform: translate(-50%, 6px); opacity: 1; }
+.menu-list {
+  align-self: center;
+  max-width: var(--container-max);
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+}
+
+.menu-item { border-top: 1px solid var(--on-petrol-line); }
+
+.menu-item:last-child { border-bottom: 1px solid var(--on-petrol-line); }
+
+.menu-link {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(16px, 4vw, 40px);
+  padding-block: clamp(12px, 2.4vw, 22px);
+  font-family: var(--font-head);
+  font-size: clamp(1.6rem, 5.5vw, 3rem);
+  line-height: 1.1;
+  transition: color var(--fast), padding-left var(--mid);
+}
+
+.menu-link:hover { color: var(--copper-light); padding-left: 12px; }
+
+.menu-link .numeral {
+  font-size: 0.7rem;
+  opacity: 0.6;
+  letter-spacing: 0.2em;
+}
+
+.menu-foot {
+  max-width: var(--container-max);
+  width: 100%;
+  margin-inline: auto;
+  padding: 0 var(--container-pad) clamp(24px, 5vw, 48px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 2rem;
+  font-size: 0.85rem;
+  color: var(--on-petrol-soft);
+}
+
+.menu-foot a:hover { color: var(--copper-light); }
+
+body.menu-open { overflow: hidden; }
+
+/* -------------------------------------------------------------------------
+   9. THE PORTADA — a medallion on sand, centred
+   Deliberately light: the photograph is inside the ring rather than behind
+   the whole page.
+   ------------------------------------------------------------------------- */
+.portada {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+  padding: calc(var(--bar-height) + clamp(28px, 6vw, 64px)) var(--container-pad)
+           clamp(56px, 8vw, 96px);
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 34%, rgba(184, 118, 46, 0.10), transparent 70%),
+    var(--sand);
+  overflow: hidden;
+}
+
+.portada-arc {
+  width: min(400px, 82vw);
+  margin-bottom: clamp(-6px, -0.4vw, 0px);
+  color: var(--copper-deep);
+  font-family: var(--font-seal);
+  /* User units, not pixels: the viewBox is 68 wide, so the browser scales
+     these with the element. */
+  font-size: 2.85px;
+  font-weight: 600;
+  letter-spacing: 0.46px;
+  fill: currentColor;
+  text-transform: uppercase;
+}
+
+.medallion {
+  position: relative;
+  width: min(390px, 74vw);
+  aspect-ratio: 1;
+}
+
+.medallion-bezel {
+  position: absolute;
+  inset: 0;
+  color: var(--copper);
+}
+
+.medallion-window {
+  position: absolute;
+  inset: 14.5%;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.portada-name {
+  margin-top: clamp(24px, 4vw, 40px);
+  font-family: var(--font-head);
+  font-weight: 400;
+  font-size: clamp(2.4rem, 7.6vw, 4.6rem);
+  line-height: 1;
+  letter-spacing: -0.015em;
+}
+
+.portada-name em {
+  display: block;
+  font-style: italic;
+  color: var(--copper-deep);
+}
+
+/* Three open strokes of water, used wherever another site would cut a
+   wave-shaped hole between two sections. */
+.waterline { display: block; width: 100%; height: 26px; }
+
+.portada-rule {
+  width: min(320px, 70vw);
+  margin: clamp(18px, 3vw, 26px) auto;
+  color: var(--seaglass);
+}
+
+.portada-tagline {
+  max-width: 40ch;
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  color: var(--on-sand-soft);
+}
+
+.portada-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: clamp(26px, 4vw, 38px);
+}
+
+.portada-foot {
+  position: absolute;
+  inset: auto 0 clamp(14px, 2.4vw, 26px) 0;
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  font-family: var(--font-seal);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--on-sand-soft);
 }
 
 /* -------------------------------------------------------------------------
-   8. REVEAL ON SCROLL
+   10. REVEAL
+   Guarded by the `js` class the document sets before it paints: with no
+   JavaScript the page is simply finished, never blank.
    ------------------------------------------------------------------------- */
-/* Guarded by the `js` class the page sets on <html> before anything paints.
-   Without it the starting state never applies, so a browser that never runs
-   main.js — or one where it throws — shows a finished page rather than a blank
-   one. A reveal animation is not worth an invisible site. */
 .js .reveal {
   opacity: 0;
-  transform: translateY(22px);
-  transition: opacity var(--transition-slow), transform var(--transition-slow);
+  transform: translateY(18px);
+  transition: opacity var(--slow), transform var(--slow);
   transition-delay: var(--delay, 0s);
 }
 
-.js .reveal.visible {
-  opacity: 1;
-  transform: none;
-}
+.js .reveal.visible { opacity: 1; transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -655,36 +513,22 @@ select { font-family: var(--font-text); }
 }
 
 /* -------------------------------------------------------------------------
-   9. RESPONSIVE — navbar and hero
+   11. RESPONSIVE
    ------------------------------------------------------------------------- */
-@media (max-width: 900px) {
-  .hamburger { display: flex; }
+@media (max-width: 720px) {
+  .bar-inner { grid-template-columns: auto 1fr; }
 
-  .nav-links {
-    position: fixed;
-    inset: 0 0 0 auto;
-    z-index: 950;
-    width: min(320px, 84vw);
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 1.9rem;
-    padding: 2.2rem;
-    background: var(--ink);
-    color: var(--text-on-ink);
-    transform: translateX(100%);
-    transition: transform var(--transition-mid);
-  }
+  .bar-coords { display: none; }
 
-  .nav-links.open { transform: none; }
+  .bar-seal { justify-self: start; }
 
-  .nav-link { font-size: 0.9rem; opacity: 0.9; }
+  .bar-name { letter-spacing: 0.2em; font-size: 0.7rem; }
 
-  .hero-meridian { display: none; }
+  .portada-arc { margin-bottom: -16%; }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 420px) {
   body { font-size: 1rem; }
 
-  .hero-wake { bottom: 34px; }
+  .bar-menu span:not(.bar-menu-bars) { display: none; }
 }

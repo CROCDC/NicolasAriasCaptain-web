@@ -32,33 +32,53 @@ def test_no_horizontal_scroll_anywhere(
     assert _overflows(page) <= 1, f"{path} scrolls sideways at {name}"
 
 
-def test_the_hero_is_readable_on_a_phone(page: Any, live_server: str) -> None:
+def test_the_portada_is_readable_on_a_phone(page: Any, live_server: str) -> None:
     page.set_viewport_size({"width": 375, "height": 667})
     page.goto(live_server, wait_until="networkidle")
 
-    title = page.locator("h1.hero-title")
+    title = page.locator("h1.portada-name")
     assert title.is_visible()
     assert "Nicolás Arias" in title.inner_text()
     # The reveal animation must have run: a page whose content never becomes
     # visible is the failure mode this design is exposed to.
-    page.wait_for_selector("h1.hero-title.visible", timeout=5000)
+    page.wait_for_selector("h1.portada-name.visible", timeout=5000)
 
 
-def test_the_mobile_menu_opens_and_closes(page: Any, live_server: str) -> None:
-    page.set_viewport_size({"width": 375, "height": 667})
+@pytest.mark.parametrize("width,height", [(375, 667), (1280, 800)])
+def test_the_index_opens_and_closes_at_every_width(
+    page: Any, live_server: str, width: int, height: int
+) -> None:
+    # The bar carries no section links, so this overlay is the whole
+    # navigation — on a phone and on a desktop alike.
+    page.set_viewport_size({"width": width, "height": height})
     page.goto(live_server, wait_until="networkidle")
 
-    links = page.locator("#navLinks")
-    hamburger = page.locator("#hamburger")
-
-    hamburger.click()
-    page.wait_for_selector("#navLinks.open")
-    assert hamburger.get_attribute("aria-expanded") == "true"
+    opener = page.locator("#menuOpen")
+    opener.click()
+    page.wait_for_selector("#menu.open")
+    assert opener.get_attribute("aria-expanded") == "true"
+    assert page.locator("#menu .menu-link").first.is_visible()
 
     page.keyboard.press("Escape")
-    page.wait_for_selector("#navLinks:not(.open)")
-    assert hamburger.get_attribute("aria-expanded") == "false"
-    assert links.is_visible() is not None  # still in the DOM, just off-canvas
+    page.wait_for_selector("#menu:not(.open)")
+    assert opener.get_attribute("aria-expanded") == "false"
+
+
+def test_a_section_link_closes_the_index_and_goes_there(
+    page: Any, live_server: str
+) -> None:
+    page.goto(live_server, wait_until="networkidle")
+
+    page.locator("#menuOpen").click()
+    page.wait_for_selector("#menu.open")
+    page.locator('.menu-link[href="#servicios"]').click()
+
+    page.wait_for_selector("#menu:not(.open)")
+    page.wait_for_function(
+        "() => Math.abs(document.querySelector('#servicios')"
+        ".getBoundingClientRect().top) < 120",
+        timeout=5000,
+    )
 
 
 def test_a_service_link_preselects_the_form(page: Any, live_server: str) -> None:
