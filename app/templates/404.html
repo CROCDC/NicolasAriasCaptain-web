@@ -1,0 +1,25 @@
+{% import "_macros.html" as ui %}<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Fuera de rumbo — {{ site.brand }}</title>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='assets/favicon.svg') }}" />
+  <style>{{ critical_css }}</style>
+  <link rel="stylesheet" href="{{ asset('css/style-deferred.css') }}" />
+</head>
+<body>
+  <main class="lost">
+    <div>
+      {{ ui.mark('footer-mark') }}
+      <p class="lost-code">404</p>
+      <h1 class="lost-title">Esta página quedó fuera de la carta</h1>
+      <p class="lost-text">
+        El enlace no lleva a ningún puerto. Volvé al inicio y seguimos desde ahí.
+      </p>
+      <a class="btn btn-solid" href="{{ url_for('index') }}">Volver al inicio</a>
+    </div>
+  </main>
+</body>
+</html>

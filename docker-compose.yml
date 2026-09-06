@@ -1,0 +1,33 @@
+services:
+  app:
+    container_name: nicolas-arias-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      # TODO: replace with the real domain once it is registered and pointed here.
+      - VIRTUAL_HOST=capitannicolasarias.com.ar
+      - VIRTUAL_PORT=7003
+      - LETSENCRYPT_HOST=capitannicolasarias.com.ar
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL:-admin@pantech.solutions}
+      - DATABASE_URL=sqlite:////app/instance/arias.db
+      - SECRET_KEY=${SECRET_KEY}
+      - FLASK_ENV=production
+    ports:
+      - "7003:7003"
+    expose:
+      - "7003"
+    volumes:
+      - arias_db:/app/instance
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - com.github.nginxproxy.nginx-proxy.startup_wait=30
+
+volumes:
+  arias_db:
+
+networks:
+  proxy:
+    external: true

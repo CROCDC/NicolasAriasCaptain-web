@@ -1,0 +1,92 @@
+[
+  {
+    "id": "hero",
+    "kind": "hero",
+    "file": "hero.webp",
+    "alt": "El capitán Nicolás Arias al timón",
+    "caption": "Al timón, rumbo al río abierto",
+    "notes": "Horizontal, bien ancha (2400x1350 o más). Es el fondo de la portada: dejá aire arriba, el título va encima."
+  },
+  {
+    "id": "retrato",
+    "kind": "about",
+    "file": "retrato.webp",
+    "alt": "Retrato del capitán Nicolás Arias a bordo",
+    "caption": "Nicolás Arias, patrón de yates",
+    "notes": "Vertical (900x1200). Va en la columna de 'Sobre mí'."
+  },
+  {
+    "id": "servicio-patron",
+    "kind": "service",
+    "file": "servicio-patron.webp",
+    "alt": "El capitán gobernando el yate durante una salida",
+    "caption": "Patrón a bordo",
+    "notes": "Horizontal 4:3 (1200x900)."
+  },
+  {
+    "id": "servicio-traslado",
+    "kind": "service",
+    "file": "servicio-traslado.webp",
+    "alt": "Yate navegando en travesía de traslado",
+    "caption": "Traslados de embarcaciones",
+    "notes": "Horizontal 4:3 (1200x900)."
+  },
+  {
+    "id": "servicio-salida",
+    "kind": "service",
+    "file": "servicio-salida.webp",
+    "alt": "Invitados a bordo durante una salida por el río",
+    "caption": "Salidas y charters",
+    "notes": "Horizontal 4:3 (1200x900)."
+  },
+  {
+    "id": "galeria-01",
+    "kind": "gallery",
+    "file": "galeria-01.webp",
+    "alt": "Amanecer sobre el Río de la Plata desde cubierta",
+    "caption": "Amanecer sobre el Plata"
+  },
+  {
+    "id": "galeria-02",
+    "kind": "gallery",
+    "file": "galeria-02.webp",
+    "alt": "Velas desplegadas con viento del sur",
+    "caption": "Viento del sur"
+  },
+  {
+    "id": "galeria-03",
+    "kind": "gallery",
+    "file": "galeria-03.webp",
+    "alt": "Maniobra de amarre en el puerto de San Isidro",
+    "caption": "Amarre en San Isidro"
+  },
+  {
+    "id": "galeria-04",
+    "kind": "gallery",
+    "file": "galeria-04.webp",
+    "alt": "Canales del Delta vistos desde el yate",
+    "caption": "Canales del Delta"
+  },
+  {
+    "id": "galeria-05",
+    "kind": "gallery",
+    "file": "galeria-05.webp",
+    "alt": "Atardecer en el río con el barco fondeado",
+    "caption": "Fondeados al atardecer"
+  },
+  {
+    "id": "galeria-06",
+    "kind": "gallery",
+    "file": "galeria-06.webp",
+    "alt": "Navegación nocturna con luces de puerto al fondo",
+    "caption": "Navegación nocturna"
+  },
+  {
+    "id": "og",
+    "kind": "social",
+    "file": "og-image.jpg",
+    "alt": "Capitán Nicolás Arias — patrón de yates",
+    "caption": "Imagen para redes",
+    "notes": "1200x630 exactos. Es lo que se ve al compartir el link por WhatsApp."
+  }
+]

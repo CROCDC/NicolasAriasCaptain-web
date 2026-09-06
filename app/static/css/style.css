@@ -1,0 +1,13 @@
+/* =========================================================================
+   Capitán Nicolás Arias — Full stylesheet (no-JavaScript path only)
+
+   The page inlines critical.css and loads style-deferred.css asynchronously,
+   which needs JavaScript to swap the preload into a stylesheet. A browser with
+   JavaScript off gets this file from the <noscript> block instead.
+
+   It imports the same two files rather than repeating them: one stylesheet
+   that drifts from the other is the only way this can go wrong, so there is
+   nothing here to drift.
+   ========================================================================= */
+@import url('critical.css');
+@import url('style-deferred.css');

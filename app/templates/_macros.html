@@ -1,0 +1,84 @@
+{# =========================================================================
+   Shared markup fragments.
+
+   The brand mark and the photo frame both appear several times per page; the
+   mark also has to be identical in the navbar, the footer and the favicon, and
+   a photograph has to look the same whether or not the file has arrived yet.
+   Both are written once here.
+   ========================================================================= #}
+
+{# The mark: a needle over the horizon, inside a ring, with the water beneath.
+   Drawn from the same family of shapes as the captain's emblem — an arc, a
+   needle, three lines of water — but its own drawing: the needle is a slim
+   split diamond rather than a rose, the arc is open at the sides, and the
+   water is three strokes rather than a banner. #}
+{% macro mark(css_class='') -%}
+<svg class="{{ css_class }}" viewBox="0 0 64 64" fill="none" aria-hidden="true" focusable="false">
+  <circle cx="32" cy="32" r="29" stroke="currentColor" stroke-width="1.4" opacity="0.55"/>
+  <path d="M13 30a19 19 0 0 1 38 0" stroke="currentColor" stroke-width="2.6"
+        stroke-linecap="round"/>
+  <path d="M32 12v6M18.5 17.5l3.5 4.5M45.5 17.5 42 22" stroke="currentColor"
+        stroke-width="1.4" stroke-linecap="round" opacity="0.75"/>
+  <path d="M32 17 27 37h10L32 17Z" fill="currentColor" opacity="0.9"/>
+  <path d="M32 17v20" stroke="#fff" stroke-width="0.9" opacity="0.35"/>
+  <path d="M12 41c6.5 0 6.5 4 13 4s6.5-4 13-4 6.5 4 13 4" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" opacity="0.85"/>
+  <path d="M16 49c5.5 0 5.5 3.4 11 3.4s5.5-3.4 11-3.4 5.5 3.4 11 3.4" stroke="currentColor"
+        stroke-width="1.6" stroke-linecap="round" opacity="0.5"/>
+</svg>
+{%- endmacro %}
+
+{# A photo slot. Renders the photograph when its file is in
+   app/static/assets/photos/, and a finished-looking placeholder when it is
+   not — see app/services/media.py. `slot` is what photo()/photos() returns. #}
+{% macro frame(slot, ratio='landscape', arch=false, loading='lazy', sizes='') -%}
+<div class="frame frame-ratio-{{ ratio }}{% if arch %} frame-arch{% endif %}">
+  {%- if slot.available %}
+  <img src="{{ slot.url }}" alt="{{ slot.alt }}" loading="{{ loading }}"
+       decoding="async"{% if sizes %} sizes="{{ sizes }}"{% endif %} />
+  {%- else %}
+  <!-- Falta app/static/assets/photos/{{ slot.file }} -->
+  <div class="photo-pending" data-file="{{ slot.file }}">
+    <svg class="photo-pending-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <rect x="2.5" y="7.5" width="27" height="19" rx="2" stroke="currentColor"
+            stroke-width="1.4"/>
+      <circle cx="16" cy="17" r="6" stroke="currentColor" stroke-width="1.4"/>
+      <path d="M11 7.5 13 4h6l2 3.5" stroke="currentColor" stroke-width="1.4"
+            stroke-linejoin="round"/>
+    </svg>
+    <span class="photo-pending-label">Foto en camino</span>
+    <span class="photo-pending-caption">{{ slot.caption or slot.alt }}</span>
+  </div>
+  {%- endif %}
+</div>
+{%- endmacro %}
+
+{% macro icon_whatsapp() -%}
+<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+  <path d="M12.04 2C6.6 2 2.2 6.4 2.2 11.84c0 1.74.46 3.44 1.32 4.94L2.1 22l5.36-1.4a9.8 9.8
+           0 0 0 4.58 1.16h.01c5.43 0 9.84-4.4 9.84-9.84A9.78 9.78 0 0 0 12.04 2Zm0 17.93h-.01a8.2
+           8.2 0 0 1-4.16-1.14l-.3-.18-3.18.83.85-3.1-.2-.32a8.13 8.13 0 0 1-1.25-4.35c0-4.5
+           3.67-8.16 8.18-8.16a8.1 8.1 0 0 1 5.77 2.4 8.08 8.08 0 0 1 2.39 5.77c0 4.5-3.67
+           8.16-8.09 8.16Zm4.49-6.11c-.25-.13-1.45-.72-1.68-.8-.22-.08-.39-.12-.55.12-.16.25-.63.8-.77.96-.14.17-.28.19-.53.06a6.7
+           6.7 0 0 1-1.97-1.21 7.4 7.4 0 0 1-1.36-1.7c-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.44.12-.15.16-.25.25-.42.08-.17.04-.31-.02-.44-.06-.12-.55-1.33-.76-1.82-.2-.48-.4-.41-.55-.42h-.47c-.16
+           0-.42.06-.64.3-.22.25-.84.82-.84 2s.86 2.32.98 2.48c.12.17 1.7 2.6 4.12 3.64.58.25
+           1.03.4 1.38.51.58.19 1.1.16 1.52.1.46-.07 1.45-.6 1.65-1.17.2-.58.2-1.07.14-1.17-.06-.1-.22-.16-.47-.29Z"/>
+</svg>
+{%- endmacro %}
+
+{% macro icon_instagram() -%}
+<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+     stroke-width="1.6" aria-hidden="true">
+  <rect x="3" y="3" width="18" height="18" rx="5"/>
+  <circle cx="12" cy="12" r="4"/>
+  <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/>
+</svg>
+{%- endmacro %}
+
+{% macro icon_mail() -%}
+<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+     stroke-width="1.6" aria-hidden="true">
+  <rect x="2.5" y="5" width="19" height="14" rx="2"/>
+  <path d="m3 7 9 6 9-6"/>
+</svg>
+{%- endmacro %}

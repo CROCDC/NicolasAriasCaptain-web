@@ -1,0 +1,690 @@
+/* =========================================================================
+   Capitán Nicolás Arias — Critical CSS (inlined in <head>)
+   Everything above the fold: tokens, reset, layout, navbar, hero, motifs.
+
+   Direction: a ship's log rather than a brochure. Warm paper for the reading
+   sections, deep ink for the ones that carry photographs, ochre brass for the
+   marks a hand would make on a chart, steel blue for water. The arc, the
+   needle and the three wave lines are an echo of the captain's emblem — the
+   same family of shapes, drawn differently and never traced.
+
+   Paper #f4ecdd | Ink #142a3a | Brass #c4902f | Steel #5d8ea9
+   Type: Marcellus (display) | Karla (text)
+   ========================================================================= */
+
+/* -------------------------------------------------------------------------
+   1. CSS CUSTOM PROPERTIES
+   ------------------------------------------------------------------------- */
+:root {
+  /* Paper family — the light half of the site */
+  --paper:        #f4ecdd;
+  --paper-warm:   #ece0cb;
+  --paper-deep:   #e2d3ba;
+
+  /* Ink family — the dark half */
+  --ink:          #142a3a;
+  --ink-deep:     #0d1d29;
+  --ink-soft:     #1e3d51;
+  --ink-line:     rgba(20, 42, 58, 0.16);
+
+  /* Accents */
+  --brass:        #c4902f;
+  --brass-light:  #e0b463;
+  --brass-dark:   #9c6f1f;
+  --steel:        #5d8ea9;
+  --steel-deep:   #3f6f8a;
+  --steel-pale:   #a9c6d5;
+
+  /* Text roles */
+  --text-on-paper:      #142a3a;
+  --text-on-paper-soft: rgba(20, 42, 58, 0.68);
+  --text-on-ink:        #f4ecdd;
+  --text-on-ink-soft:   rgba(244, 236, 221, 0.66);
+
+  /* Typography */
+  --font-display: 'Marcellus', 'Palatino Linotype', 'Book Antiqua', serif;
+  --font-text:    'Karla', 'Helvetica Neue', Arial, sans-serif;
+
+  /* Spacing */
+  --section-padding: clamp(84px, 10vw, 148px);
+  --container-max:   1160px;
+  --container-pad:   clamp(20px, 5vw, 56px);
+  --nav-height:      78px;
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-mid:  0.4s ease;
+  --transition-slow: 0.8s cubic-bezier(0.22, 0.75, 0.25, 1);
+
+  /* Shadows — soft and warm, never a grey drop shadow on paper */
+  --shadow-paper: 0 18px 40px rgba(20, 42, 58, 0.12);
+  --shadow-ink:   0 20px 50px rgba(5, 14, 22, 0.45);
+
+  /* Corners: near-square. The one curve in the design is the arch. */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --arch:      52% 52% 6px 6px / 34% 34% 6px 6px;
+}
+
+/* -------------------------------------------------------------------------
+   2. RESET & BASE
+   ------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background-color: var(--paper);
+  color: var(--text-on-paper);
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img,
+svg { display: block; max-width: 100%; }
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+ul { list-style: none; }
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+input,
+textarea,
+select { font-family: var(--font-text); }
+
+:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 2000;
+  padding: 0.8rem 1.4rem;
+  background: var(--brass);
+  color: var(--ink-deep);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.skip-link:focus { left: 0; }
+
+/* -------------------------------------------------------------------------
+   3. LAYOUT
+   ------------------------------------------------------------------------- */
+.container {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+}
+
+.section {
+  position: relative;
+  padding-block: var(--section-padding);
+}
+
+/* The two grounds. Sections alternate, and each one declares which it is —
+   there is no third background tone in the design. */
+.on-paper {
+  background-color: var(--paper);
+  color: var(--text-on-paper);
+}
+
+.on-paper-warm {
+  background-color: var(--paper-warm);
+  color: var(--text-on-paper);
+}
+
+.on-ink {
+  background-color: var(--ink);
+  color: var(--text-on-ink);
+}
+
+/* Faint chart grid, the paper's texture. Drawn rather than an image so it
+   costs nothing and scales to any screen. */
+.chart-grid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image:
+    linear-gradient(var(--ink-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ink-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000, transparent 75%);
+}
+
+.on-ink.chart-grid::before {
+  background-image:
+    linear-gradient(rgba(244, 236, 221, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244, 236, 221, 0.07) 1px, transparent 1px);
+}
+
+/* -------------------------------------------------------------------------
+   4. SECTION CHROME — the log-book marks
+   ------------------------------------------------------------------------- */
+.section-mark {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  font-family: var(--font-text);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--brass-dark);
+  margin-bottom: 1.1rem;
+}
+
+.on-ink .section-mark { color: var(--brass-light); }
+
+.section-mark::after {
+  content: '';
+  flex: 0 0 56px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.55;
+}
+
+.section-numeral {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.05rem, 4.6vw, 3.3rem);
+  line-height: 1.14;
+  letter-spacing: 0.005em;
+}
+
+.section-title em {
+  font-style: italic;
+  color: var(--brass-dark);
+}
+
+.on-ink .section-title em { color: var(--brass-light); }
+
+.section-lead {
+  max-width: 58ch;
+  margin-top: 1.25rem;
+  color: var(--text-on-paper-soft);
+}
+
+.on-ink .section-lead { color: var(--text-on-ink-soft); }
+
+.section-header { margin-bottom: clamp(40px, 6vw, 76px); }
+
+/* The wake: three hairlines, tapering. Used where another site would put a
+   wave divider — an echo of the emblem's water, in one dimension. */
+.wake {
+  display: block;
+  width: 84px;
+  margin-block: 1.6rem;
+}
+
+.wake span {
+  display: block;
+  height: 1px;
+  background: var(--steel);
+  opacity: 0.9;
+}
+
+.wake span + span { margin-top: 5px; width: 68%; opacity: 0.6; }
+.wake span + span + span { width: 40%; opacity: 0.35; }
+
+.wake-center { margin-inline: auto; }
+.wake-center span { margin-inline: auto; }
+
+/* -------------------------------------------------------------------------
+   5. BUTTONS — squared, with a rule that draws itself on hover
+   ------------------------------------------------------------------------- */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.95rem 1.9rem;
+  border-radius: var(--radius-xs);
+  font-family: var(--font-text);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-align: center;
+  transition: background-color var(--transition-fast), color var(--transition-fast),
+              border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.btn:hover { transform: translateY(-2px); }
+
+.btn-solid {
+  background: var(--brass);
+  color: var(--ink-deep);
+}
+
+.btn-solid:hover { background: var(--brass-light); }
+
+.btn-line {
+  border: 1px solid currentColor;
+  color: var(--text-on-paper);
+}
+
+.on-ink .btn-line,
+.hero .btn-line { color: var(--text-on-ink); }
+
+.btn-line:hover {
+  background: var(--brass);
+  border-color: var(--brass);
+  color: var(--ink-deep);
+}
+
+/* -------------------------------------------------------------------------
+   6. NAVBAR
+   ------------------------------------------------------------------------- */
+.navbar {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 1000;
+  height: var(--nav-height);
+  display: flex;
+  align-items: center;
+  color: var(--text-on-ink);
+  transition: background-color var(--transition-mid), color var(--transition-mid),
+              box-shadow var(--transition-mid);
+}
+
+/* Past the hero the bar becomes paper, so it can be read over paper. */
+.navbar.scrolled {
+  background: rgba(244, 236, 221, 0.96);
+  backdrop-filter: blur(10px);
+  color: var(--text-on-paper);
+  box-shadow: 0 1px 0 var(--ink-line);
+}
+
+.nav-container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.nav-mark {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  color: var(--brass);
+}
+
+.nav-logo-text {
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  line-height: 1.15;
+  letter-spacing: 0.04em;
+}
+
+.nav-logo-sub {
+  display: block;
+  font-family: var(--font-text);
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2.1rem;
+}
+
+.nav-link {
+  position: relative;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -7px;
+  width: 0;
+  height: 1px;
+  background: var(--brass);
+  transition: width var(--transition-mid);
+}
+
+.nav-link:hover,
+.nav-link.active { opacity: 1; }
+
+.nav-link:hover::after,
+.nav-link.active::after { width: 100%; }
+
+.nav-cta {
+  padding: 0.55rem 1.2rem;
+  border: 1px solid var(--brass);
+  color: var(--brass);
+  opacity: 1;
+}
+
+.nav-cta::after { display: none; }
+
+.nav-cta:hover {
+  background: var(--brass);
+  color: var(--ink-deep);
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px;
+}
+
+.hamburger-bar {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: currentColor;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.hamburger.open .hamburger-bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open .hamburger-bar:nth-child(2) { opacity: 0; }
+.hamburger.open .hamburger-bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  background: rgba(13, 29, 41, 0.6);
+  opacity: 0;
+  transition: opacity var(--transition-mid);
+}
+
+.mobile-overlay.visible { opacity: 1; }
+
+/* -------------------------------------------------------------------------
+   7. HERO
+   ------------------------------------------------------------------------- */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: var(--ink-deep);
+  color: var(--text-on-ink);
+}
+
+.hero-bg {
+  position: absolute;
+  inset: -8% 0 0 0;
+  height: 112%;
+  background-size: cover;
+  background-position: center;
+  will-change: transform;
+}
+
+/* Until the photograph arrives: a painted horizon, not a grey box. Warm light
+   low on the right where the sun would be, cold water to the left. */
+.hero-bg-fallback {
+  background-image:
+    radial-gradient(ellipse 60% 42% at 74% 30%, rgba(196, 144, 47, 0.26), transparent 62%),
+    radial-gradient(ellipse 80% 55% at 18% 76%, rgba(93, 142, 169, 0.24), transparent 65%),
+    linear-gradient(178deg, #0b1926 0%, #142a3a 58%, #0d1d29 100%);
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    rgba(13, 29, 41, 0.86) 0%,
+    rgba(13, 29, 41, 0.62) 46%,
+    rgba(13, 29, 41, 0.42) 100%
+  );
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+  padding-block: calc(var(--nav-height) + 48px) 132px;
+}
+
+/* The meridian: a hairline down the left margin carrying the port's
+   coordinates, set vertically. The site's signature mark. */
+.hero-meridian {
+  position: absolute;
+  left: calc(var(--container-pad) - 26px);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  z-index: 2;
+  color: rgba(244, 236, 221, 0.5);
+}
+
+.hero-meridian span {
+  writing-mode: vertical-rl;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+}
+
+.hero-meridian::before,
+.hero-meridian::after {
+  content: '';
+  width: 1px;
+  height: 54px;
+  background: linear-gradient(var(--brass), transparent);
+}
+
+.hero-meridian::after { background: linear-gradient(transparent, var(--brass)); }
+
+.hero-eyebrow {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--brass-light);
+  margin-bottom: 1.4rem;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.7rem, 8.4vw, 5.2rem);
+  line-height: 1.04;
+  letter-spacing: 0.01em;
+}
+
+.hero-title-line { display: block; }
+
+.hero-title-accent {
+  display: block;
+  font-style: italic;
+  color: var(--brass-light);
+}
+
+.hero-role {
+  margin-top: 1.4rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--steel-pale);
+}
+
+.hero-tagline {
+  max-width: 44ch;
+  margin-top: 1.6rem;
+  font-size: clamp(1.02rem, 2.1vw, 1.2rem);
+  color: var(--text-on-ink-soft);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 2.6rem;
+}
+
+/* The hero ends in three hairlines rather than a wave cut-out. */
+.hero-wake {
+  position: absolute;
+  inset: auto 0 42px 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding-inline: var(--container-pad);
+  pointer-events: none;
+}
+
+.hero-wake i {
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(169, 198, 213, 0.55), transparent);
+}
+
+.hero-wake i:nth-child(2) { width: 72%; }
+.hero-wake i:nth-child(3) { width: 46%; }
+
+.scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  z-index: 3;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(244, 236, 221, 0.55);
+  animation: cue-drift 2.6s ease-in-out infinite;
+}
+
+@keyframes cue-drift {
+  0%, 100% { transform: translate(-50%, 0); opacity: 0.55; }
+  50%      { transform: translate(-50%, 6px); opacity: 1; }
+}
+
+/* -------------------------------------------------------------------------
+   8. REVEAL ON SCROLL
+   ------------------------------------------------------------------------- */
+/* Guarded by the `js` class the page sets on <html> before anything paints.
+   Without it the starting state never applies, so a browser that never runs
+   main.js — or one where it throws — shows a finished page rather than a blank
+   one. A reveal animation is not worth an invisible site. */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity var(--transition-slow), transform var(--transition-slow);
+  transition-delay: var(--delay, 0s);
+}
+
+.js .reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .js .reveal { opacity: 1; transform: none; }
+}
+
+/* -------------------------------------------------------------------------
+   9. RESPONSIVE — navbar and hero
+   ------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .hamburger { display: flex; }
+
+  .nav-links {
+    position: fixed;
+    inset: 0 0 0 auto;
+    z-index: 950;
+    width: min(320px, 84vw);
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 1.9rem;
+    padding: 2.2rem;
+    background: var(--ink);
+    color: var(--text-on-ink);
+    transform: translateX(100%);
+    transition: transform var(--transition-mid);
+  }
+
+  .nav-links.open { transform: none; }
+
+  .nav-link { font-size: 0.9rem; opacity: 0.9; }
+
+  .hero-meridian { display: none; }
+}
+
+@media (max-width: 560px) {
+  body { font-size: 1rem; }
+
+  .hero-wake { bottom: 34px; }
+}

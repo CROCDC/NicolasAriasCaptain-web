@@ -1,0 +1,111 @@
+# =====================================================================
+# Python
+# =====================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.env.local
+.env.production
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+wheels/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# What a failed visual comparison leaves behind for a human to look at; the
+# committed baseline it differs from is the file worth keeping.
+tests/screenshots/**/*.actual.png
+
+# Unit test / coverage reports
+.tox/
+.coverage
+.coverage.*
+.cache
+htmlcov/
+.pytest_cache/
+coverage.xml
+*.cover
+
+# MyPy / type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# =====================================================================
+# Flask / SQLAlchemy
+# =====================================================================
+instance/
+*.db
+*.sqlite
+*.sqlite3
+flask_session/
+
+# =====================================================================
+# Environment files
+# =====================================================================
+.env
+.env.*
+!.env.example
+
+# =====================================================================
+# IDEs & Editors
+# =====================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*~
+**/.DS_Store
+.DS_Store
+Thumbs.db
+
+# =====================================================================
+# Node / Frontend tooling (if added later)
+# =====================================================================
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.npm
+
+# =====================================================================
+# Docker
+# =====================================================================
+.docker/
+
+# =====================================================================
+# Misc
+# =====================================================================
+*.log
+*.pid
+*.seed
+*.bak
+*.tmp
+
+# =====================================================================
+# Photographs
+# =====================================================================
+# The captain's own photographs are dropped into app/static/assets/photos/
+# and are committed on purpose — the manifest in
+# app/static/data/gallery.json is what says which ones the site expects.
+# Only the working files that come with a camera are kept out.
+app/static/assets/photos/*.psd
+app/static/assets/photos/*.CR2
+app/static/assets/photos/*.NEF
+app/static/assets/photos/*.dng
+app/static/assets/photos/originals/
