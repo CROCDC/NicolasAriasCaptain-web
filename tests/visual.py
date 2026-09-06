@@ -50,8 +50,17 @@ MAX_CHANGED = 0.002
 #: layout change still moves the patch and still fails.
 DYNAMIC = ["#currentYear"]
 
-#: Hosts the shots must not depend on. See the module docstring.
-BLOCKED = ["**://fonts.googleapis.com/**", "**://fonts.gstatic.com/**"]
+#: Hosts the shots must not depend on. See the module docstring. The shared
+#: Next Tech footer is one of them: it is a remote Web Component that adds 62px
+#: to the page when it renders, so an unreachable nexttech.com.ar would fail the
+#: size assertion rather than the layout. Blocking it reproduces exactly what
+#: that outage looks like in production — the footer does not render, nothing
+#: else moves — and leaves how it *looks* to a human, same as the web fonts.
+BLOCKED = [
+    "**://fonts.googleapis.com/**",
+    "**://fonts.gstatic.com/**",
+    "**://nexttech.com.ar/**",
+]
 
 _STILL = """
 *, *::before, *::after {

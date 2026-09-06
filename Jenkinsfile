@@ -66,9 +66,37 @@ pipeline {
       }
     }
 
+    // Secrets reach the container only here, as environment for the `up`:
+    // SECRET_KEY signs the session cookie and lives in Infisical, so an
+    // unparameterised build (INFISICAL_PROJECT_ID empty) would start the site
+    // with an empty signing key rather than fail — hence the explicit guard.
     stage('Deploy') {
       steps {
-        sh "docker compose -f ${COMPOSE_FILE} up -d --remove-orphans"
+        script {
+          def projectId = params.INFISICAL_PROJECT_ID?.trim()
+          if (projectId) {
+            withCredentials([
+              string(credentialsId: 'infisical-client-id',     variable: 'INFISICAL_CLIENT_ID'),
+              string(credentialsId: 'infisical-client-secret', variable: 'INFISICAL_CLIENT_SECRET')
+            ]) {
+              sh """
+                INFISICAL_TOKEN=\$(INFISICAL_DISABLE_UPDATE_CHECK=true \
+                  infisical login --method=universal-auth \
+                    --client-id="\$INFISICAL_CLIENT_ID" \
+                    --client-secret="\$INFISICAL_CLIENT_SECRET" \
+                    --domain=https://infisical.nexttech.com.ar \
+                    --plain --silent)
+                INFISICAL_DISABLE_UPDATE_CHECK=true \
+                INFISICAL_TOKEN="\$INFISICAL_TOKEN" \
+                infisical run --env prod --projectId ${projectId} \
+                  --domain=https://infisical.nexttech.com.ar \
+                  -- docker compose -f ${COMPOSE_FILE} up -d --remove-orphans
+              """
+            }
+          } else {
+            error("INFISICAL_PROJECT_ID is empty — refusing to deploy without SECRET_KEY.")
+          }
+        }
       }
     }
 
@@ -78,7 +106,7 @@ pipeline {
       steps {
         sh """
           for attempt in 1 2 3 4 5 6 7 8 9 10; do
-            if curl -fsS http://localhost:7003/health > /dev/null; then
+            if curl -fsS http://localhost:7000/health > /dev/null; then
               echo "healthy"
               exit 0
             fi

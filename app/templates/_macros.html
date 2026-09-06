@@ -125,3 +125,10 @@
   <path d="m3 7 9 6 9-6"/>
 </svg>
 {%- endmacro %}
+
+{% macro analytics() -%}
+{%- if config.UMAMI_WEBSITE_ID %}
+<script async src="https://analytics.nexttech.com.ar/script.js"
+        data-website-id="{{ config.UMAMI_WEBSITE_ID }}"></script>
+{%- endif %}
+{%- endmacro %}

@@ -64,6 +64,9 @@ def create_app() -> Flask:
         app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
             "connect_args": {"timeout": 30},
         }
+    # Public identifier: it is rendered into the page, so it is configuration
+    # rather than a secret. Unset means the tracking script is simply not emitted.
+    app.config["UMAMI_WEBSITE_ID"] = os.getenv("UMAMI_WEBSITE_ID")
     app.config["COMPRESS_ALGORITHM"] = "gzip"
     app.config["COMPRESS_MIN_SIZE"] = 500
 

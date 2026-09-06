@@ -1,22 +1,29 @@
+# Pinned so the project (and therefore the arias_db volume holding the contact
+# form's SQLite file) keeps its name regardless of the checkout directory,
+# which on the Pi is a Jenkins workspace path.
+name: nicolas-arias-web
+
 services:
   app:
-    container_name: nicolas-arias-app
+    container_name: nicolas-arias-web-app
     build:
       context: .
       dockerfile: Dockerfile
     environment:
-      # TODO: replace with the real domain once it is registered and pointed here.
-      - VIRTUAL_HOST=capitannicolasarias.com.ar
-      - VIRTUAL_PORT=7003
-      - LETSENCRYPT_HOST=capitannicolasarias.com.ar
-      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL:-admin@pantech.solutions}
+      # TLS terminates at the Cloudflare Tunnel, so there is no LETSENCRYPT_*
+      # here: nginx-proxy only has to route the host to this container.
+      - VIRTUAL_HOST=nicolasarias.nexttech.com.ar
+      - VIRTUAL_PORT=7000
       - DATABASE_URL=sqlite:////app/instance/arias.db
       - SECRET_KEY=${SECRET_KEY}
+      # Public by design — it ships inside the page, so it is a plain value and
+      # deliberately not an Infisical secret.
+      - UMAMI_WEBSITE_ID=47f4836b-a82e-421b-a144-6c7623b41354
       - FLASK_ENV=production
     ports:
-      - "7003:7003"
+      - "7000:7000"
     expose:
-      - "7003"
+      - "7000"
     volumes:
       - arias_db:/app/instance
     restart: unless-stopped
@@ -24,6 +31,22 @@ services:
       - proxy
     labels:
       - com.github.nginxproxy.nginx-proxy.startup_wait=30
+
+  # The config is baked into the image rather than bind-mounted: Jenkins checks
+  # the repo out into a named volume, so a ./promtail.yml mount resolves to
+  # nothing on the host daemon and Docker creates a directory in its place.
+  promtail:
+    build:
+      context: .
+      dockerfile: Dockerfile.promtail
+    image: nicolas-arias-web-promtail
+    container_name: nicolas-arias-web-promtail
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    networks:
+      - proxy
 
 volumes:
   arias_db:
