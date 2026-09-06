@@ -92,6 +92,32 @@ def test_the_open_index_matches_the_baseline(
     visual.compare(page, browser_instance, f"menu-{name}", full_page=False)
 
 
+#: Below this much pixel variation an element is a flat rectangle rather than a
+#: photograph. The blank boxes this exists to catch measure under 3; the
+#: photographs measure 40 and up, so the gap is not a close call.
+MIN_TEXTURE = 10
+
+
+def test_every_photograph_actually_paints(shot_page: Any) -> None:
+    """A loaded photograph is not a painted one, and a baseline cannot tell.
+
+    While the shot was missing its decode step every photograph came out as an
+    empty box; the baseline recorded the empty boxes and then matched them, run
+    after run, green the whole time. A baseline can only compare a picture to
+    an older picture of the same mistake — so this one asserts against the page
+    itself: whatever ``<img>`` the page renders has to carry an actual image.
+    """
+    page = shot_page("/", 1280, 720)
+    visual.settle(page)
+
+    blank = [
+        (element.get_attribute("src") or "?").rsplit("/", 1)[-1]
+        for element in page.query_selector_all("img")
+        if visual.texture(element.screenshot()) < MIN_TEXTURE
+    ]
+    assert not blank, f"rendered as flat boxes instead of photographs: {blank}"
+
+
 def test_the_baseline_is_not_empty() -> None:
     """A deleted baseline directory has to fail, not quietly pass.
 
