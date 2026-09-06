@@ -4,13 +4,13 @@
   "role": "Patrón de yates",
   "tagline": "El barco en manos de un patrón. El día, en las tuyas.",
   "description": "Nicolás Arias, patrón de yates. Patrón a bordo, traslados de embarcaciones y salidas por el Río de la Plata, el Delta y la costa atlántica.",
-  "url": "https://capitannicolasarias.com.ar",
+  "url": "https://nicolasarias.nexttech.com.ar",
   "locale": "es_AR",
   "base_port": "San Isidro, Río de la Plata",
   "email": "contacto@capitannicolasarias.com.ar",
   "whatsapp": {
-    "number": "5491100000000",
-    "display": "+54 9 11 0000-0000"
+    "number": "5491144090678",
+    "display": "+54 9 11 4409-0678"
   },
   "stats": [
     { "number": "10+", "label": "Años en el agua" },
@@ -18,10 +18,7 @@
     { "number": "100%", "label": "Entregas en fecha" }
   ],
   "placeholders": [
-    "url",
     "email",
-    "whatsapp.number",
-    "whatsapp.display",
     "stats"
   ]
 }

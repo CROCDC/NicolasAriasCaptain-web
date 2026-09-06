@@ -28,12 +28,13 @@ that is the whole point of a baseline.
 
 from __future__ import annotations
 
+import io
 import os
 import pathlib
 import sys
 from typing import Any
 
-from PIL import Image, ImageChops
+from PIL import Image, ImageChops, ImageStat
 
 #: Where the committed sets live, one directory per renderer.
 BASELINE_ROOT = pathlib.Path(__file__).parent / "screenshots"
@@ -50,8 +51,17 @@ MAX_CHANGED = 0.002
 #: layout change still moves the patch and still fails.
 DYNAMIC = ["#currentYear"]
 
-#: Hosts the shots must not depend on. See the module docstring.
-BLOCKED = ["**://fonts.googleapis.com/**", "**://fonts.gstatic.com/**"]
+#: Hosts the shots must not depend on. See the module docstring. The shared
+#: Next Tech footer is one of them: it is a remote Web Component that adds 62px
+#: to the page when it renders, so an unreachable nexttech.com.ar would fail the
+#: size assertion rather than the layout. Blocking it reproduces exactly what
+#: that outage looks like in production — the footer does not render, nothing
+#: else moves — and leaves how it *looks* to a human, same as the web fonts.
+BLOCKED = [
+    "**://fonts.googleapis.com/**",
+    "**://fonts.gstatic.com/**",
+    "**://nexttech.com.ar/**",
+]
 
 _STILL = """
 *, *::before, *::after {
@@ -64,6 +74,17 @@ _STILL = """
 }
 .reveal { opacity: 1 !important; transform: none !important; }
 """
+
+
+def texture(shot_bytes: bytes) -> float:
+    """How much a shot varies pixel to pixel.
+
+    A photograph is textured; a box that failed to paint is one flat colour.
+    Used to assert against the page itself, where a baseline can only ever
+    compare a picture to an older picture of the same mistake.
+    """
+    image = Image.open(io.BytesIO(shot_bytes)).convert("L")
+    return ImageStat.Stat(image).stddev[0]
 
 
 def renderer_name(browser: Any) -> str:
@@ -89,19 +110,38 @@ def block_web_fonts(page: Any) -> None:
 
 
 def settle(page: Any) -> None:
-    """Stop everything that moves, and let what already started finish.
+    """Stop everything that moves, and let every photograph finish arriving.
 
     The stylesheet handles animation and transition; the reveal is also forced
     on directly, because an element the observer has not reached yet is
-    transparent by class rather than by transition. Scrolling to the bottom and
-    back is what makes any lazy-loaded image load before the shot is taken.
+    transparent by class rather than by transition.
+
+    Getting the photographs into the shot takes three separate things, and
+    missing any one of them yields a baseline full of empty boxes — which then
+    passes forever, because it is compared against itself:
+
+    * The rail scrolls sideways, so its images never enter the viewport and a
+      lazy one is never fetched. Every image is made eager instead.
+    * ``complete`` has to be awaited, or the shot races the download.
+    * The tags carry ``decoding="async"``, so a loaded image is still not a
+      painted one; a full-page capture renders nothing for it until it has
+      been decoded. ``decode()`` is what actually puts the photograph on the
+      page, and it is the step whose absence is hardest to notice.
     """
     page.add_style_tag(content=_STILL)
     page.evaluate("""() => {
       document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+      document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+        img.loading = 'eager';
+      });
       window.scrollTo(0, document.body.scrollHeight);
     }""")
-    page.wait_for_timeout(250)
+    page.wait_for_function(
+        "() => Array.from(document.images).every(img => img.complete)",
+        timeout=15000)
+    page.evaluate(
+        "() => Promise.all(Array.from(document.images)"
+        ".map(img => img.decode().catch(() => {})))")
     page.evaluate("() => window.scrollTo(0, 0)")
     page.wait_for_timeout(250)
 

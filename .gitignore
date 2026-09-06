@@ -110,3 +110,7 @@ app/static/assets/photos/*.CR2
 app/static/assets/photos/*.NEF
 app/static/assets/photos/*.dng
 app/static/assets/photos/originals/
+
+# Instagram content dumps (source material, not code)
+instagram-*/
+curacion/

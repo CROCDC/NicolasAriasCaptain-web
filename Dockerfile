@@ -34,6 +34,6 @@ ENV PYTHONUNBUFFERED=1
 
 RUN mkdir -p /app/instance
 
-EXPOSE 7003
+EXPOSE 7000
 
-CMD ["gunicorn", "--bind", "0.0.0.0:7003", "--timeout", "120", "--workers", "2", "run:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:7000", "--timeout", "120", "--workers", "2", "run:app"]

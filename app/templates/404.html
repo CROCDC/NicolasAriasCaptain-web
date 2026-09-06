@@ -8,6 +8,7 @@
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='assets/favicon.svg') }}" />
   <style>{{ critical_css }}</style>
   <link rel="stylesheet" href="{{ asset('css/style-deferred.css') }}" />
+  {{ ui.analytics() }}
 </head>
 <body>
   <main class="lost">
