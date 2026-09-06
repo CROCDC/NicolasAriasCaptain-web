@@ -22,8 +22,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      # Chromium, not Firefox: the committed visual baseline in
+      # tests/screenshots/linux-chromium/ is what this run has to compare
+      # against, and a baseline is per browser. A renderer with no committed
+      # set writes one and skips, which would leave the layout unchecked here.
       - name: Install the browser the suite drives
-        run: python -m playwright install --with-deps firefox
+        run: python -m playwright install --with-deps chromium
 
       - name: Lint
         run: pycodestyle app/ tests/ scripts/ run.py --max-line-length=100

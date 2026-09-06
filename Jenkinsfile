@@ -44,6 +44,13 @@ pipeline {
     // deployed: a failure here has to leave the running site alone. The
     // container is a throwaway off that image and shares nothing with
     // production — no ports, no database volume, no secrets.
+    //
+    // The image drives Firefox, and the committed visual baseline is
+    // Chromium's, so the screenshot comparisons write a Firefox set and skip
+    // rather than compare against another browser's pixels. Committing
+    // tests/screenshots/linux-firefox/ from a run of this image is what turns
+    // them on here; the layout is checked in GitHub Actions meanwhile, which
+    // installs Chromium for exactly that reason.
     stage('Tests') {
       steps {
         sh """

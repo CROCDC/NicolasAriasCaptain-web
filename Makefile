@@ -24,6 +24,7 @@ help:
 	@echo "  make test       Run the whole test suite"
 	@echo "  make test-fast  Everything except the browser tests"
 	@echo "  make browser    Install the Playwright browser the suite drives"
+	@echo "  make screenshots Rewrite the visual baseline for this renderer"
 	@echo "  make photos     List the photographs the site is still waiting for"
 	@echo "  make lint       Check code style (pycodestyle, 100 cols)"
 	@echo "  make coverage   Run the fast suite and report coverage"
@@ -73,6 +74,18 @@ test-fast: $(VENV)/bin/activate
 coverage: $(VENV)/bin/activate
 	$(PY) -m coverage run --source=app -m pytest tests/ -q -m "not slow"
 	$(PY) -m coverage report --sort=miss
+
+# -----------------------------------------------------------------------------
+# Visual baseline
+# -----------------------------------------------------------------------------
+# Rewrites tests/screenshots/<platform>-<browser>/ after an intended visual
+# change. Look at the diff before committing it: that is the whole point of the
+# baseline. A renderer with no committed set writes one on the first run and
+# says so — the pictures are per browser and per operating system, because the
+# same page is not the same pixels in two of them.
+.PHONY: screenshots
+screenshots: $(VENV)/bin/activate
+	UPDATE_SCREENSHOTS=1 $(VENV)/bin/pytest -q tests/test_visual.py
 
 # -----------------------------------------------------------------------------
 # Photographs

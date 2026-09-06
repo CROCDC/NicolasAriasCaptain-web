@@ -120,6 +120,12 @@ def browser_instance() -> Iterator[Any]:
     a suite that cannot run where the app is built is not much use. Chromium is
     accepted as a fallback so a machine that already has one browser does not
     have to download a second one to run these.
+
+    Which one runs matters to the visual baseline and to nothing else: those
+    screenshots are compared per renderer, so a browser with no committed set
+    writes one and says so rather than comparing against another browser's
+    pixels. GitHub Actions installs Chromium deliberately, because Chromium is
+    the set this repository carries.
     """
     playwright_api = pytest.importorskip(
         "playwright.sync_api", reason="playwright is not installed")

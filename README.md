@@ -33,6 +33,7 @@ Otros comandos:
 | `make photos` | Lista las fotos que el sitio todavía espera |
 | `make lint` | pycodestyle, 100 columnas |
 | `make coverage` | Cobertura de la suite rápida |
+| `make screenshots` | Reescribe el baseline visual de este renderer |
 
 ---
 
@@ -144,6 +145,35 @@ servicio preseleccionen el formulario y que una consulta llegue a la base.
 
 En una máquina que ya tiene un navegador propio, `BROWSER_EXECUTABLE=/ruta/al/binario`
 evita descargar otro.
+
+### Baseline visual (screenshots)
+
+Además hay una **regresión visual**: cada pantalla se compara contra una captura
+commiteada, así un cambio de CSS que nadie quiso hacer rompe el build en vez de
+esperar a que alguien lo note.
+
+```sh
+make screenshots   # reescribe el baseline después de un cambio buscado
+```
+
+Mirá el diff antes de commitearlo: para eso está el baseline.
+
+Detalles que hacen que esto sea usable y no una tortura:
+
+- **Un baseline por renderer.** La misma página no da los mismos píxeles en dos
+  navegadores ni en dos sistemas operativos, así que las capturas viven en
+  `tests/screenshots/<plataforma>-<navegador>/`. Hoy está commiteado
+  `linux-chromium`; un renderer sin set propio escribe uno en la primera
+  corrida, avisa, y a partir de que lo commiteás queda cubierto.
+- **Las fuentes web están bloqueadas** durante estas pruebas. Si dependieran de
+  que Google conteste, el baseline cambiaría con la red.
+- **Todo lo que se mueve se congela** antes de la foto, y el año del pie se tapa
+  (si no, el 1 de enero se pone todo en rojo solo).
+- **Tolerancia**: hasta 0,2% de píxeles distintos es ruido de rasterizado; un
+  cambio real de layout mueve miles.
+
+Cuando una comparación falla deja `<pantalla>.actual.png` y `<pantalla>.diff.png`
+al lado del baseline (ignorados por git) para poder mirarlos.
 
 ---
 

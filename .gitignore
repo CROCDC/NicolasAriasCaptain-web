@@ -30,6 +30,7 @@ pip-delete-this-directory.txt
 # What a failed visual comparison leaves behind for a human to look at; the
 # committed baseline it differs from is the file worth keeping.
 tests/screenshots/**/*.actual.png
+tests/screenshots/**/*.diff.png
 
 # Unit test / coverage reports
 .tox/

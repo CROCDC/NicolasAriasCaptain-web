@@ -110,7 +110,7 @@
 .bitacora-portrait-caption {
   margin-top: 0.6rem;
   font-family: var(--font-seal);
-  font-size: 0.56rem;
+  font-size: 0.66rem;
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -130,7 +130,7 @@
 
 .ledger-key {
   font-family: var(--font-seal);
-  font-size: 0.62rem;
+  font-size: 0.66rem;
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -169,7 +169,7 @@
   display: block;
   margin-top: 0.45rem;
   font-family: var(--font-seal);
-  font-size: 0.56rem;
+  font-size: 0.66rem;
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -226,9 +226,11 @@
   max-width: 54ch;
 }
 
+/* Two columns, not auto-fit: four points across three columns left one of
+   them alone on a second row at exactly the widths a tablet uses. */
 .entry-points {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.5rem 1.6rem;
   margin-top: 1.3rem;
 }
@@ -269,29 +271,24 @@
    5. LA DERROTA (cómo trabajo) — waypoints along a line
    ------------------------------------------------------------------------- */
 .derrota {
-  position: relative;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(20px, 3vw, 40px);
-  padding-top: 46px;
+  gap: clamp(28px, 3vw, 40px);
 }
 
-.derrota::before {
-  content: '';
-  position: absolute;
-  top: 14px;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: var(--on-petrol-line);
+/* Each waypoint carries its own rule and its own mark. One line drawn across
+   the whole grid only works while the grid is a single row: at two columns the
+   second row's marks floated in mid-air with no line under them. */
+.waypoint {
+  position: relative;
+  padding-top: 30px;
+  border-top: 1px solid var(--on-petrol-line);
 }
-
-.waypoint { position: relative; }
 
 .waypoint::before {
   content: '';
   position: absolute;
-  top: -38px;
+  top: -5px;
   left: 0;
   width: 9px;
   height: 9px;
@@ -301,7 +298,7 @@
 
 .waypoint-index {
   font-family: var(--font-seal);
-  font-size: 0.6rem;
+  font-size: 0.66rem;
   font-weight: 600;
   letter-spacing: 0.24em;
   color: var(--copper-light);
@@ -348,7 +345,7 @@
 .rail-caption {
   margin-top: 0.7rem;
   font-family: var(--font-seal);
-  font-size: 0.58rem;
+  font-size: 0.66rem;
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -360,7 +357,7 @@
 .rail-hint {
   margin-top: 1.1rem;
   font-family: var(--font-seal);
-  font-size: 0.58rem;
+  font-size: 0.66rem;
   font-weight: 600;
   letter-spacing: 0.24em;
   text-transform: uppercase;
@@ -390,7 +387,7 @@
 .contacto-key {
   display: block;
   font-family: var(--font-seal);
-  font-size: 0.56rem;
+  font-size: 0.66rem;
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -419,7 +416,7 @@ a.contacto-value:hover { color: var(--copper-deep); }
   display: block;
   margin-bottom: 0.45rem;
   font-family: var(--font-seal);
-  font-size: 0.58rem;
+  font-size: 0.66rem;
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -526,7 +523,7 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
   gap: 0.6rem 1.8rem;
   margin-top: 2rem;
   font-family: var(--font-seal);
-  font-size: 0.62rem;
+  font-size: 0.66rem;
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -642,17 +639,15 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
   .entry:nth-of-type(even) .entry-media,
   .entry:nth-of-type(even) .entry-body { grid-column: 1; grid-row: auto; }
 
-  .derrota { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 34px; }
+  .derrota { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 560px) {
   .ledger-row { grid-template-columns: 1fr; gap: 0.15rem; }
 
-  .derrota { grid-template-columns: 1fr; padding-top: 34px; }
+  .derrota { grid-template-columns: 1fr; }
 
-  .derrota::before { top: 6px; }
-
-  .waypoint::before { top: -28px; }
+  .entry-points { grid-template-columns: 1fr; }
 
   .gauge-figures { margin-top: -2%; }
 }

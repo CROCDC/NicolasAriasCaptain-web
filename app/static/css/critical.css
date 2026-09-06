@@ -242,7 +242,7 @@ input, textarea, select { font-family: var(--font-text); }
 
 .bar-coords {
   font-family: var(--font-seal);
-  font-size: 0.6rem;
+  font-size: 0.64rem;
   font-weight: 600;
   letter-spacing: 0.24em;
   opacity: 0.7;
@@ -358,8 +358,11 @@ input, textarea, select { font-family: var(--font-text); }
 
 .menu-link:hover { color: var(--copper-light); padding-left: 12px; }
 
+/* A fixed column for the numeral, so 'I' and 'III' do not push their titles
+   to different starts down the list. */
 .menu-link .numeral {
-  font-size: 0.7rem;
+  flex: 0 0 2.2rem;
+  font-size: 0.72rem;
   opacity: 0.6;
   letter-spacing: 0.2em;
 }
@@ -479,7 +482,7 @@ body.menu-open { overflow: hidden; }
   justify-content: center;
   gap: 1.2rem;
   font-family: var(--font-seal);
-  font-size: 0.58rem;
+  font-size: 0.64rem;
   font-weight: 600;
   letter-spacing: 0.28em;
   text-transform: uppercase;

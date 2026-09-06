@@ -80,6 +80,23 @@ placeholder — nunca como imagen rota. `make photos` dice qué falta.
 - Los tests que manejan un navegador llevan `@pytest.mark.slow` y se saltan con
   un mensaje claro si Playwright no tiene navegador instalado.
 
+## Baseline visual
+
+Cada pantalla se compara contra una captura commiteada en
+`tests/screenshots/<plataforma>-<navegador>/`. Un cambio de CSS no buscado falla
+el build; uno buscado se acepta corriendo `make screenshots` y revisando el diff.
+
+Las capturas son por renderer porque la misma página no da los mismos píxeles en
+dos navegadores. El set commiteado es `linux-chromium`, que es el que instala
+GitHub Actions a propósito. Un renderer sin set escribe uno y se saltea diciendo
+por qué; `test_the_baseline_is_not_empty` es lo que impide que "sin baseline"
+pase inadvertido para todos a la vez.
+
+Durante estas pruebas las fuentes web están bloqueadas: un baseline que depende
+de que un CDN conteste no es un baseline. Eso también significa que no dicen
+nada sobre cómo entran los títulos con las fuentes reales — para eso hay que
+mirar el sitio.
+
 ## Pipeline
 
 `Jenkinsfile` construye la imagen, corre la suite **dentro de la imagen que va a
