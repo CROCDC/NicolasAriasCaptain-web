@@ -9,6 +9,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: nicolas-arias-web-app
     environment:
       # TLS terminates at the Cloudflare Tunnel, so there is no LETSENCRYPT_*
       # here: nginx-proxy only has to route the host to this container.

@@ -74,10 +74,14 @@
    is a plain grey box carrying the description of the picture that belongs
    there, which is also that photograph's alt text. Nothing pretends to be a
    photo, and nobody has to open a JSON file to find out what is missing. #}
-{% macro photo_box(slot, shape='rect', ratio='landscape', loading='lazy') -%}
+{% macro photo_box(slot, shape='rect', ratio='landscape', loading='lazy', sizes='') -%}
 {%- if slot.available %}
 <div class="shot shot-{{ shape }} shot-{{ ratio }}">
-  <img src="{{ slot.url }}" alt="{{ slot.alt }}" loading="{{ loading }}" decoding="async"/>
+  <img src="{{ slot.url }}" alt="{{ slot.alt }}"
+       {% if slot.srcset and sizes %}srcset="{{ slot.srcset }}" sizes="{{ sizes }}"{% endif %}
+       {% if slot.width %}width="{{ slot.width }}" height="{{ slot.height }}"{% endif %}
+       loading="{{ loading }}"
+       {% if loading == 'eager' %}fetchpriority="high" decoding="sync"{% else %}decoding="async"{% endif %}/>
 </div>
 {%- else %}
 <div class="shot shot-{{ shape }} shot-{{ ratio }} shot-empty" data-file="{{ slot.file }}">
@@ -87,11 +91,11 @@
 {%- endmacro %}
 
 {# A photograph inside the graduated ring. #}
-{% macro medallion(slot, css_class='', loading='lazy') -%}
+{% macro medallion(slot, css_class='', loading='lazy', sizes='') -%}
 <div class="medallion {{ css_class }}">
   {{ bezel(72, 'medallion-bezel') }}
   <div class="medallion-window">
-    {{ photo_box(slot, shape='circle', ratio='square', loading=loading) }}
+    {{ photo_box(slot, shape='circle', ratio='square', loading=loading, sizes=sizes) }}
   </div>
 </div>
 {%- endmacro %}

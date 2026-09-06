@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 from flask import Flask, url_for
+from markupsafe import Markup
 from flask_compress import Compress
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -18,8 +19,12 @@ migrate: Migrate = Migrate()
 compress: Compress = Compress()
 
 _STATIC_CACHE_MAX_AGE = 60 * 60 * 24 * 365  # 1 year in seconds
+
+# Both JavaScript spellings: Python's mimetypes returns "text/javascript" for
+# .js on current versions, so a list with only the application/ spelling silently
+# leaves every script uncached.
 _STATIC_MIME_PREFIXES = (
-    "text/css", "application/javascript", "image/", "font/",
+    "text/css", "text/javascript", "application/javascript", "image/", "font/",
 )
 
 
@@ -80,14 +85,31 @@ def create_app() -> Flask:
     def set_cache_headers(response):
         ct = response.content_type or ""
         if any(ct.startswith(prefix) for prefix in _STATIC_MIME_PREFIXES):
+            # Flask marks static files no-cache so the browser revalidates
+            # against the etag. Left in place it outranks max-age and every
+            # asset is re-checked on every load; the ?v= digest already makes a
+            # changed file a different URL, so the year-long cache is safe and
+            # immutable says so.
+            response.cache_control.no_cache = None
             response.cache_control.max_age = _STATIC_CACHE_MAX_AGE
             response.cache_control.public = True
+            response.cache_control.immutable = True
         return response
 
     # --- Load critical CSS once at startup ---
-    critical_css_path = os.path.join(app.static_folder, "css", "critical.css")
-    with open(critical_css_path, "r", encoding="utf-8") as handle:
-        app.config["CRITICAL_CSS"] = handle.read()
+    # The @font-face rules go in front of it, inlined rather than linked: they
+    # are 3KB, and a separate stylesheet for them would be one more blocking
+    # request between the browser and the first styled letter. Their url()s are
+    # written relative to /static/css/, so they have to be repointed at the
+    # document root now that they are being served from inside the HTML.
+    css_dir = os.path.join(app.static_folder, "css")
+    with open(os.path.join(css_dir, "fonts.css"), "r", encoding="utf-8") as handle:
+        fonts_css = handle.read().replace("url('../", "url('/static/")
+    with open(os.path.join(css_dir, "critical.css"), "r", encoding="utf-8") as handle:
+        # Markup, not a plain string: this lands inside <style>, where HTML
+        # entities are not decoded — an escaped quote in a url() would be a
+        # dead font reference rather than a quote.
+        app.config["CRITICAL_CSS"] = Markup(fonts_css + handle.read())
 
     # --- Site copy and contact details ---
     app.config["SITE"] = _load_site_config(os.path.dirname(__file__))

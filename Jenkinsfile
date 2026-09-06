@@ -5,6 +5,10 @@ pipeline {
     COMPOSE_FILE = 'docker-compose.yml'
     // Named rather than --rm so anything the run leaves behind can be copied out.
     TEST_CONTAINER = 'arias-tests'
+    // Named outright: `config --images` lists every service, and its order is
+    // not the same across compose versions, so picking the first line ran the
+    // suite inside promtail once a second service existed.
+    TEST_IMAGE = 'nicolas-arias-web-app'
   }
 
   stages {
@@ -55,8 +59,7 @@ pipeline {
       steps {
         sh """
           docker rm -f ${TEST_CONTAINER} || true
-          IMAGE=\$(docker compose -f ${COMPOSE_FILE} config --images | head -1)
-          docker run --name ${TEST_CONTAINER} "\$IMAGE" python3 -m pytest -v --tb=short tests/
+          docker run --name ${TEST_CONTAINER} ${TEST_IMAGE} python3 -m pytest -v --tb=short tests/
         """
       }
       post {

@@ -103,7 +103,17 @@ def live_server(app_instance: Any) -> Iterator[str]:
 
     A real HTTP server is required: the test client serves no static assets and
     runs no JavaScript.
+
+    ``PERF_TARGET_URL`` points the whole suite at a deployed site instead. That
+    is the only way to measure what the reverse proxy and the tunnel actually
+    do — compression and cache headers are theirs to add or strip, and a local
+    server cannot answer for them.
     """
+    external = os.environ.get("PERF_TARGET_URL")
+    if external:
+        yield external.rstrip("/")
+        return
+
     server = adapter.LiveServer(app_instance, "127.0.0.1", _free_port())
     try:
         yield server.url
@@ -112,7 +122,40 @@ def live_server(app_instance: Any) -> Iterator[str]:
 
 
 @pytest.fixture(scope="session")
-def browser_instance() -> Iterator[Any]:
+def playwright_driver() -> Iterator[Any]:
+    """The one Playwright driver the whole session shares.
+
+    Two ``sync_playwright()`` context managers cannot be open at once: the
+    second finds the first one's event loop already running and refuses with
+    "use the Async API instead". The visual suite drives Firefox and the
+    performance suite drives Chromium, so the driver is what they share — not
+    the browser.
+    """
+    playwright_api = pytest.importorskip(
+        "playwright.sync_api", reason="playwright is not installed")
+    with playwright_api.sync_playwright() as driver:
+        yield driver
+
+
+@pytest.fixture(scope="session")
+def browser(playwright_driver: Any) -> Iterator[Any]:
+    """Chromium, for the performance suite only.
+
+    Deliberately not ``browser_instance``: that one prefers Firefox because it
+    is what the deployment image installs, and the visual baselines are its
+    pixels. The performance tests cannot use it — the device matrix throttles
+    CPU and network through CDP, which is Chromium-only, and the numbers are
+    only comparable to Lighthouse's if they come from the same engine.
+    """
+    instance = playwright_driver.chromium.launch(headless=True)
+    try:
+        yield instance
+    finally:
+        instance.close()
+
+
+@pytest.fixture(scope="session")
+def browser_instance(playwright_driver: Any) -> Iterator[Any]:
     """One headless browser per session, or a skip that says what is missing.
 
     Firefox first, because that is what the deployment image installs: the
@@ -127,33 +170,29 @@ def browser_instance() -> Iterator[Any]:
     pixels. GitHub Actions installs Chromium deliberately, because Chromium is
     the set this repository carries.
     """
-    playwright_api = pytest.importorskip(
-        "playwright.sync_api", reason="playwright is not installed")
-
     # An escape hatch for a machine whose browser Playwright did not install
     # itself — a CI image that ships one, say. Empty everywhere else, and then
     # Playwright's own copy is used.
     executable = os.environ.get("BROWSER_EXECUTABLE") or None
 
-    with playwright_api.sync_playwright() as playwright:
-        browser = None
-        failures: list[str] = []
-        for name in ("firefox", "chromium"):
-            try:
-                browser = getattr(playwright, name).launch(
-                    headless=True, executable_path=executable)
-                break
-            except Exception as exc:  # pragma: no cover - depends on the machine
-                failures.append(f"{name}: {str(exc).splitlines()[0]}")
-
-        if browser is None:
-            pytest.skip("no browser for Playwright (" + "; ".join(failures)
-                        + "); run: make browser")
-
+    browser = None
+    failures: list[str] = []
+    for name in ("firefox", "chromium"):
         try:
-            yield browser
-        finally:
-            browser.close()
+            browser = getattr(playwright_driver, name).launch(
+                headless=True, executable_path=executable)
+            break
+        except Exception as exc:  # pragma: no cover - depends on the machine
+            failures.append(f"{name}: {str(exc).splitlines()[0]}")
+
+    if browser is None:
+        pytest.skip("no browser for Playwright (" + "; ".join(failures)
+                    + "); run: make browser")
+
+    try:
+        yield browser
+    finally:
+        browser.close()
 
 
 @pytest.fixture()

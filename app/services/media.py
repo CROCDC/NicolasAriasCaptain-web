@@ -28,10 +28,17 @@ PHOTO_DIR = os.path.join("assets", "photos")
 #: Keys every slot in the manifest has to carry.
 REQUIRED_KEYS = frozenset({"id", "kind", "file", "alt"})
 
+#: The narrower widths ``scripts/gen_responsive_images.py`` writes. Keep the two
+#: in step: this list is what the templates offer, that script is what exists.
+VARIANT_WIDTHS = (400, 700)
+
 #: Cached manifest, keyed by the file's modification time so an edit is picked
 #: up without a restart. Whether a photograph *exists* is not cached: that is
 #: the thing expected to change while the site is running.
 _cache: dict[str, Any] = {"mtime": None, "slots": []}
+
+#: Intrinsic pixel sizes, keyed by path and invalidated by the file's mtime.
+_size_cache: dict[str, tuple[float, tuple[int | None, int | None]]] = {}
 
 
 def load_manifest(app: Flask) -> list[dict[str, Any]]:
@@ -60,14 +67,77 @@ def _resolve(app: Flask, slot: dict[str, Any]) -> dict[str, Any]:
     an application context but no request to build a URL against.
     """
     relative = os.path.join(PHOTO_DIR, slot["file"])
-    available = os.path.isfile(os.path.join(app.static_folder, relative))
+    absolute = os.path.join(app.static_folder, relative)
+    available = os.path.isfile(absolute)
     resolved = dict(slot)
     resolved["available"] = available
     resolved["url"] = (
         f"{app.static_url_path}/{PHOTO_DIR.replace(os.sep, '/')}/{slot['file']}"
         if available else None
     )
+    width, height = _dimensions(absolute) if available else (None, None)
+    resolved["width"] = width
+    resolved["height"] = height
+    resolved["srcset"] = (
+        _srcset(app, slot["file"], width) if available and width else None
+    )
     return resolved
+
+
+def _srcset(app: Flask, filename: str, width: int) -> str | None:
+    """The narrower copies of this photograph that are actually on disk.
+
+    ``scripts/gen_responsive_images.py`` writes them and skips any width the
+    original cannot fill, so which ones exist varies per photograph. Reading the
+    directory rather than assuming a fixed ladder keeps the markup honest: a
+    ``srcset`` that promises a file the browser then 404s on is worse than no
+    ``srcset`` at all.
+    """
+    base, extension = os.path.splitext(filename)
+    if extension.lower() != ".webp":
+        return None
+
+    prefix = f"{app.static_url_path}/{PHOTO_DIR.replace(os.sep, '/')}"
+    entries = []
+    for candidate in VARIANT_WIDTHS:
+        if candidate >= width:
+            continue
+        variant = f"{base}-{candidate}.webp"
+        if os.path.isfile(os.path.join(app.static_folder, PHOTO_DIR, variant)):
+            entries.append(f"{prefix}/{variant} {candidate}w")
+    if not entries:
+        return None
+    entries.append(f"{prefix}/{filename} {width}w")
+    return ", ".join(entries)
+
+
+def _dimensions(path: str) -> tuple[int | None, int | None]:
+    """The photograph's own pixel size, so the template can reserve its space.
+
+    An ``<img>`` with no width and height is a hole of unknown height until the
+    file arrives, and everything below it jumps when it does. Read from the file
+    rather than declared in the manifest: a number typed next to a photograph is
+    a number that goes stale the first time the photograph is replaced.
+
+    Cached per file: this runs for every slot on every request, and decoding a
+    dozen headers each time would cost more than the layout shift it prevents.
+    """
+    try:
+        stamp = os.path.getmtime(path)
+    except OSError:
+        return (None, None)
+    hit = _size_cache.get(path)
+    if hit and hit[0] == stamp:
+        return hit[1]
+    try:
+        from PIL import Image
+
+        with Image.open(path) as image:
+            size = image.size
+    except Exception:
+        size = (None, None)
+    _size_cache[path] = (stamp, size)
+    return size
 
 
 def photos(app: Flask, kind: str) -> list[dict[str, Any]]:
