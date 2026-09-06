@@ -1,4 +1,4 @@
-{% import "_macros.html" as ui %}<!DOCTYPE html>
+{% import "_macros.html" as ui %}{% set SERVICE_SIZES = "(max-width: 640px) 60vw, 213px" %}{% set RAIL_SIZES = "(max-width: 767px) 230px, (max-width: 1133px) 30vw, 340px" %}<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -34,20 +34,25 @@
 
   <title>{{ site.brand }} — {{ site.role }}</title>
 
+  {%- set hero = photo('hero') %}
+  {%- if hero and hero.available %}
+  <link rel="preload" as="image" href="{{ hero.url }}" fetchpriority="high" />
+  {%- endif %}
+
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='assets/favicon.svg') }}" />
   <link rel="apple-touch-icon" href="{{ url_for('static', filename='assets/favicon.svg') }}" />
   <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}" />
 
-  <!-- Fonts — async, never render-blocking -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" as="style"
-    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Fraunces:ital,wght@0,400;0,600;1,400&family=Karla:wght@300;400;600;700&display=swap"
-    onload="this.onload=null;this.rel='stylesheet'" />
-  <noscript>
-    <link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Fraunces:ital,wght@0,400;0,600;1,400&family=Karla:wght@300;400;600;700&display=swap" />
-  </noscript>
+  <!-- Fonts — self-hosted; the @font-face rules ride along with the critical
+       CSS below, so only the files themselves are fetched. Preloaded because a
+       face declared in inline CSS is not discovered until the parser gets
+       there, and these three carry every word above the fold. -->
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="{{ url_for('static', filename='fonts/fraunces-latin.woff2') }}" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="{{ url_for('static', filename='fonts/cinzel-latin.woff2') }}" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="{{ url_for('static', filename='fonts/karla-latin.woff2') }}" />
 
   <!-- Critical CSS inline: the bar and the portada paint without a round trip -->
   <style>{{ critical_css }}</style>
@@ -129,7 +134,8 @@
                  css_class='portada-arc reveal') }}
 
   <div class="reveal" style="--delay: .05s">
-    {{ ui.medallion(photo('hero'), 'portada-medallion', loading='eager') }}
+    {{ ui.medallion(photo('hero'), 'portada-medallion', loading='eager',
+                sizes='(max-width: 527px) 53vw, 277px') }}
   </div>
 
   <h1 class="portada-name reveal" style="--delay: .12s">
@@ -197,7 +203,8 @@
 
       <div class="bitacora-instruments reveal" style="--delay: .12s">
         <figure class="bitacora-portrait">
-          {{ ui.photo_box(photo('retrato'), ratio='portrait') }}
+          {{ ui.photo_box(photo('retrato'), ratio='portrait',
+                sizes='(max-width: 900px) 90vw, 405px') }}
           <figcaption class="bitacora-portrait-caption">{{ photo('retrato').caption }}</figcaption>
         </figure>
 
@@ -272,7 +279,7 @@
     </div>
 
     <article class="entry reveal">
-      <div class="entry-media">{{ ui.medallion(photo('servicio-patron')) }}</div>
+      <div class="entry-media">{{ ui.medallion(photo('servicio-patron'), sizes=SERVICE_SIZES) }}</div>
       <div class="entry-body">
         <p class="entry-number">I</p>
         <h3 class="entry-title">Patrón a bordo</h3>
@@ -292,7 +299,7 @@
     </article>
 
     <article class="entry reveal">
-      <div class="entry-media">{{ ui.medallion(photo('servicio-traslado')) }}</div>
+      <div class="entry-media">{{ ui.medallion(photo('servicio-traslado'), sizes=SERVICE_SIZES) }}</div>
       <div class="entry-body">
         <p class="entry-number">II</p>
         <h3 class="entry-title">Traslados y deliveries</h3>
@@ -312,7 +319,7 @@
     </article>
 
     <article class="entry reveal">
-      <div class="entry-media">{{ ui.medallion(photo('servicio-salida')) }}</div>
+      <div class="entry-media">{{ ui.medallion(photo('servicio-salida'), sizes=SERVICE_SIZES) }}</div>
       <div class="entry-body">
         <p class="entry-number">III</p>
         <h3 class="entry-title">Salidas y charters</h3>
@@ -401,7 +408,7 @@
       <div class="rail" id="rail" tabindex="0" role="group" aria-label="Galería de fotos">
         {%- for slot in photos('gallery') %}
         <figure class="rail-item">
-          {{ ui.photo_box(slot) }}
+          {{ ui.photo_box(slot, sizes=RAIL_SIZES) }}
           <figcaption class="rail-caption">{{ slot.caption }}</figcaption>
         </figure>
         {%- endfor %}

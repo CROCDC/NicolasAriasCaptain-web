@@ -10,12 +10,13 @@ Four things make that workable rather than maddening:
   ``screenshots/<platform>-<browser>/``. A renderer with no committed set skips
   loudly and says how to create one, rather than comparing against somebody
   else's pixels.
-* **Web fonts are blocked.** The pages ask Google for Cinzel, Fraunces and
-  Karla. Whether that request succeeds depends on the network, and a baseline
-  that changes with the network is worse than none — so for these tests the
-  request is refused and everything renders in the committed fallback stacks.
-  It also means these tests say nothing about how the real fonts fit; that is
-  what a human looking at the site is for.
+* **No shot depends on a third party.** Cinzel, Fraunces and Karla used to come
+  from Google, and a baseline that changed with the network was worse than
+  none, so the request was refused and the pages rendered in fallback stacks.
+  The typefaces are served from ``/static/fonts`` now, so they load every time
+  and the baseline finally shows the site's real lettering — deterministic
+  *and* true, where before it could only be one of the two. The Google hosts
+  stay blocked so a stray reference cannot quietly reintroduce the dependency.
 * **Everything that moves is stopped.** Reveal-on-scroll, transitions and the
   caret are frozen before the shot, so two runs of the same code agree.
 * **A tolerance.** Font rasterisation is not bit-identical run to run, so a
