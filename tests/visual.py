@@ -44,7 +44,15 @@ BASELINE_ROOT = pathlib.Path(__file__).parent / "screenshots"
 CHANNEL_TOLERANCE = 24
 
 #: And the shot fails above this share of changed pixels.
-MAX_CHANGED = 0.002
+#:
+#: A share, not a count, which is why it cannot be tight: the mobile home page
+#: is 375x9831 of almost nothing but text, so glyph antialiasing is a far larger
+#: fraction of it than of a desktop shot, and the same page rendered on two
+#: Linux machines lands 0.3% apart there while agreeing everywhere else. The
+#: value is set to clear that, and it still leaves plenty of room to fail on
+#: what this is for: 0.5% of the mobile page is a band 49px tall across its full
+#: width, so a section moving by even one line of text is caught.
+MAX_CHANGED = 0.005
 
 #: Regions whose content is expected to differ: the footer year, which the
 #: page writes from the visitor's own clock and which would turn every
