@@ -87,10 +87,12 @@ def test_every_photograph_is_offered_exactly_once(app_context: Any) -> None:
 def test_defaults_are_what_the_page_shows(client: Any) -> None:
     """A default is the text the site had; the table only holds changes.
 
-    With no overrides the page has to read exactly as before, which is what
-    makes an empty database safe and "restore the original" a row delete.
+    With no overrides the pages have to read exactly as before, which is what
+    makes an empty database safe and "restore the original" a row delete. Both
+    pages, because the 404's copy is only ever on the 404.
     """
-    body = client.get("/").get_data(as_text=True)
+    body = (client.get("/").get_data(as_text=True)
+            + client.get("/no-existe").get_data(as_text=True))
     missing = [
         field.key
         for group in REGISTRY.groups
@@ -98,4 +100,4 @@ def test_defaults_are_what_the_page_shows(client: Any) -> None:
         for field in section.fields
         if field.type == "line" and field.default not in body
     ]
-    assert not missing, f"defaults that never reached the page: {missing}"
+    assert not missing, f"defaults that never reached a page: {missing}"
