@@ -66,6 +66,10 @@ REGISTRY = Registry(groups=(
 
     Group("portada", "Portada", "Lo primero que se ve al entrar", sections=(
         Section("portada", "Portada", fields=(
+            TextField("portada.arco", "Texto curvo sobre el medallón",
+                      "Patrón de yates · Río de la Plata",
+                      hint="Corto: va sobre un arco y el texto largo no entra."),
+            TextField("portada.titulo", "Palabra antes del nombre", "Capitán"),
             TextField("portada.cta_servicios", "Botón izquierdo", "Qué hago"),
             TextField("portada.cta_contacto", "Botón derecho", "Consultar una fecha"),
             TextField("portada.pie", "Línea al pie",
@@ -101,6 +105,12 @@ REGISTRY = Registry(groups=(
             TextField("bitacora.firma", "Firma", "— Nicolás"),
         )),
         Section("ficha", "La ficha", note="Los datos de la columna derecha.", fields=(
+            TextField("bitacora.ficha.k_titulacion", "Etiqueta: titulación", "Titulación"),
+            TextField("bitacora.ficha.k_zona", "Etiqueta: zona", "Zona"),
+            TextField("bitacora.ficha.k_puerto", "Etiqueta: puerto base", "Puerto base"),
+            TextField("bitacora.ficha.k_embarcaciones", "Etiqueta: embarcaciones",
+                      "Embarcaciones"),
+            TextField("bitacora.ficha.k_temporada", "Etiqueta: temporada", "Temporada"),
             TextField("bitacora.ficha.titulacion", "Titulación",
                       "Patrón de yate — Prefectura Naval Argentina"),
             TextField("bitacora.ficha.zona", "Zona",
@@ -200,6 +210,9 @@ REGISTRY = Registry(groups=(
             TextField("galeria.titulo_2", "Segunda línea (en itálica)", "desde cubierta"),
             TextField("galeria.bajada", "Bajada", type="text",
                       default="Fotos de salidas y travesías reales."),
+            TextField("galeria.pista", "Indicación al pie", "Deslizá para ver más →"),
+            TextField("galeria.aria", "La galería, para lectores de pantalla",
+                      "Galería de fotos"),
         )),
     )),
 
@@ -213,6 +226,71 @@ REGISTRY = Registry(groups=(
             TextField("contacto.nota", "Nota bajo el botón", type="text", default=(
                 "Los datos quedan solo acá. No se comparten ni se usan para mandarte "
                 "publicidad.")),
+        )),
+        Section("datos", "Los tres datos de contacto", fields=(
+            TextField("contacto.k_whatsapp", "Etiqueta: WhatsApp", "WhatsApp"),
+            TextField("contacto.k_email", "Etiqueta: email", "Email"),
+            TextField("contacto.k_puerto", "Etiqueta: puerto base", "Puerto base"),
+        ), note="Sólo los rótulos; el número y la dirección se cambian en site.json."),
+        Section("formulario", "El formulario", fields=(
+            TextField("form.nombre", "Nombre", "Nombre"),
+            TextField("form.nombre_ph", "Nombre — texto de ejemplo", "Tu nombre"),
+            TextField("form.email", "Email", "Email"),
+            TextField("form.email_ph", "Email — texto de ejemplo", "tu@email.com"),
+            TextField("form.telefono", "Teléfono", "Teléfono"),
+            TextField("form.telefono_opcional", "Teléfono — aclaración", "(opcional)"),
+            TextField("form.telefono_ph", "Teléfono — texto de ejemplo", "+54 9 11 ..."),
+            TextField("form.servicio", "Qué necesitás", "Qué necesitás"),
+            TextField("form.servicio_vacio", "Opción inicial", "Elegí una opción"),
+            TextField("form.servicio_patron", "Opción: patrón", "Patrón a bordo"),
+            TextField("form.servicio_traslado", "Opción: traslado", "Traslado / delivery"),
+            TextField("form.servicio_salida", "Opción: salida", "Salida o charter"),
+            TextField("form.servicio_otro", "Opción: otra", "Otra consulta"),
+            TextField("form.mensaje", "Mensaje", "Mensaje"),
+            TextField("form.mensaje_ph", "Mensaje — texto de ejemplo",
+                      "Barco, fecha tentativa y de dónde a dónde."),
+            TextField("form.boton", "Botón de envío", "Enviar consulta"),
+        ), note=("Los mensajes de error y el aviso de \"gracias\" no están acá: los "
+                 "escribe el servidor cuando valida, y cambiarlos es tocar código.")),
+    )),
+
+    Group("navegacion", "Navegación", "Nombres de sección y barra", icon="≡", sections=(
+        Section("secciones", "Nombres de las secciones", fields=(
+            TextField("seccion.bitacora", "I — Bitácora", "Bitácora"),
+            TextField("seccion.servicios", "II — Servicios", "Servicios"),
+            TextField("seccion.derrota", "III — La derrota", "La derrota"),
+            TextField("seccion.galeria", "IV — Galería", "Galería"),
+            TextField("seccion.contacto", "V — Contacto", "Contacto"),
+        ), note=("Cada nombre se usa en tres lugares a la vez: el índice, el "
+                 "encabezado de la sección y el pie. Cambiándolo acá cambian los "
+                 "tres — que es lo que hay que hacer, porque si se desincronizan "
+                 "el menú lleva a una sección que se llama de otra manera.")),
+        Section("barra", "La barra de arriba", fields=(
+            TextField("barra.coordenadas", "Coordenadas", "34°28′ S · 58°30′ O",
+                      hint="Las del puerto base."),
+            TextField("barra.indice", "Botón que abre el índice", "Índice"),
+            TextField("barra.cerrar", "Botón que lo cierra", "Cerrar ✕"),
+            TextField("barra.saltar", "Salto al contenido", "Saltar al contenido",
+                      hint="No se ve; lo usa quien navega con teclado o lector de pantalla."),
+            TextField("menu.aria", "El índice, para lectores de pantalla", "Secciones"),
+        )),
+    )),
+
+    Group("error", "Página no encontrada", "Un link roto", icon="?", sections=(
+        Section("error", "El 404", fields=(
+            TextField("error.pestana", "Título de la pestaña", "Fuera de la carta"),
+            TextField("error.titulo", "Título", "Esta página quedó fuera de la carta"),
+            TextField("error.texto", "Texto", type="text", default=(
+                "El enlace no lleva a ningún puerto conocido. Volvé al inicio y "
+                "seguimos desde ahí.")),
+            TextField("error.boton", "Botón", "Volver al inicio"),
+        )),
+    )),
+
+    Group("pie", "Pie de página", "El cierre de la página", icon="_", sections=(
+        Section("pie", "El pie", fields=(
+            TextField("pie.derechos", "Línea de copyright",
+                      "Todos los derechos reservados."),
         )),
     )),
 

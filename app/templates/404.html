@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex" />
-  <title>Fuera de la carta — {{ site.brand }}</title>
+  <title>{{ t('error.pestana') }} — {{ site.brand }}</title>
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='assets/favicon.svg') }}" />
   <style>{{ critical_css }}</style>
   <link rel="stylesheet" href="{{ asset('css/style-deferred.css') }}" />
@@ -15,12 +15,9 @@
     <div>
       {{ ui.mark('lost-mark') }}
       <h1 class="lost-code">404</h1>
-      <p class="lost-title">Esta página quedó fuera de la carta</p>
-      <p class="lost-text">
-        El enlace no lleva a ningún puerto conocido. Volvé al inicio y seguimos
-        desde ahí.
-      </p>
-      <a class="btn btn-solid" href="{{ url_for('index') }}">Volver al inicio</a>
+      <p class="lost-title">{{ t('error.titulo') }}</p>
+      <p class="lost-text">{{ t('error.texto') }}</p>
+      <a class="btn btn-solid" href="{{ url_for('index') }}">{{ t('error.boton') }}</a>
     </div>
   </main>
 </body>

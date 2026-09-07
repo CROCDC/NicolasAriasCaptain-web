@@ -71,14 +71,14 @@
 </head>
 <body>
 
-<a class="skip-link" href="#bitacora">Saltar al contenido</a>
+<a class="skip-link" href="#bitacora">{{ t('barra.saltar') }}</a>
 
 <!-- =====================================================================
      LA REGLA — barra fija: coordenadas, sello, y una sola perilla
 ====================================================================== -->
 <div class="bar" id="bar">
   <div class="bar-inner">
-    <p class="bar-coords">34°28′ S · 58°30′ O</p>
+    <p class="bar-coords">{{ t('barra.coordenadas') }}</p>
 
     <a href="#portada" class="bar-seal" aria-label="{{ site.brand }} — inicio">
       {{ ui.mark('bar-mark') }}
@@ -86,7 +86,7 @@
     </a>
 
     <button class="bar-menu" id="menuOpen" aria-expanded="false" aria-controls="menu">
-      <span>Índice</span>
+      <span>{{ t('barra.indice') }}</span>
       <span class="bar-menu-bars" aria-hidden="true"><i></i><i></i><i></i></span>
     </button>
   </div>
@@ -95,26 +95,26 @@
 <!-- =====================================================================
      EL ÍNDICE — pantalla completa, numerado como una carta
 ====================================================================== -->
-<nav class="menu" id="menu" aria-label="Secciones" aria-hidden="true">
+<nav class="menu" id="menu" aria-label="{{ t('menu.aria') }}" aria-hidden="true">
   <div class="menu-head">
-    <button class="menu-close" id="menuClose">Cerrar ✕</button>
+    <button class="menu-close" id="menuClose">{{ t('barra.cerrar') }}</button>
   </div>
 
   <ul class="menu-list">
     <li class="menu-item">
-      <a class="menu-link" href="#bitacora"><span class="numeral">I</span> Bitácora</a>
+      <a class="menu-link" href="#bitacora"><span class="numeral">I</span> {{ t('seccion.bitacora') }}</a>
     </li>
     <li class="menu-item">
-      <a class="menu-link" href="#servicios"><span class="numeral">II</span> Servicios</a>
+      <a class="menu-link" href="#servicios"><span class="numeral">II</span> {{ t('seccion.servicios') }}</a>
     </li>
     <li class="menu-item">
-      <a class="menu-link" href="#derrota"><span class="numeral">III</span> La derrota</a>
+      <a class="menu-link" href="#derrota"><span class="numeral">III</span> {{ t('seccion.derrota') }}</a>
     </li>
     <li class="menu-item">
-      <a class="menu-link" href="#galeria"><span class="numeral">IV</span> Galería</a>
+      <a class="menu-link" href="#galeria"><span class="numeral">IV</span> {{ t('seccion.galeria') }}</a>
     </li>
     <li class="menu-item">
-      <a class="menu-link" href="#contacto"><span class="numeral">V</span> Contacto</a>
+      <a class="menu-link" href="#contacto"><span class="numeral">V</span> {{ t('seccion.contacto') }}</a>
     </li>
   </ul>
 
@@ -130,7 +130,7 @@
      PORTADA — el medallón
 ====================================================================== -->
 <header class="portada" id="portada">
-  {{ ui.arc_text('Patrón de yates · Río de la Plata', id='arc-portada',
+  {{ ui.arc_text(t('portada.arco'), id='arc-portada',
                  css_class='portada-arc reveal') }}
 
   <div class="reveal" style="--delay: .05s">
@@ -139,7 +139,7 @@
   </div>
 
   <h1 class="portada-name reveal" style="--delay: .12s">
-    Capitán<em>Nicolás Arias</em>
+    {{ t('portada.titulo') }}<em>{{ site.brand_short }}</em>
   </h1>
 
   {{ ui.waterline('portada-rule reveal') }}
@@ -171,7 +171,7 @@
 
       <div class="bitacora-text reveal">
         <p class="head-mark seal seal-copper">
-          <span class="numeral">I</span> Bitácora
+          <span class="numeral">I</span> {{ t('seccion.bitacora') }}
         </p>
         <h2 class="headline">{{ t('bitacora.titulo_1') }}<br /><em>{{ t('bitacora.titulo_2') }}</em></h2>
 
@@ -220,23 +220,23 @@
 
         <div class="ledger">
           <div class="ledger-row">
-            <span class="ledger-key">Titulación</span>
+            <span class="ledger-key">{{ t('bitacora.ficha.k_titulacion') }}</span>
             <span class="ledger-value">{{ t('bitacora.ficha.titulacion') }}</span>
           </div>
           <div class="ledger-row">
-            <span class="ledger-key">Zona</span>
+            <span class="ledger-key">{{ t('bitacora.ficha.k_zona') }}</span>
             <span class="ledger-value">{{ t('bitacora.ficha.zona') }}</span>
           </div>
           <div class="ledger-row">
-            <span class="ledger-key">Puerto base</span>
+            <span class="ledger-key">{{ t('bitacora.ficha.k_puerto') }}</span>
             <span class="ledger-value">{{ site.base_port }}</span>
           </div>
           <div class="ledger-row">
-            <span class="ledger-key">Embarcaciones</span>
+            <span class="ledger-key">{{ t('bitacora.ficha.k_embarcaciones') }}</span>
             <span class="ledger-value">{{ t('bitacora.ficha.embarcaciones') }}</span>
           </div>
           <div class="ledger-row">
-            <span class="ledger-key">Temporada</span>
+            <span class="ledger-key">{{ t('bitacora.ficha.k_temporada') }}</span>
             <span class="ledger-value">{{ t('bitacora.ficha.temporada') }}</span>
           </div>
         </div>
@@ -253,7 +253,7 @@
 <section class="band band-sand" id="servicios">
   <div class="container">
     <div class="head reveal">
-      <p class="head-mark seal seal-copper"><span class="numeral">II</span> Servicios</p>
+      <p class="head-mark seal seal-copper"><span class="numeral">II</span> {{ t('seccion.servicios') }}</p>
       <h2 class="headline">{{ t('servicios.titulo_1') }}<br /><em>{{ t('servicios.titulo_2') }}</em></h2>
       <p class="lead">{{ t('servicios.bajada') }}</p>
     </div>
@@ -311,7 +311,7 @@
 <section class="band band-petrol" id="derrota">
   <div class="container">
     <div class="head reveal">
-      <p class="head-mark seal seal-copper"><span class="numeral">III</span> La derrota</p>
+      <p class="head-mark seal seal-copper"><span class="numeral">III</span> {{ t('seccion.derrota') }}</p>
       <h2 class="headline">{{ t('derrota.titulo_1') }}<br /><em>{{ t('derrota.titulo_2') }}</em></h2>
       <p class="lead">{{ t('derrota.bajada') }}</p>
     </div>
@@ -347,13 +347,13 @@
 <section class="band band-sand-2" id="galeria">
   <div class="container">
     <div class="head reveal">
-      <p class="head-mark seal seal-copper"><span class="numeral">IV</span> Galería</p>
+      <p class="head-mark seal seal-copper"><span class="numeral">IV</span> {{ t('seccion.galeria') }}</p>
       <h2 class="headline">{{ t('galeria.titulo_1') }}<br /><em>{{ t('galeria.titulo_2') }}</em></h2>
       <p class="lead">{{ t('galeria.bajada') }}</p>
     </div>
 
     <div class="rail-wrap reveal">
-      <div class="rail" id="rail" tabindex="0" role="group" aria-label="Galería de fotos">
+      <div class="rail" id="rail" tabindex="0" role="group" aria-label="{{ t('galeria.aria') }}">
         {%- for slot in photos('gallery') %}
         <figure class="rail-item">
           {{ ui.photo_box(slot, sizes=RAIL_SIZES) }}
@@ -361,7 +361,7 @@
         </figure>
         {%- endfor %}
       </div>
-      <p class="rail-hint">Deslizá para ver más →</p>
+      <p class="rail-hint">{{ t('galeria.pista') }}</p>
     </div>
   </div>
 </section>
@@ -374,23 +374,23 @@
     <div class="contacto-inner">
 
       <div class="head head-centred reveal">
-        <p class="head-mark seal seal-copper"><span class="numeral">V</span> Contacto</p>
+        <p class="head-mark seal seal-copper"><span class="numeral">V</span> {{ t('seccion.contacto') }}</p>
         <h2 class="headline">{{ t('contacto.titulo_1') }} <em>{{ t('contacto.titulo_2') }}</em></h2>
         <p class="lead">{{ t('contacto.bajada') }}</p>
       </div>
 
       <div class="contacto-rows reveal">
         <div class="contacto-cell">
-          <span class="contacto-key">WhatsApp</span>
+          <span class="contacto-key">{{ t('contacto.k_whatsapp') }}</span>
           <a class="contacto-value" href="https://wa.me/{{ site.whatsapp.number }}"
              target="_blank" rel="noopener noreferrer">{{ site.whatsapp.display }}</a>
         </div>
         <div class="contacto-cell">
-          <span class="contacto-key">Email</span>
+          <span class="contacto-key">{{ t('contacto.k_email') }}</span>
           <a class="contacto-value" href="mailto:{{ site.email }}">{{ site.email }}</a>
         </div>
         <div class="contacto-cell">
-          <span class="contacto-key">Puerto base</span>
+          <span class="contacto-key">{{ t('contacto.k_puerto') }}</span>
           <span class="contacto-value">{{ site.base_port }}</span>
         </div>
       </div>
@@ -398,16 +398,16 @@
       <form class="contact-form reveal" id="contactForm" novalidate>
         <div class="form-row">
           <div class="field">
-            <label class="field-label" for="name">Nombre</label>
+            <label class="field-label" for="name">{{ t('form.nombre') }}</label>
             <input class="control" type="text" id="name" name="name"
-                   placeholder="Tu nombre" autocomplete="name" required
+                   placeholder="{{ t('form.nombre_ph') }}" autocomplete="name" required
                    aria-describedby="nameError" />
             <span class="field-error" id="nameError" aria-live="polite"></span>
           </div>
           <div class="field">
-            <label class="field-label" for="email">Email</label>
+            <label class="field-label" for="email">{{ t('form.email') }}</label>
             <input class="control" type="email" id="email" name="email"
-                   placeholder="tu@email.com" autocomplete="email" required
+                   placeholder="{{ t('form.email_ph') }}" autocomplete="email" required
                    aria-describedby="emailError" />
             <span class="field-error" id="emailError" aria-live="polite"></span>
           </div>
@@ -415,22 +415,22 @@
 
         <div class="form-row">
           <div class="field">
-            <label class="field-label" for="phone">Teléfono <em>(opcional)</em></label>
+            <label class="field-label" for="phone">{{ t('form.telefono') }} <em>{{ t('form.telefono_opcional') }}</em></label>
             <input class="control" type="tel" id="phone" name="phone"
-                   placeholder="+54 9 11 ..." autocomplete="tel"
+                   placeholder="{{ t('form.telefono_ph') }}" autocomplete="tel"
                    aria-describedby="phoneError" />
             <span class="field-error" id="phoneError" aria-live="polite"></span>
           </div>
           <div class="field">
-            <label class="field-label" for="service_type">Qué necesitás</label>
+            <label class="field-label" for="service_type">{{ t('form.servicio') }}</label>
             <div class="select-wrap">
               <select class="control" id="service_type" name="service_type" required
                       aria-describedby="serviceError">
-                <option value="" disabled selected>Elegí una opción</option>
-                <option value="patron">Patrón a bordo</option>
-                <option value="traslado">Traslado / delivery</option>
-                <option value="salida">Salida o charter</option>
-                <option value="otro">Otra consulta</option>
+                <option value="" disabled selected>{{ t('form.servicio_vacio') }}</option>
+                <option value="patron">{{ t('form.servicio_patron') }}</option>
+                <option value="traslado">{{ t('form.servicio_traslado') }}</option>
+                <option value="salida">{{ t('form.servicio_salida') }}</option>
+                <option value="otro">{{ t('form.servicio_otro') }}</option>
               </select>
             </div>
             <span class="field-error" id="serviceError" aria-live="polite"></span>
@@ -438,15 +438,15 @@
         </div>
 
         <div class="field">
-          <label class="field-label" for="message">Mensaje</label>
+          <label class="field-label" for="message">{{ t('form.mensaje') }}</label>
           <textarea class="control" id="message" name="message" rows="5"
-                    placeholder="Barco, fecha tentativa y de dónde a dónde."
+                    placeholder="{{ t('form.mensaje_ph') }}"
                     required aria-describedby="messageError"></textarea>
           <span class="field-error" id="messageError" aria-live="polite"></span>
         </div>
 
         <button class="btn btn-solid btn-submit" type="submit" id="submitBtn">
-          <span class="btn-text">Enviar consulta</span>
+          <span class="btn-text">{{ t('form.boton') }}</span>
         </button>
 
         <p class="form-note">{{ t('contacto.nota') }}</p>
@@ -471,11 +471,11 @@
     <p class="pie-role">{{ site.role }} · {{ site.base_port }}</p>
 
     <ul class="pie-links">
-      <li><a href="#bitacora">Bitácora</a></li>
-      <li><a href="#servicios">Servicios</a></li>
-      <li><a href="#derrota">La derrota</a></li>
-      <li><a href="#galeria">Galería</a></li>
-      <li><a href="#contacto">Contacto</a></li>
+      <li><a href="#bitacora">{{ t('seccion.bitacora') }}</a></li>
+      <li><a href="#servicios">{{ t('seccion.servicios') }}</a></li>
+      <li><a href="#derrota">{{ t('seccion.derrota') }}</a></li>
+      <li><a href="#galeria">{{ t('seccion.galeria') }}</a></li>
+      <li><a href="#contacto">{{ t('seccion.contacto') }}</a></li>
     </ul>
 
     <div class="pie-social">
@@ -485,7 +485,7 @@
     </div>
 
     <p class="pie-bottom">
-      &copy; <span id="currentYear">2026</span> {{ site.brand }}. Todos los derechos reservados.
+      &copy; <span id="currentYear">2026</span> {{ site.brand }}. {{ t('pie.derechos') }}
     </p>
   </div>
 

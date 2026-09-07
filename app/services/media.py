@@ -80,14 +80,15 @@ def _resolve(app: Flask, slot: dict[str, Any]) -> dict[str, Any]:
         available = os.path.isfile(absolute)
         width, height = _dimensions(absolute) if available else (None, None)
         resolved = dict(slot)
-        resolved.update(available=available, url=url if available else None,
+        resolved.update(available=available,
+                        url=_marked(slot["id"], url) if available else None,
                         width=width, height=height, srcset=None)
         return resolved
 
     available = os.path.isfile(absolute)
     resolved = dict(slot)
     resolved["available"] = available
-    resolved["url"] = shipped if available else None
+    resolved["url"] = _marked(slot["id"], shipped) if available else None
     width, height = _dimensions(absolute) if available else (None, None)
     resolved["width"] = width
     resolved["height"] = height
@@ -100,10 +101,10 @@ def _resolve(app: Flask, slot: dict[str, Any]) -> dict[str, Any]:
 def _override(slot_id: str, shipped: str) -> str:
     """What the content panel says this photograph is, or the shipped file.
 
-    Resolved through sitecopy so a replaced photograph is a row rather than a
-    deploy. Guarded because this module is also imported by scripts and by
-    tests that never build a request — outside an app context there is no
-    override to read, and the manifest is the answer.
+    The RAW value: this one is measured and turned into file paths, so it must
+    not carry the editor's markers. Guarded because this module is also imported
+    by scripts and by tests that never build a request — outside an app context
+    there is no override to read, and the manifest is the answer.
     """
     try:
         from sitecopy.resolver import t_plain
@@ -111,6 +112,26 @@ def _override(slot_id: str, shipped: str) -> str:
         return str(t_plain(f"foto.{slot_id}")) or shipped
     except Exception:
         return shipped
+
+
+def _marked(slot_id: str, url: str) -> str:
+    """The same URL, tagged so the visual editor can offer to replace the photo.
+
+    Outside edit mode this is the plain string and nothing changes. Inside it,
+    the value carries markers that the library's response hook turns into
+    ``data-ct-keys`` on the ``<img>`` — a value that lands in an attribute
+    cannot be wrapped in an element, so that attribute is how the editor finds
+    it. Resolving the photographs with ``t_plain`` alone was the bug: it is the
+    variant for values that get serialized into JSON, it deliberately emits no
+    markers, and so every photograph was listed in the side panel but had
+    nothing to click on the page.
+    """
+    try:
+        from sitecopy.resolver import editable
+
+        return editable(f"foto.{slot_id}")
+    except Exception:
+        return url
 
 
 def _static_path(app: Flask, url: str) -> str | None:
