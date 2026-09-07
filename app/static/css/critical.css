@@ -475,11 +475,36 @@ body.menu-open { overflow: hidden; }
   margin-top: clamp(26px, 4vw, 38px);
 }
 
+/* Once they stack they are a column of two, and a column of two buttons of
+   different widths looks like an accident rather than a pair. */
+@media (max-width: 560px) {
+  /* The foot is two lines here and is positioned, not laid out, so the
+     section has to reserve the height itself or the buttons sit on it. */
+  .portada { padding-bottom: 104px; }
+
+  .portada-actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: min(340px, 100%);
+  }
+
+  /* Two lines, each centred under the other, rather than one line clipped at
+     both edges. The dot between them is only a separator on one line. */
+  .portada-foot { flex-direction: column; gap: 0.3rem; }
+
+  .portada-foot span[aria-hidden] { display: none; }
+}
+
 .portada-foot {
   position: absolute;
   inset: auto 0 clamp(14px, 2.4vw, 26px) 0;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
+  /* It is positioned against the section, not laid out in it, so it had no
+     padding of its own: on a phone the first letter sat off the screen. */
+  padding-inline: var(--container-pad);
+  text-align: center;
   /* Matched to the spacing the inner "·" separators get from the tracking:
      at 1.2rem this one dot read as a different, wider kind of break. */
   gap: 0.5rem;

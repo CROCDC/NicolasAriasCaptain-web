@@ -191,7 +191,25 @@ const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').mat
 })();
 
 /* =========================================================================
-   7. SERVICE LINKS PRESELECT THE FORM
+   7. THE WHATSAPP TAB STANDS DOWN OVER THE FORM
+   ========================================================================= */
+// It is a shortcut to the same number the contact section prints in full, and
+// at the height it floats it lands on top of the submit button on a phone.
+// While that section is on screen it retires; everywhere else it is back.
+(function initWaTab() {
+  const tab = qs('.wa-tab');
+  const contacto = qs('#contacto');
+  if (!tab || !contacto || !('IntersectionObserver' in window)) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => tab.classList.toggle('wa-tab-away', entry.isIntersecting));
+  }, { threshold: 0.12 });
+
+  observer.observe(contacto);
+})();
+
+/* =========================================================================
+   8. SERVICE LINKS PRESELECT THE FORM
    ========================================================================= */
 // "Cotizar" under Traslados should land on a form that already says Traslado.
 // Somebody who has to choose the service twice is somebody who half fills the
@@ -209,7 +227,7 @@ const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').mat
 })();
 
 /* =========================================================================
-   8. CONTACT FORM
+   9. CONTACT FORM
    ========================================================================= */
 (function initContactForm() {
   const form = qs('#contactForm');
@@ -312,7 +330,7 @@ const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').mat
 })();
 
 /* =========================================================================
-   9. FOOTER YEAR
+   10. FOOTER YEAR
    ========================================================================= */
 (function initYear() {
   const target = qs('#currentYear');

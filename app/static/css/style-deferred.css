@@ -69,11 +69,13 @@
 
 .head-centred { justify-items: center; text-align: center; margin-inline: auto; }
 
-.head-centred .head-mark::after { display: none; }
-
-.head-centred .head-mark::before {
+/* Centred, so the rule goes down both sides. The left-hand-only version it
+   inherits from the ranged heads hung the whole line off centre. */
+.head-centred .head-mark::before,
+.head-centred .head-mark::after {
   content: '';
   flex: 0 0 40px;
+  max-width: 40px;
   height: 1px;
   background: currentColor;
   opacity: 0.35;
@@ -452,10 +454,13 @@
 
 a.contacto-value:hover { color: var(--copper-deep); }
 
+/* Column gap only. With a row gap as well, two fields that sat side by side
+   on a desktop 24px apart stacked 45px apart on a phone — the same form in
+   two different rhythms. The field's own margin is the single spacing rule. */
 .form-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 1.3rem;
+  gap: 0 1.3rem;
 }
 
 .field { margin-bottom: 1.5rem; }
@@ -488,7 +493,7 @@ a.contacto-value:hover { color: var(--copper-deep); }
 
 .control:focus { outline: none; border-bottom-color: var(--copper); }
 
-textarea.control { resize: vertical; min-height: 128px; line-height: 1.7; }
+textarea.control { resize: vertical; min-height: 104px; line-height: 1.7; }
 
 select.control { appearance: none; border-radius: 0; cursor: pointer; }
 
@@ -517,7 +522,7 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
 }
 
 .form-note {
-  margin-top: 0.9rem;
+  margin-top: 1.1rem;
   font-size: 0.82rem;
   color: var(--on-sand-soft);
   text-align: center;
@@ -629,8 +634,17 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
      sand: flush and square on all four corners read as a rendering fault. */
   border-radius: 2px 0 0 2px;
   box-shadow: -1px 2px 14px rgba(18, 48, 58, 0.18);
-  transition: background-color var(--fast), transform var(--fast),
-              box-shadow var(--fast);
+  transition: background-color var(--fast), transform var(--mid),
+              box-shadow var(--fast), opacity var(--mid), visibility var(--mid);
+}
+
+/* Retired over the contact section — see initWaTab. Kept out of the tab order
+   too, so it is not a control nobody can see. */
+.wa-tab-away {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(100%);
+  pointer-events: none;
 }
 
 .wa-tab:hover {
