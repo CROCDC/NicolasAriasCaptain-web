@@ -150,7 +150,9 @@
    wrapping to two lines under two of the three numbers. */
 .gauge {
   position: relative;
-  max-width: 470px;
+  /* The same measure as the prose above it. Capped narrower, its rule stopped
+     77px short of the text and read as an arbitrary width rather than a
+     deliberate one. */
   margin-top: clamp(30px, 4vw, 46px);
   padding-top: clamp(26px, 3.4vw, 38px);
   border-top: 1px solid var(--on-sand-line);
@@ -251,6 +253,7 @@
 
 .entry-desc {
   margin-top: 0.85rem;
+  text-wrap: pretty;
   color: var(--on-sand-soft);
   max-width: 54ch;
 }
@@ -342,6 +345,7 @@
 
 .waypoint-desc {
   margin-top: 0.55rem;
+  text-wrap: pretty;
   font-size: 0.94rem;
   color: var(--on-petrol-soft);
 }
