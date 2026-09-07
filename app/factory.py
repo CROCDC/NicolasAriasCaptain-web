@@ -138,6 +138,11 @@ def create_app() -> Flask:
         # keeps deciding the absolute size — which is what makes it safe to hand
         # over on a layout this typographic.
         text_sizes=True,
+        # Only the page that has editable copy on it. Left to itself the panel
+        # offers every argument-free GET route, so the editor's "page to edit"
+        # menu listed robots.txt, the health probe and the sitemap — three
+        # things nobody can edit visually.
+        pages=lambda: [{"path": "/", "label": "Inicio"}],
         # Uploads land in the static folder, so they are served and cached like
         # any other asset. See app/content.py for what a replaced photograph
         # does and does not keep.

@@ -6,31 +6,163 @@ on:
       - main
 
 env:
+  JENKINS_URL: https://jenkins.nexttech.com.ar
   JOB_NAME: nicolas-arias-web-prod
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # Nothing here reads the repository or the token; saying so keeps the
+    # ambient credential out of a job whose whole business is interpolating
+    # output from an internal system.
+    permissions: {}
     steps:
-      - name: Trigger Jenkins Build with cookie and crumb
+      # Firing the build is not deploying it. This step used to POST and exit,
+      # so the check went green on "Jenkins accepted the request": a build that
+      # then failed its own Deploy stage was indistinguishable from one that
+      # shipped, and three merges reported success while it was still unclear
+      # whether production had moved. So: trigger, follow the queue item to the
+      # build, wait for it, and go red on anything that is not SUCCESS.
+      #
+      # This repository is PUBLIC, so nothing from Jenkins is echoed into the
+      # log — not an error body, not the console. Failures name the build URL,
+      # which needs a Jenkins login to read.
+      - name: Trigger the Jenkins build and wait for it
         env:
           JENKINS_USER: ${{ secrets.JENKINS_USER }}
           JENKINS_PASSWORD: ${{ secrets.JENKINS_PASSWORD }}
           JENKINS_API_TOKEN: ${{ secrets.JENKINS_API_TOKEN }}
         run: |
-          if [ -z "$JENKINS_USER" ] || [ -z "$JENKINS_PASSWORD" ] || [ -z "$JENKINS_API_TOKEN" ]; then
+          set -uo pipefail
+
+          if [ -z "${JENKINS_USER:-}" ] || [ -z "${JENKINS_PASSWORD:-}" ] || [ -z "${JENKINS_API_TOKEN:-}" ]; then
             echo "::error::Missing credentials. Add JENKINS_USER, JENKINS_PASSWORD and JENKINS_API_TOKEN in repo Settings → Secrets and variables → Actions."
             exit 1
           fi
-          curl -c cookie.txt -s -w "%{http_code}" -o crumb.json \
+
+          # Deliberately NOT `set -e`. Every curl below is checked by hand,
+          # because under -e a transport failure kills the step at the command
+          # substitution and every "if the call failed" branch underneath
+          # becomes unreachable — the run dies with curl's exit code and none of
+          # the messages here are ever printed.
+          #
+          # Timeouts on every call for the same reason in the other direction: a
+          # connection that hangs would otherwise sit there until the job's own
+          # six-hour ceiling.
+          curl_json() {  # $1 = output file, $2 = url  → prints the HTTP status
+            curl -sS --connect-timeout 10 --max-time 30 \
+              --user "$JENKINS_USER:$JENKINS_PASSWORD" \
+              -o "$1" -w '%{http_code}' "$2" 2>/dev/null || true
+          }
+
+          # An empty status means curl never got far enough to report one.
+          code_or_zero() { [ -n "${1:-}" ] && printf '%s' "$1" || printf '000'; }
+
+          code=$(curl -sS --connect-timeout 10 --max-time 30 \
             --user "$JENKINS_USER:$JENKINS_PASSWORD" \
-            "https://jenkins.nexttech.com.ar/crumbIssuer/api/json" > http_code.txt
-          HTTP_CODE=$(cat http_code.txt)
-          if [ "$HTTP_CODE" != "200" ] || ! head -c1 crumb.json | grep -q '{'; then
-            echo "::error::Jenkins crumb request failed (HTTP $HTTP_CODE). Response: $(head -c 200 crumb.json)"
+            -c cookie.txt -o crumb.json -w '%{http_code}' \
+            "$JENKINS_URL/crumbIssuer/api/json" 2>/dev/null || true)
+          code=$(code_or_zero "$code")
+          if [ "$code" != "200" ]; then
+            echo "::error::Could not get a CSRF crumb from Jenkins (HTTP $code)."
             exit 1
           fi
-          CRUMB_HEADER=$(python3 -c "import json; d=json.load(open('crumb.json')); print(d['crumbRequestField'] + ': ' + d['crumb'])")
-          curl -b cookie.txt -X POST -H "$CRUMB_HEADER" -H "Content-Type: application/x-www-form-urlencoded" \
-            --data "" "https://jenkins.nexttech.com.ar/job/$JOB_NAME/buildWithParameters?token=$JENKINS_API_TOKEN" \
-            --user "$JENKINS_USER:$JENKINS_PASSWORD"
+          crumb=$(python3 -c "import json;d=json.load(open('crumb.json'));print(d['crumbRequestField']+': '+d['crumb'])" 2>/dev/null)
+          if [ -z "$crumb" ]; then
+            echo "::error::Jenkins answered the crumb request with something that is not a crumb."
+            exit 1
+          fi
+
+          # The token stays a query parameter: it is the job's remote-trigger
+          # token, and as form data Jenkins would take it for a build PARAMETER
+          # of that name instead.
+          code=$(curl -sS --connect-timeout 10 --max-time 60 -X POST \
+            --user "$JENKINS_USER:$JENKINS_PASSWORD" -b cookie.txt \
+            -H "$crumb" -H 'Content-Type: application/x-www-form-urlencoded' \
+            -D headers.txt -o /dev/null -w '%{http_code}' --data '' \
+            "$JENKINS_URL/job/$JOB_NAME/buildWithParameters?token=$JENKINS_API_TOKEN" \
+            2>/dev/null || true)
+          code=$(code_or_zero "$code")
+          # 201 is the documented answer; 200 and 302 come back through proxies
+          # and still mean queued, so they must not fail a build that will run.
+          case "$code" in
+            200|201|302) ;;
+            *) echo "::error::Jenkins refused the build request (HTTP $code)."; exit 1 ;;
+          esac
+
+          queue=$(tr -d '\r' < headers.txt | awk 'tolower($1) == "location:" {print $2}' | tail -1)
+          if [ -z "$queue" ]; then
+            echo "::error::Jenkins accepted the request but named no queue item, so this run cannot tell whether the deploy happened."
+            exit 1
+          fi
+          echo "queued: $queue"
+
+          # Queue → build. Half an hour: the Pi runs one executor, so a push
+          # that lands while another build is running waits for it, and a
+          # deploy that is merely waiting its turn must not be reported red.
+          build=""
+          for _ in $(seq 1 360); do
+            status=$(curl_json queue.json "${queue}api/json")
+            if [ "$status" = "200" ]; then
+              if python3 -c "import json,sys;sys.exit(0 if json.load(open('queue.json')).get('cancelled') else 1)" 2>/dev/null; then
+                echo "::error::The build was cancelled while it sat in the queue."
+                exit 1
+              fi
+              # The queue item's build NUMBER, not its url. `executable.url`
+              # is Run.getAbsoluteUrl(), built from Jenkins' *configured* root
+              # URL — which on this server is http://192.168.100.20:8080/, a
+              # LAN address no GitHub runner can reach. Polling it would fail
+              # silently for the full hour and then report a healthy deploy as
+              # "still running". The number plus the host we already reached is
+              # the same build by a URL that resolves.
+              number=$(python3 -c "import json;d=json.load(open('queue.json'));print((d.get('executable') or {}).get('number') or '')" 2>/dev/null)
+              [ -n "$number" ] && build="$JENKINS_URL/job/$JOB_NAME/$number/" && break
+            fi
+            sleep 5
+          done
+          if [ -z "$build" ]; then
+            echo "::error::The build never left the queue in 30 minutes; refusing to report success."
+            exit 1
+          fi
+          echo "building: $build"
+
+          # Wait it out, up to an hour: this Pi builds Docker images and runs
+          # the suite. Finite, because a hung build must not be a green check.
+          # `result` is only trusted from an HTTP 200 — a 401 or a proxy error
+          # page must not read as "still building" forever, nor leave the last
+          # good poll's file standing in for a fresh answer.
+          result=""
+          fails=0
+          for _ in $(seq 1 240); do
+            status=$(curl_json build.json "${build}api/json")
+            if [ "$status" = "200" ]; then
+              fails=0
+              result=$(python3 -c "import json;d=json.load(open('build.json'));print('' if d.get('building') else (d.get('result') or ''))" 2>/dev/null)
+              [ -n "$result" ] && break
+            else
+              fails=$((fails + 1))
+              if [ "$fails" -ge 20 ]; then
+                echo "::error::Lost contact with Jenkins for five minutes while waiting (last HTTP $status): $build"
+                exit 1
+              fi
+            fi
+            sleep 15
+          done
+
+          if [ "$result" = "SUCCESS" ]; then
+            echo "Deployed. $build"
+            exit 0
+          fi
+          if [ -z "$result" ]; then
+            echo "::error::The build was still running an hour later: $build"
+          else
+            echo "::error::The Jenkins build finished $result rather than SUCCESS: $build"
+          fi
+          exit 1
+
+      # Scratch files hold a live Jenkins session cookie and a CSRF crumb.
+      # Nothing carries them off an ephemeral runner today, but they cost
+      # nothing to remove and this job should not be the reason that changes.
+      - name: Remove the scratch files
+        if: always()
+        run: rm -f cookie.txt crumb.json headers.txt queue.json build.json
