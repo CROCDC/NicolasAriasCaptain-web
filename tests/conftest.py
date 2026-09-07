@@ -146,8 +146,18 @@ def browser(playwright_driver: Any) -> Iterator[Any]:
     pixels. The performance tests cannot use it — the device matrix throttles
     CPU and network through CDP, which is Chromium-only, and the numbers are
     only comparable to Lighthouse's if they come from the same engine.
+
+    A machine without Chromium skips instead of erroring, the way
+    ``browser_instance`` already does. The deployment image ships Firefox
+    alone, so this suite has to be able to say "not measurable here" rather
+    than fail a deploy over a browser it was never meant to have.
     """
-    instance = playwright_driver.chromium.launch(headless=True)
+    try:
+        instance = playwright_driver.chromium.launch(headless=True)
+    except Exception as exc:  # pragma: no cover - depends on the machine
+        pytest.skip("the performance suite needs Chromium ("
+                    + str(exc).splitlines()[0] + "); run: make browser")
+
     try:
         yield instance
     finally:
