@@ -5,7 +5,7 @@ import json
 import os
 from flask import Flask, url_for
 from markupsafe import Markup
-from sitecopy import SiteCopy
+from sitecopy import LocalFileStore, SiteCopy
 from flask_compress import Compress
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -133,6 +133,18 @@ def create_app() -> Flask:
         password=os.getenv("ADMIN_PASSWORD", ""),
         brand=app.config["SITE"]["brand"],
         site_url=app.config["SITE"]["url"],
+        # Let the editor resize a text. The scale is in em, so a step means the
+        # same thing on a headline and on a button and the site's own type scale
+        # keeps deciding the absolute size — which is what makes it safe to hand
+        # over on a layout this typographic.
+        text_sizes=True,
+        # Uploads land in the static folder, so they are served and cached like
+        # any other asset. See app/content.py for what a replaced photograph
+        # does and does not keep.
+        media_store=LocalFileStore(
+            directory=os.path.join(app.static_folder, "assets", "subidas"),
+            base_url=f"{app.static_url_path}/assets/subidas",
+        ),
     )
 
     # --- Cache-busting for static assets ---

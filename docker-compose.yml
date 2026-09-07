@@ -32,6 +32,10 @@ services:
       - "7000"
     volumes:
       - arias_db:/app/instance
+      # Photographs replaced from the content panel. Inside the image they
+      # would live exactly as long as the container: the next deploy builds a
+      # fresh one and the override would point at a file that no longer exists.
+      - arias_uploads:/app/app/static/assets/subidas
     restart: unless-stopped
     networks:
       - proxy
@@ -56,6 +60,7 @@ services:
 
 volumes:
   arias_db:
+  arias_uploads:
 
 networks:
   proxy:

@@ -68,13 +68,26 @@ def _resolve(app: Flask, slot: dict[str, Any]) -> dict[str, Any]:
     """
     relative = os.path.join(PHOTO_DIR, slot["file"])
     absolute = os.path.join(app.static_folder, relative)
+    shipped = f"{app.static_url_path}/{PHOTO_DIR.replace(os.sep, '/')}/{slot['file']}"
+
+    url = _override(slot["id"], shipped)
+    if url != shipped:
+        # Replaced from the content panel. The file is elsewhere in the static
+        # folder, so its size can still be read — the height matters, it is what
+        # stops the page jumping — but it has no responsive variants, because
+        # those are generated ahead of time and an upload has none.
+        absolute = _static_path(app, url) or absolute
+        available = os.path.isfile(absolute)
+        width, height = _dimensions(absolute) if available else (None, None)
+        resolved = dict(slot)
+        resolved.update(available=available, url=url if available else None,
+                        width=width, height=height, srcset=None)
+        return resolved
+
     available = os.path.isfile(absolute)
     resolved = dict(slot)
     resolved["available"] = available
-    resolved["url"] = (
-        f"{app.static_url_path}/{PHOTO_DIR.replace(os.sep, '/')}/{slot['file']}"
-        if available else None
-    )
+    resolved["url"] = shipped if available else None
     width, height = _dimensions(absolute) if available else (None, None)
     resolved["width"] = width
     resolved["height"] = height
@@ -82,6 +95,30 @@ def _resolve(app: Flask, slot: dict[str, Any]) -> dict[str, Any]:
         _srcset(app, slot["file"], width) if available and width else None
     )
     return resolved
+
+
+def _override(slot_id: str, shipped: str) -> str:
+    """What the content panel says this photograph is, or the shipped file.
+
+    Resolved through sitecopy so a replaced photograph is a row rather than a
+    deploy. Guarded because this module is also imported by scripts and by
+    tests that never build a request — outside an app context there is no
+    override to read, and the manifest is the answer.
+    """
+    try:
+        from sitecopy.resolver import t_plain
+
+        return str(t_plain(f"foto.{slot_id}")) or shipped
+    except Exception:
+        return shipped
+
+
+def _static_path(app: Flask, url: str) -> str | None:
+    """The file behind a /static URL, when it is one of ours."""
+    prefix = f"{app.static_url_path}/"
+    if not url.startswith(prefix):
+        return None
+    return os.path.join(app.static_folder, url[len(prefix):].split("?")[0])
 
 
 def _srcset(app: Flask, filename: str, width: int) -> str | None:
