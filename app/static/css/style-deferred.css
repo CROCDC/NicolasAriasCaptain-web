@@ -730,6 +730,19 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
 @media (max-width: 900px) {
   .bitacora { grid-template-columns: 1fr; }
 
+  /* In one column the portrait was taking the whole 656px of a tablet and
+     standing 875px tall — a snapshot the size of the section it belongs to.
+     Set beside the ledger it goes back to a sensible size and the credentials
+     stop being a list on their own under an enormous photograph. */
+  .bitacora-instruments {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(24px, 4vw, 40px);
+    align-items: start;
+  }
+
+  .bitacora-portrait { margin-bottom: 0; }
+
   .entry,
   .entry:nth-of-type(even) { grid-template-columns: 1fr; }
 
@@ -740,6 +753,11 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
 }
 
 @media (max-width: 560px) {
+  /* Too narrow to hold a photograph and a two-column ledger side by side. */
+  .bitacora-instruments { grid-template-columns: 1fr; }
+
+  .bitacora-portrait { margin-bottom: 1.8rem; }
+
   /* One and a half frames fit on a phone, so the alternating heights stop
      reading as a rhythm and start reading as one photograph hanging lower
      than the other. On this width they all take the same shape, and each is
