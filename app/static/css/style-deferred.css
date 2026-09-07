@@ -69,11 +69,13 @@
 
 .head-centred { justify-items: center; text-align: center; margin-inline: auto; }
 
-.head-centred .head-mark::after { display: none; }
-
-.head-centred .head-mark::before {
+/* Centred, so the rule goes down both sides. The left-hand-only version it
+   inherits from the ranged heads hung the whole line off centre. */
+.head-centred .head-mark::before,
+.head-centred .head-mark::after {
   content: '';
   flex: 0 0 40px;
+  max-width: 40px;
   height: 1px;
   background: currentColor;
   opacity: 0.35;
@@ -90,6 +92,12 @@
   gap: clamp(36px, 6vw, 76px);
   align-items: start;
 }
+
+/* It borrows .lead for the colour and the measure, but it is running prose:
+   balanced, its six-line paragraph lost a fifth of its line fill to save one
+   short last line. A tight rag with a short last line is what a printed page
+   looks like. */
+.bitacora-body { text-wrap: auto; }
 
 .bitacora-body p + p { margin-top: 1.05rem; }
 
@@ -124,7 +132,7 @@
   grid-template-columns: 118px minmax(0, 1fr);
   gap: 1rem;
   align-items: baseline;
-  padding-block: 0.8rem;
+  padding-block: 0.95rem;
   border-bottom: 1px solid var(--on-sand-line);
 }
 
@@ -140,10 +148,20 @@
 .ledger-value { font-size: 0.98rem; }
 
 /* The gauge: three figures read off an open arc, the way a bearing is read
-   off a card. It replaces the row of big numbers every other site has. */
+   off a card. It replaces the row of big numbers every other site has.
+
+   It closes the story column rather than the instrument one: the prose ran
+   some five hundred pixels short of the portrait, and the figures are what
+   the story is claiming anyway. Wider here, the three labels also stop
+   wrapping to two lines under two of the three numbers. */
 .gauge {
   position: relative;
-  margin-top: clamp(28px, 4vw, 44px);
+  /* The same measure as the prose above it. Capped narrower, its rule stopped
+     77px short of the text and read as an arbitrary width rather than a
+     deliberate one. */
+  margin-top: clamp(30px, 4vw, 46px);
+  padding-top: clamp(26px, 3.4vw, 38px);
+  border-top: 1px solid var(--on-sand-line);
 }
 
 .gauge-face { color: var(--seaglass); }
@@ -152,7 +170,8 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
-  margin-top: -6%;
+  /* The numbers hang just under the arc's open ends without touching them. */
+  margin-top: -3.5%;
 }
 
 .gauge-figure { text-align: center; }
@@ -172,7 +191,10 @@
   font-size: 0.66rem;
   font-weight: 600;
   letter-spacing: 0.16em;
+  text-indent: 0.16em;
+  line-height: 1.45;
   text-transform: uppercase;
+  text-wrap: balance;
   color: var(--on-sand-soft);
 }
 
@@ -204,16 +226,31 @@
 
 .entry-media .medallion { width: 100%; }
 
+/* A bare copper "I" floating above a headline reads as a stray character.
+   The rule after it is the one the section heads carry, shorter: the numeral
+   belongs to the same family of marks and now sits on something. */
 .entry-number {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
   font-family: var(--font-seal);
   font-size: 0.68rem;
   font-weight: 600;
+  line-height: 1;
   letter-spacing: 0.24em;
   color: var(--copper-deep);
 }
 
+.entry-number::after {
+  content: '';
+  flex: 0 0 30px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.45;
+}
+
 .entry-title {
-  margin-top: 0.4rem;
+  margin-top: 0.75rem;
   font-family: var(--font-head);
   font-weight: 400;
   font-size: clamp(1.5rem, 3vw, 2.05rem);
@@ -222,6 +259,7 @@
 
 .entry-desc {
   margin-top: 0.85rem;
+  text-wrap: balance;
   color: var(--on-sand-soft);
   max-width: 54ch;
 }
@@ -231,8 +269,8 @@
 .entry-points {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.5rem 1.6rem;
-  margin-top: 1.3rem;
+  gap: 0.85rem 2rem;
+  margin-top: 1.5rem;
 }
 
 .entry-points li {
@@ -313,6 +351,7 @@
 
 .waypoint-desc {
   margin-top: 0.55rem;
+  text-wrap: balance;
   font-size: 0.94rem;
   color: var(--on-petrol-soft);
 }
@@ -320,7 +359,14 @@
 /* -------------------------------------------------------------------------
    6. GALERÍA — a rail that scrolls sideways, with its own scale
    ------------------------------------------------------------------------- */
-.rail-wrap { position: relative; }
+/* The rail stopped dead at the container edge with half the photographs
+   still to the right of it and 200px of empty sand beyond — nothing said the
+   strip continued. It now runs out to the viewport edge, so the next frame is
+   always cut by the screen rather than by an invisible margin. */
+.rail-wrap {
+  position: relative;
+  --bleed: max(0px, calc((100vw - 100%) / 2));
+}
 
 .rail {
   display: flex;
@@ -328,8 +374,11 @@
   gap: 16px;
   overflow-x: auto;
   scroll-snap-type: x proximity;
+  margin-right: calc(-1 * var(--bleed));
+  padding-right: var(--bleed);
   padding-bottom: 18px;
   scrollbar-width: thin;
+  scroll-padding-left: 2px;
 }
 
 .rail-item {
@@ -355,7 +404,10 @@
 .band-petrol .rail-caption { color: var(--on-petrol-soft); }
 
 .rail-hint {
-  margin-top: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.2rem;
   font-family: var(--font-seal);
   font-size: 0.66rem;
   font-weight: 600;
@@ -369,18 +421,39 @@
    ------------------------------------------------------------------------- */
 .contacto-inner { max-width: 760px; margin-inline: auto; }
 
+/* Three equal cells split the address as "…capitannicolasari / as.com.ar".
+   The middle cell is given the extra width instead, since it is the only one
+   holding something that cannot be hyphenated. */
 .contacto-rows {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  grid-template-columns: 1fr;
   gap: 1px;
   margin-block: clamp(28px, 4vw, 44px);
   background: var(--on-sand-line);
   border: 1px solid var(--on-sand-line);
 }
 
+@media (min-width: 840px) {
+  /* Widths cut to what each value actually measures, so none of the three
+     wraps: equal thirds broke the address, and giving the middle cell all the
+     slack then broke the port name instead. Below 840px there is no set of
+     widths that fits all three, so they stack rather than each break in two
+     — one of them across the middle of its phone number. */
+  .contacto-rows { grid-template-columns: 0.76fr 1.3fr 0.94fr; }
+}
+
 .contacto-cell {
+  display: grid;
+  /* Top-aligned, not centred: should a value ever wrap, the three keys stay
+     on one line instead of one of them riding up. */
+  align-content: start;
+  gap: 0.45rem;
+  /* Grid items floor at min-content, and a 35-character address has no
+     break opportunity: without this the cell refuses to narrow and pushes
+     the page sideways on a 320px screen. */
+  min-width: 0;
   background: var(--sand);
-  padding: 1.1rem 1.2rem;
+  padding: 1.25rem 1.15rem;
   text-align: center;
 }
 
@@ -390,24 +463,31 @@
   font-size: 0.66rem;
   font-weight: 600;
   letter-spacing: 0.2em;
+  text-indent: 0.2em;
   text-transform: uppercase;
   color: var(--copper-deep);
 }
 
 .contacto-value {
   display: block;
-  margin-top: 0.4rem;
   font-family: var(--font-head);
   font-size: 1.02rem;
-  word-break: break-word;
+  line-height: 1.4;
+  /* `anywhere`, not `break-word`: only this one also lowers the intrinsic
+     minimum, which is what lets the cell shrink at all. Wide enough and the
+     address still sets on one line, so nothing breaks in practice. */
+  overflow-wrap: anywhere;
 }
 
 a.contacto-value:hover { color: var(--copper-deep); }
 
+/* Column gap only. With a row gap as well, two fields that sat side by side
+   on a desktop 24px apart stacked 45px apart on a phone — the same form in
+   two different rhythms. The field's own margin is the single spacing rule. */
 .form-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 1.3rem;
+  gap: 0 1.3rem;
 }
 
 .field { margin-bottom: 1.5rem; }
@@ -440,7 +520,13 @@ a.contacto-value:hover { color: var(--copper-deep); }
 
 .control:focus { outline: none; border-bottom-color: var(--copper); }
 
-textarea.control { resize: vertical; min-height: 128px; line-height: 1.7; }
+/* A message under a field that itself looks untouched is easy to miss. The
+   rule under the control carries the state too. */
+.control-invalid { border-bottom-color: #9d2f1c; }
+
+.control-invalid:focus { border-bottom-color: var(--copper); }
+
+textarea.control { resize: vertical; min-height: 104px; line-height: 1.7; }
 
 select.control { appearance: none; border-radius: 0; cursor: pointer; }
 
@@ -469,7 +555,7 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
 }
 
 .form-note {
-  margin-top: 0.9rem;
+  margin-top: 1.1rem;
   font-size: 0.82rem;
   color: var(--on-sand-soft);
   text-align: center;
@@ -506,6 +592,7 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
   font-size: 0.86rem;
   font-weight: 600;
   letter-spacing: 0.34em;
+  text-indent: 0.34em;
   text-transform: uppercase;
 }
 
@@ -528,6 +615,8 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }
+
+.pie-links > *:last-child { margin-right: -0.2em; }
 
 .pie-links a { color: var(--on-petrol-soft); }
 .pie-links a:hover { color: var(--copper-light); }
@@ -568,8 +657,8 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
   z-index: 900;
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.7rem 1rem;
+  gap: 0.62rem;
+  padding: 0.82rem 1.15rem;
   background: var(--copper);
   color: var(--sand);
   font-family: var(--font-seal);
@@ -577,15 +666,33 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  transition: background-color var(--fast);
+  /* Rounded on the side that is not against the glass, and lifted off the
+     sand: flush and square on all four corners read as a rendering fault. */
+  border-radius: 2px 0 0 2px;
+  box-shadow: -1px 2px 14px rgba(18, 48, 58, 0.18);
+  transition: background-color var(--fast), transform var(--mid),
+              box-shadow var(--fast), opacity var(--mid), visibility var(--mid);
 }
 
-.wa-tab:hover { background: var(--copper-deep); }
+/* Retired over the contact section — see initWaTab. Kept out of the tab order
+   too, so it is not a control nobody can see. */
+.wa-tab-away {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(100%);
+  pointer-events: none;
+}
+
+.wa-tab:hover {
+  background: var(--copper-deep);
+  transform: translateX(-2px);
+  box-shadow: -2px 3px 18px rgba(18, 48, 58, 0.24);
+}
 
 /* On a phone the tab is the icon alone: with the word it sat across whatever
    button happened to be at that height. */
 @media (max-width: 720px) {
-  .wa-tab { padding: 0.7rem 0.75rem; }
+  .wa-tab { padding: 0.8rem 0.85rem; }
 
   .wa-tab span { display: none; }
 }
@@ -633,6 +740,19 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
 @media (max-width: 900px) {
   .bitacora { grid-template-columns: 1fr; }
 
+  /* In one column the portrait was taking the whole 656px of a tablet and
+     standing 875px tall — a snapshot the size of the section it belongs to.
+     Set beside the ledger it goes back to a sensible size and the credentials
+     stop being a list on their own under an enormous photograph. */
+  .bitacora-instruments {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(24px, 4vw, 40px);
+    align-items: start;
+  }
+
+  .bitacora-portrait { margin-bottom: 0; }
+
   .entry,
   .entry:nth-of-type(even) { grid-template-columns: 1fr; }
 
@@ -643,11 +763,24 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
 }
 
 @media (max-width: 560px) {
+  /* Too narrow to hold a photograph and a two-column ledger side by side. */
+  .bitacora-instruments { grid-template-columns: 1fr; }
+
+  .bitacora-portrait { margin-bottom: 1.8rem; }
+
+  /* One and a half frames fit on a phone, so the alternating heights stop
+     reading as a rhythm and start reading as one photograph hanging lower
+     than the other. On this width they all take the same shape, and each is
+     wide enough to be looked at rather than glanced past. */
+  .rail-item { flex-basis: min(78vw, 340px); }
+
+  .rail-item:nth-child(even) .shot { aspect-ratio: 3 / 4; }
+
   .ledger-row { grid-template-columns: 1fr; gap: 0.15rem; }
 
   .derrota { grid-template-columns: 1fr; }
 
   .entry-points { grid-template-columns: 1fr; }
 
-  .gauge-figures { margin-top: -2%; }
+  .gauge-figures { margin-top: -1%; }
 }
