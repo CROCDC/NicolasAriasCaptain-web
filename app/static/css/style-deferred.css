@@ -93,6 +93,12 @@
   align-items: start;
 }
 
+/* It borrows .lead for the colour and the measure, but it is running prose:
+   balanced, its six-line paragraph lost a fifth of its line fill to save one
+   short last line. A tight rag with a short last line is what a printed page
+   looks like. */
+.bitacora-body { text-wrap: auto; }
+
 .bitacora-body p + p { margin-top: 1.05rem; }
 
 .bitacora-body strong { font-weight: 700; }
@@ -253,7 +259,7 @@
 
 .entry-desc {
   margin-top: 0.85rem;
-  text-wrap: pretty;
+  text-wrap: balance;
   color: var(--on-sand-soft);
   max-width: 54ch;
 }
@@ -345,7 +351,7 @@
 
 .waypoint-desc {
   margin-top: 0.55rem;
-  text-wrap: pretty;
+  text-wrap: balance;
   font-size: 0.94rem;
   color: var(--on-petrol-soft);
 }
