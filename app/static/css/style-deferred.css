@@ -218,16 +218,31 @@
 
 .entry-media .medallion { width: 100%; }
 
+/* A bare copper "I" floating above a headline reads as a stray character.
+   The rule after it is the one the section heads carry, shorter: the numeral
+   belongs to the same family of marks and now sits on something. */
 .entry-number {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
   font-family: var(--font-seal);
   font-size: 0.68rem;
   font-weight: 600;
+  line-height: 1;
   letter-spacing: 0.24em;
   color: var(--copper-deep);
 }
 
+.entry-number::after {
+  content: '';
+  flex: 0 0 30px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.45;
+}
+
 .entry-title {
-  margin-top: 0.4rem;
+  margin-top: 0.75rem;
   font-family: var(--font-head);
   font-weight: 400;
   font-size: clamp(1.5rem, 3vw, 2.05rem);
@@ -725,6 +740,14 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
 }
 
 @media (max-width: 560px) {
+  /* One and a half frames fit on a phone, so the alternating heights stop
+     reading as a rhythm and start reading as one photograph hanging lower
+     than the other. On this width they all take the same shape, and each is
+     wide enough to be looked at rather than glanced past. */
+  .rail-item { flex-basis: min(78vw, 340px); }
+
+  .rail-item:nth-child(even) .shot { aspect-ratio: 3 / 4; }
+
   .ledger-row { grid-template-columns: 1fr; gap: 0.15rem; }
 
   .derrota { grid-template-columns: 1fr; }
