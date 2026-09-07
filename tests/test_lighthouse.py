@@ -87,11 +87,15 @@ def _find_chrome(fallback: str | None = None) -> str | None:
 @pytest.fixture(scope="session")
 def lighthouse_report(live_server: str, playwright_driver) -> dict:
     """Run Lighthouse once against the live server and return the parsed report."""
+    # A tool that is absent is a skip, not a failure: this suite also runs
+    # inside the deployment image, which carries neither Node nor Chromium on
+    # purpose. A report that came back empty below is a different matter — that
+    # is Lighthouse having run and failed, and it stays a failure.
     if shutil.which("npx") is None:
-        pytest.fail("Lighthouse needs Node/npx on PATH. Install Node (https://nodejs.org).")
+        pytest.skip("Lighthouse needs Node/npx on PATH. Install Node (https://nodejs.org).")
     chrome = _find_chrome(playwright_driver.chromium.executable_path)
     if not chrome:
-        pytest.fail("No Chrome/Chromium found. Install Chrome or set CHROME_PATH.")
+        pytest.skip("No Chrome/Chromium found. Install Chrome or set CHROME_PATH.")
 
     with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as tmp:
         out_path = tmp.name
