@@ -480,7 +480,9 @@ body.menu-open { overflow: hidden; }
   inset: auto 0 clamp(14px, 2.4vw, 26px) 0;
   display: flex;
   justify-content: center;
-  gap: 1.2rem;
+  /* Matched to the spacing the inner "·" separators get from the tracking:
+     at 1.2rem this one dot read as a different, wider kind of break. */
+  gap: 0.5rem;
   font-family: var(--font-seal);
   font-size: 0.64rem;
   font-weight: 600;
