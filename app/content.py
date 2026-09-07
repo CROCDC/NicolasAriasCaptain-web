@@ -70,6 +70,8 @@ REGISTRY = Registry(groups=(
                       "Patrón de yates · Río de la Plata",
                       hint="Corto: va sobre un arco y el texto largo no entra."),
             TextField("portada.titulo", "Palabra antes del nombre", "Capitán"),
+            TextField("portada.tagline", "La frase bajo el nombre",
+                      "El barco en manos de un patrón. El día, en las tuyas."),
             TextField("portada.cta_servicios", "Botón izquierdo", "Qué hago"),
             TextField("portada.cta_contacto", "Botón derecho", "Consultar una fecha"),
             TextField("portada.pie", "Línea al pie",
