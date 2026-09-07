@@ -17,6 +17,11 @@ services:
       - VIRTUAL_PORT=7000
       - DATABASE_URL=sqlite:////app/instance/arias.db
       - SECRET_KEY=${SECRET_KEY}
+      # Opens the content panel at /admin/content. Same road as
+      # SECRET_KEY: Infisical, injected by `infisical run` at deploy.
+      # Missing means empty, and an empty one refuses every password —
+      # a forgotten secret locks the panel rather than opening it.
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       # Public by design — it ships inside the page, so it is a plain value and
       # deliberately not an Infisical secret.
       - UMAMI_WEBSITE_ID=47f4836b-a82e-421b-a144-6c7623b41354
