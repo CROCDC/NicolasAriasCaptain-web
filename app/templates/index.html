@@ -456,13 +456,15 @@
           <div class="field">
             <label class="field-label" for="name">Nombre</label>
             <input class="control" type="text" id="name" name="name"
-                   placeholder="Tu nombre" autocomplete="name" required />
+                   placeholder="Tu nombre" autocomplete="name" required
+                   aria-describedby="nameError" />
             <span class="field-error" id="nameError" aria-live="polite"></span>
           </div>
           <div class="field">
             <label class="field-label" for="email">Email</label>
             <input class="control" type="email" id="email" name="email"
-                   placeholder="tu@email.com" autocomplete="email" required />
+                   placeholder="tu@email.com" autocomplete="email" required
+                   aria-describedby="emailError" />
             <span class="field-error" id="emailError" aria-live="polite"></span>
           </div>
         </div>
@@ -471,13 +473,15 @@
           <div class="field">
             <label class="field-label" for="phone">Teléfono <em>(opcional)</em></label>
             <input class="control" type="tel" id="phone" name="phone"
-                   placeholder="+54 9 11 ..." autocomplete="tel" />
+                   placeholder="+54 9 11 ..." autocomplete="tel"
+                   aria-describedby="phoneError" />
             <span class="field-error" id="phoneError" aria-live="polite"></span>
           </div>
           <div class="field">
             <label class="field-label" for="service_type">Qué necesitás</label>
             <div class="select-wrap">
-              <select class="control" id="service_type" name="service_type" required>
+              <select class="control" id="service_type" name="service_type" required
+                      aria-describedby="serviceError">
                 <option value="" disabled selected>Elegí una opción</option>
                 <option value="patron">Patrón a bordo</option>
                 <option value="traslado">Traslado / delivery</option>
@@ -493,7 +497,7 @@
           <label class="field-label" for="message">Mensaje</label>
           <textarea class="control" id="message" name="message" rows="5"
                     placeholder="Barco, fecha tentativa y de dónde a dónde."
-                    required></textarea>
+                    required aria-describedby="messageError"></textarea>
           <span class="field-error" id="messageError" aria-live="polite"></span>
         </div>
 

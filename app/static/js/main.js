@@ -246,11 +246,38 @@ const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').mat
     message: qs('#messageError', form),
   };
 
+  /** The control a message belongs to, so the field can be marked as well. */
+  function controlFor(field) {
+    return form.elements[field] || null;
+  }
+
+  /** Take one field out of the error state: the message and the red rule. */
+  function clearField(field) {
+    const message = FIELDS[field];
+    if (message) message.textContent = '';
+    const control = controlFor(field);
+    if (control) {
+      control.classList.remove('control-invalid');
+      control.removeAttribute('aria-invalid');
+    }
+  }
+
   function clearErrors() {
-    Object.values(FIELDS).forEach((el) => { if (el) el.textContent = ''; });
+    Object.keys(FIELDS).forEach(clearField);
     successBox.hidden = true;
     errorBox.hidden = true;
   }
+
+  // A field that has been fixed stops looking wrong straight away, rather
+  // than staying red until the next submit tells it otherwise.
+  Object.keys(FIELDS).forEach((field) => {
+    const control = controlFor(field);
+    if (!control) return;
+    const event = control.tagName === 'SELECT' ? 'change' : 'input';
+    control.addEventListener(event, () => {
+      if (control.classList.contains('control-invalid')) clearField(field);
+    });
+  });
 
   /**
    * Client-side check. The server validates the same things again — this only
@@ -270,11 +297,22 @@ const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').mat
     return errors;
   }
 
+  /** Paint the messages, mark the controls, and put the caret in the first. */
   function showErrors(errors) {
+    let firstControl = null;
     Object.entries(errors).forEach(([field, message]) => {
       const target = FIELDS[field];
       if (target) target.textContent = message;
+      const control = controlFor(field);
+      if (control) {
+        control.classList.add('control-invalid');
+        control.setAttribute('aria-invalid', 'true');
+        if (!firstControl) firstControl = control;
+      }
     });
+    // Without this the button appears to do nothing: on a phone the first
+    // message can be a screen and a half above the button that produced it.
+    if (firstControl) firstControl.focus({ preventScroll: false });
   }
 
   function setBusy(busy) {

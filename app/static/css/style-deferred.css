@@ -495,6 +495,12 @@ a.contacto-value:hover { color: var(--copper-deep); }
 
 .control:focus { outline: none; border-bottom-color: var(--copper); }
 
+/* A message under a field that itself looks untouched is easy to miss. The
+   rule under the control carries the state too. */
+.control-invalid { border-bottom-color: #9d2f1c; }
+
+.control-invalid:focus { border-bottom-color: var(--copper); }
+
 textarea.control { resize: vertical; min-height: 104px; line-height: 1.7; }
 
 select.control { appearance: none; border-radius: 0; cursor: pointer; }
