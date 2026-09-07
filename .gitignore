@@ -114,3 +114,7 @@ app/static/assets/photos/originals/
 # Instagram content dumps (source material, not code)
 instagram-*/
 curacion/
+
+# Photographs uploaded from the content panel: runtime data on a volume, not
+# source. The shipped ones live in app/static/assets/photos/.
+app/static/assets/subidas/

@@ -15,6 +15,11 @@ from typing import Any
 
 from app.content import REGISTRY
 
+#: The photographs are resolved in Python (app/services/media.py builds the key
+#: from the manifest id), not written out in a template, so the template scan
+#: below cannot see them. They get their own check instead of an exemption.
+PHOTO_GROUP = "fotos"
+
 TEMPLATE_DIR = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "app", "templates")
 
@@ -22,11 +27,12 @@ TEMPLATE_DIR = os.path.join(
 _CALL = re.compile(r"\bt(?:_lines|_plain|_optional|_list)?\(\s*'([^']+)'")
 
 
-def _registry_keys() -> list[str]:
+def _registry_keys(skip: str = "") -> list[str]:
     return [field.key
             for group in REGISTRY.groups
             for section in group.sections
-            for field in section.fields]
+            for field in section.fields
+            if group.key != skip]
 
 
 def _template_keys() -> set[str]:
@@ -52,10 +58,30 @@ def test_every_template_key_is_declared() -> None:
 
 
 def test_every_declared_key_is_used() -> None:
-    unused = set(_registry_keys()) - _template_keys()
+    unused = set(_registry_keys(skip=PHOTO_GROUP)) - _template_keys()
     assert not unused, (
         "the panel offers fields no template renders — editing one of these "
         f"would change nothing: {sorted(unused)}")
+
+
+def test_every_photograph_is_offered_exactly_once(app_context: Any) -> None:
+    """The photo fields and the manifest have to describe the same set.
+
+    They are built from the manifest, so this only fails if that stops being
+    true — a field for a photograph the site no longer declares is a panel entry
+    that edits nothing, and a slot with no field is a photograph nobody can
+    replace.
+    """
+    from app.services import media
+
+    declared = {field.key.removeprefix("foto.")
+                for group in REGISTRY.groups if group.key == PHOTO_GROUP
+                for section in group.sections
+                for field in section.fields}
+    slots = {slot["id"] for slot in media.load_manifest(app_context)}
+    assert declared == slots, (
+        f"only in the panel: {sorted(declared - slots)}; "
+        f"only in the manifest: {sorted(slots - declared)}")
 
 
 def test_defaults_are_what_the_page_shows(client: Any) -> None:

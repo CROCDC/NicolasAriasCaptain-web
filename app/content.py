@@ -18,7 +18,49 @@ the same number is read by the WhatsApp links, the schema and the footer, and
 having two places to change it is how a site ends up showing two numbers.
 """
 
+import json
+import os
+
 from sitecopy import Group, Registry, Section, TextField
+
+#: The photographs are declared once, in the manifest the site already reads.
+#: Building the panel's fields from it rather than retyping them here is what
+#: keeps a photograph from existing under two names.
+_MANIFEST = os.path.join(os.path.dirname(__file__), "static", "data", "gallery.json")
+_PHOTO_URL = "/static/assets/photos/"
+
+_PHOTO_LABELS = {
+    "hero": "Portada — el medallón",
+    "retrato": "Bitácora — el retrato",
+    "servicio-patron": "Servicios — patrón a bordo",
+    "servicio-traslado": "Servicios — traslados",
+    "servicio-salida": "Servicios — salidas",
+    "og": "La imagen que se ve al compartir el link",
+}
+
+
+def _photo_fields() -> tuple[TextField, ...]:
+    """One image field per declared photograph, defaulting to the shipped file.
+
+    A photograph replaced from the panel keeps its width and height — the size
+    is read off the uploaded file — but loses its responsive variants, because
+    those are generated ahead of time by scripts/gen_responsive_images.py and an
+    upload has none. The page stays correct and a little heavier; running that
+    script over the new file puts the variants back.
+    """
+    with open(_MANIFEST, encoding="utf-8") as handle:
+        slots = json.load(handle)
+    return tuple(
+        TextField(
+            f"foto.{slot['id']}",
+            _PHOTO_LABELS.get(slot["id"], slot["caption"]),
+            type="image",
+            hint=slot["alt"],
+            default=_PHOTO_URL + slot["file"],
+        )
+        for slot in slots
+    )
+
 
 REGISTRY = Registry(groups=(
 
@@ -172,6 +214,13 @@ REGISTRY = Registry(groups=(
                 "Los datos quedan solo acá. No se comparten ni se usan para mandarte "
                 "publicidad.")),
         )),
+    )),
+
+    Group("fotos", "Fotos", "Las imágenes del sitio", icon="◎", sections=(
+        Section("fotos", "Las fotos", fields=_photo_fields(),
+                note=("Reemplazar una foto acá cambia la que se ve. Conviene "
+                      "mandarla ya recortada: las de los medallones se recortan "
+                      "en círculo, así que lo que quede en las esquinas se pierde.")),
     )),
 
 ))
