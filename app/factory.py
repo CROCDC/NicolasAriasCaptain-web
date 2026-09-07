@@ -5,6 +5,7 @@ import json
 import os
 from flask import Flask, url_for
 from markupsafe import Markup
+from sitecopy import SiteCopy
 from flask_compress import Compress
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -114,6 +115,25 @@ def create_app() -> Flask:
     # --- Site copy and contact details ---
     app.config["SITE"] = _load_site_config(os.path.dirname(__file__))
     app.jinja_env.globals["site"] = app.config["SITE"]
+
+    # --- Editable copy ---
+    # Mounted before db.create_all() further down, because attaching the store
+    # is what declares its table; after it, the first edit would hit a table
+    # that does not exist yet.
+    #
+    # The panel reads ADMIN_PASSWORD from the environment, and an unset one
+    # refuses every password — a deployment that forgot it is locked, not open.
+    # Every default lives in app/content.py, so an empty table renders the site
+    # exactly as the templates always did.
+    from app.content import REGISTRY
+    SiteCopy(
+        app,
+        registry=REGISTRY,
+        db=db,
+        password=os.getenv("ADMIN_PASSWORD", ""),
+        brand=app.config["SITE"]["brand"],
+        site_url=app.config["SITE"]["url"],
+    )
 
     # --- Cache-busting for static assets ---
     # Static files are served with a one-year cache, so a URL like

@@ -147,14 +147,14 @@
   <p class="portada-tagline reveal" style="--delay: .2s">{{ site.tagline }}</p>
 
   <div class="portada-actions reveal" style="--delay: .26s">
-    <a class="btn btn-solid" href="#servicios">Qué hago</a>
-    <a class="btn btn-line" href="#contacto">Consultar una fecha</a>
+    <a class="btn btn-solid" href="#servicios">{{ t('portada.cta_servicios') }}</a>
+    <a class="btn btn-line" href="#contacto">{{ t('portada.cta_contacto') }}</a>
   </div>
 
   <p class="portada-foot">
     <span>{{ site.base_port }}</span>
     <span aria-hidden="true">·</span>
-    <span>Salidas · Traslados · Patrón a bordo</span>
+    <span>{{ t('portada.pie') }}</span>
   </p>
 </header>
 
@@ -173,31 +173,14 @@
         <p class="head-mark seal seal-copper">
           <span class="numeral">I</span> Bitácora
         </p>
-        <h2 class="headline">No alquilo un barco.<br /><em>Lo gobierno.</em></h2>
+        <h2 class="headline">{{ t('bitacora.titulo_1') }}<br /><em>{{ t('bitacora.titulo_2') }}</em></h2>
 
         <div class="bitacora-body lead">
-          <p>
-            Me llamo Nicolás Arias y me gano la vida al timón. Empecé como
-            tripulante, aprendí mirando a gente que llevaba treinta años en el
-            agua y hoy gobierno barcos ajenos con el mismo cuidado con el que
-            gobernaría el propio: es el trabajo, y también es la parte que me
-            gusta.
-          </p>
-          <p>
-            El Río de la Plata no perdona la improvisación. Entra la sudestada
-            sin avisar, la bajante deja bancos donde ayer había agua y el canal
-            a las seis de la tarde se llena de tráfico que no te va a ceder el
-            paso. Conocer eso de memoria es la diferencia entre una salida
-            linda y una salida segura, y es exactamente lo que estás
-            contratando cuando me subís a bordo.
-          </p>
-          <p>
-            Trabajo con pocas salidas y sin apuro. Prefiero decirte que hoy no
-            es el día antes que forzar una jornada que después nadie disfruta:
-            el río está mañana también.
-          </p>
-          <p><strong>Vos salís a navegar. De lo demás me ocupo yo.</strong></p>
-          <p class="bitacora-sign">— Nicolás</p>
+          <p>{{ t('bitacora.parrafo_1') }}</p>
+          <p>{{ t('bitacora.parrafo_2') }}</p>
+          <p>{{ t('bitacora.parrafo_3') }}</p>
+          <p><strong>{{ t('bitacora.cierre') }}</strong></p>
+          <p class="bitacora-sign">{{ t('bitacora.firma') }}</p>
         </div>
 
         <!-- El instrumento: tres cifras leídas sobre un arco graduado -->
@@ -238,11 +221,11 @@
         <div class="ledger">
           <div class="ledger-row">
             <span class="ledger-key">Titulación</span>
-            <span class="ledger-value">Patrón de yate — Prefectura Naval Argentina</span>
+            <span class="ledger-value">{{ t('bitacora.ficha.titulacion') }}</span>
           </div>
           <div class="ledger-row">
             <span class="ledger-key">Zona</span>
-            <span class="ledger-value">Río de la Plata, Delta, Uruguay y costa atlántica</span>
+            <span class="ledger-value">{{ t('bitacora.ficha.zona') }}</span>
           </div>
           <div class="ledger-row">
             <span class="ledger-key">Puerto base</span>
@@ -250,11 +233,11 @@
           </div>
           <div class="ledger-row">
             <span class="ledger-key">Embarcaciones</span>
-            <span class="ledger-value">Veleros y lanchas hasta 45 pies</span>
+            <span class="ledger-value">{{ t('bitacora.ficha.embarcaciones') }}</span>
           </div>
           <div class="ledger-row">
             <span class="ledger-key">Temporada</span>
-            <span class="ledger-value">Todo el año, según pronóstico</span>
+            <span class="ledger-value">{{ t('bitacora.ficha.temporada') }}</span>
           </div>
         </div>
 
@@ -271,31 +254,22 @@
   <div class="container">
     <div class="head reveal">
       <p class="head-mark seal seal-copper"><span class="numeral">II</span> Servicios</p>
-      <h2 class="headline">Tres maneras de<br /><em>tenerme a bordo</em></h2>
-      <p class="lead">
-        Todo se cotiza igual: barco, distancia, días y pronóstico. Escribime con
-        esos cuatro datos y te paso un número cerrado, sin vueltas ni sorpresas
-        al final.
-      </p>
+      <h2 class="headline">{{ t('servicios.titulo_1') }}<br /><em>{{ t('servicios.titulo_2') }}</em></h2>
+      <p class="lead">{{ t('servicios.bajada') }}</p>
     </div>
 
     <article class="entry reveal">
       <div class="entry-media">{{ ui.medallion(photo('servicio-patron'), sizes=SERVICE_SIZES) }}</div>
       <div class="entry-body">
         <p class="entry-number">I</p>
-        <h3 class="entry-title">Patrón a bordo</h3>
-        <p class="entry-desc">
-          Tenés el barco, pero no la matrícula, el tiempo o las horas de agua
-          para esa salida en particular. Lo gobierno yo. Vos invitás, disfrutás
-          o mirás cómo se hace.
-        </p>
+        <h3 class="entry-title">{{ t('servicios.patron.titulo') }}</h3>
+        <p class="entry-desc">{{ t('servicios.patron.texto') }}</p>
         <ul class="entry-points">
-          <li>Por jornada o por medio día</li>
-          <li>Chequeo previo de motor, velas y seguridad</li>
-          <li>Plan de navegación según viento y marea</li>
-          <li>Práctica guiada al timón, si querés</li>
+          {%- for punto in t_lines('servicios.patron.puntos') %}
+          <li>{{ punto }}</li>
+          {%- endfor %}
         </ul>
-        <a class="entry-link" href="#contacto" data-service="patron">Consultar</a>
+        <a class="entry-link" href="#contacto" data-service="patron">{{ t('servicios.patron.boton') }}</a>
       </div>
     </article>
 
@@ -303,19 +277,14 @@
       <div class="entry-media">{{ ui.medallion(photo('servicio-traslado'), sizes=SERVICE_SIZES) }}</div>
       <div class="entry-body">
         <p class="entry-number">II</p>
-        <h3 class="entry-title">Traslados y deliveries</h3>
-        <p class="entry-desc">
-          Compraste en otro puerto, entrás a invernada o tenés que llegar a una
-          regata que empieza el viernes. Llevo el barco y te lo entrego donde lo
-          necesitás, en la fecha que acordamos.
-        </p>
+        <h3 class="entry-title">{{ t('servicios.traslado.titulo') }}</h3>
+        <p class="entry-desc">{{ t('servicios.traslado.texto') }}</p>
         <ul class="entry-points">
-          <li>Río de la Plata, Delta, Uruguay y costa atlántica</li>
-          <li>Parte de estado del barco antes de zarpar</li>
-          <li>Reporte de posición durante la travesía</li>
-          <li>Tripulación extra cuando la travesía lo pide</li>
+          {%- for punto in t_lines('servicios.traslado.puntos') %}
+          <li>{{ punto }}</li>
+          {%- endfor %}
         </ul>
-        <a class="entry-link" href="#contacto" data-service="traslado">Cotizar</a>
+        <a class="entry-link" href="#contacto" data-service="traslado">{{ t('servicios.traslado.boton') }}</a>
       </div>
     </article>
 
@@ -323,19 +292,14 @@
       <div class="entry-media">{{ ui.medallion(photo('servicio-salida'), sizes=SERVICE_SIZES) }}</div>
       <div class="entry-body">
         <p class="entry-number">III</p>
-        <h3 class="entry-title">Salidas y charters</h3>
-        <p class="entry-desc">
-          Un día en el río con barco y patrón incluidos. Un cumpleaños, un
-          atardecer, un domingo largo, o simplemente las ganas de irse un rato
-          de la ciudad sin subirse a un avión.
-        </p>
+        <h3 class="entry-title">{{ t('servicios.salida.titulo') }}</h3>
+        <p class="entry-desc">{{ t('servicios.salida.texto') }}</p>
         <ul class="entry-points">
-          <li>Grupos chicos, sin turnos apurados</li>
-          <li>Recorrido a medida por el río o el Delta</li>
-          <li>Fondeo para nadar o comer a bordo</li>
-          <li>Fecha sujeta a pronóstico, siempre</li>
+          {%- for punto in t_lines('servicios.salida.puntos') %}
+          <li>{{ punto }}</li>
+          {%- endfor %}
         </ul>
-        <a class="entry-link" href="#contacto" data-service="salida">Reservar una fecha</a>
+        <a class="entry-link" href="#contacto" data-service="salida">{{ t('servicios.salida.boton') }}</a>
       </div>
     </article>
   </div>
@@ -348,45 +312,30 @@
   <div class="container">
     <div class="head reveal">
       <p class="head-mark seal seal-copper"><span class="numeral">III</span> La derrota</p>
-      <h2 class="headline">El mismo orden,<br /><em>siempre</em></h2>
-      <p class="lead">
-        Sea un paseo de tres horas o una travesía de tres días, la salida se
-        arma igual. Nada de esto se improvisa arriba del barco.
-      </p>
+      <h2 class="headline">{{ t('derrota.titulo_1') }}<br /><em>{{ t('derrota.titulo_2') }}</em></h2>
+      <p class="lead">{{ t('derrota.bajada') }}</p>
     </div>
 
     <div class="derrota">
       <div class="waypoint reveal">
         <p class="waypoint-index">01</p>
-        <h3 class="waypoint-title">Hablamos</h3>
-        <p class="waypoint-desc">
-          Qué barco es, qué querés hacer y cuándo. Si no conviene, te lo digo
-          en ese momento y no perdemos ninguno de los dos el tiempo.
-        </p>
+        <h3 class="waypoint-title">{{ t('derrota.paso_1.titulo') }}</h3>
+        <p class="waypoint-desc">{{ t('derrota.paso_1.texto') }}</p>
       </div>
       <div class="waypoint reveal" style="--delay: .08s">
         <p class="waypoint-index">02</p>
-        <h3 class="waypoint-title">Miro el tiempo</h3>
-        <p class="waypoint-desc">
-          Viento, altura del río y pronóstico a 48 horas. Si el día no da, se
-          corre la fecha. Es la única regla que no negocio.
-        </p>
+        <h3 class="waypoint-title">{{ t('derrota.paso_2.titulo') }}</h3>
+        <p class="waypoint-desc">{{ t('derrota.paso_2.texto') }}</p>
       </div>
       <div class="waypoint reveal" style="--delay: .16s">
         <p class="waypoint-index">03</p>
-        <h3 class="waypoint-title">Reviso el barco</h3>
-        <p class="waypoint-desc">
-          Motor, combustible, jarcia, luces, chalecos y balsa. Lo que falta se
-          resuelve en el amarre, no en el medio del canal.
-        </p>
+        <h3 class="waypoint-title">{{ t('derrota.paso_3.titulo') }}</h3>
+        <p class="waypoint-desc">{{ t('derrota.paso_3.texto') }}</p>
       </div>
       <div class="waypoint reveal" style="--delay: .24s">
         <p class="waypoint-index">04</p>
-        <h3 class="waypoint-title">Navegamos</h3>
-        <p class="waypoint-desc">
-          Al timón el tiempo que haga falta. Si querés aprender, se enseña; si
-          querés desconectar, ni te enterás de que estoy trabajando.
-        </p>
+        <h3 class="waypoint-title">{{ t('derrota.paso_4.titulo') }}</h3>
+        <p class="waypoint-desc">{{ t('derrota.paso_4.texto') }}</p>
       </div>
     </div>
   </div>
@@ -399,10 +348,8 @@
   <div class="container">
     <div class="head reveal">
       <p class="head-mark seal seal-copper"><span class="numeral">IV</span> Galería</p>
-      <h2 class="headline">El río,<br /><em>desde cubierta</em></h2>
-      <p class="lead">
-        Fotos de salidas y travesías reales.
-      </p>
+      <h2 class="headline">{{ t('galeria.titulo_1') }}<br /><em>{{ t('galeria.titulo_2') }}</em></h2>
+      <p class="lead">{{ t('galeria.bajada') }}</p>
     </div>
 
     <div class="rail-wrap reveal">
@@ -428,11 +375,8 @@
 
       <div class="head head-centred reveal">
         <p class="head-mark seal seal-copper"><span class="numeral">V</span> Contacto</p>
-        <h2 class="headline">¿Cuándo <em>zarpamos?</em></h2>
-        <p class="lead">
-          Contame el barco, la fecha y de dónde a dónde. Respondo el mismo día;
-          por WhatsApp, casi siempre en el momento.
-        </p>
+        <h2 class="headline">{{ t('contacto.titulo_1') }} <em>{{ t('contacto.titulo_2') }}</em></h2>
+        <p class="lead">{{ t('contacto.bajada') }}</p>
       </div>
 
       <div class="contacto-rows reveal">
@@ -505,10 +449,7 @@
           <span class="btn-text">Enviar consulta</span>
         </button>
 
-        <p class="form-note">
-          Los datos quedan solo acá. No se comparten ni se usan para mandarte
-          publicidad.
-        </p>
+        <p class="form-note">{{ t('contacto.nota') }}</p>
 
         <div class="form-banner" id="formSuccess" hidden aria-live="polite"></div>
         <div class="form-banner form-banner-error" id="formError" hidden aria-live="polite"></div>

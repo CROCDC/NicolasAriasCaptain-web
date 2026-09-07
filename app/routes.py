@@ -63,9 +63,14 @@ def register_routes(app: Flask) -> None:
 
     @app.route("/robots.txt", methods=["GET"])
     def robots() -> Response:
-        """Allow everything, and point crawlers at the sitemap."""
+        """Allow the site, keep the editor out, and point at the sitemap.
+
+        The content panel is password-protected, but a login screen in the
+        index is still a login screen advertised to everyone.
+        """
         sitemap = f"{app.config['SITE']['url'].rstrip('/')}/sitemap.xml"
-        body = f"User-agent: *\nAllow: /\n\nSitemap: {sitemap}\n"
+        body = (f"User-agent: *\nAllow: /\nDisallow: /admin/\n\n"
+                f"Sitemap: {sitemap}\n")
         return Response(body, mimetype="text/plain")
 
     @app.route("/sitemap.xml", methods=["GET"])
