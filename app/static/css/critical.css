@@ -194,6 +194,11 @@ input, textarea, select { font-family: var(--font-text); }
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.22em;
+  /* Tracking is applied after the last letter as well, so a centred line of
+     it hangs half a letter-space left of true centre. Indenting the line by
+     the same amount puts that space back on the near side. Every centred
+     block of seal type on the site does this. */
+  text-indent: 0.22em;
   text-transform: uppercase;
   border: 1px solid transparent;
   transition: background-color var(--fast), color var(--fast), border-color var(--fast);
@@ -262,6 +267,7 @@ input, textarea, select { font-family: var(--font-text); }
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.3em;
+  text-indent: 0.3em;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -277,6 +283,7 @@ input, textarea, select { font-family: var(--font-text); }
   letter-spacing: 0.26em;
   text-transform: uppercase;
   padding: 0.5rem 0.2rem;
+  margin-right: -0.26em;
 }
 
 .bar-menu-bars {
@@ -331,6 +338,7 @@ input, textarea, select { font-family: var(--font-text); }
   font-weight: 600;
   letter-spacing: 0.26em;
   text-transform: uppercase;
+  margin-right: -0.26em;
 }
 
 .menu-list {
@@ -512,6 +520,7 @@ body.menu-open { overflow: hidden; }
   font-size: 0.64rem;
   font-weight: 600;
   letter-spacing: 0.28em;
+  text-indent: 0.28em;
   text-transform: uppercase;
   color: var(--on-sand-soft);
 }

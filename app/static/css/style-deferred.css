@@ -183,6 +183,7 @@
   font-size: 0.66rem;
   font-weight: 600;
   letter-spacing: 0.16em;
+  text-indent: 0.16em;
   line-height: 1.45;
   text-transform: uppercase;
   text-wrap: balance;
@@ -437,6 +438,7 @@
   font-size: 0.66rem;
   font-weight: 600;
   letter-spacing: 0.2em;
+  text-indent: 0.2em;
   text-transform: uppercase;
   color: var(--copper-deep);
 }
@@ -559,6 +561,7 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
   font-size: 0.86rem;
   font-weight: 600;
   letter-spacing: 0.34em;
+  text-indent: 0.34em;
   text-transform: uppercase;
 }
 
@@ -581,6 +584,8 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }
+
+.pie-links > *:last-child { margin-right: -0.2em; }
 
 .pie-links a { color: var(--on-petrol-soft); }
 .pie-links a:hover { color: var(--copper-light); }
