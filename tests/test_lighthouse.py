@@ -145,7 +145,14 @@ def _audit_savings_kb(report: dict, audit_id: str) -> float:
 #: something; everywhere else its job is to catch a catastrophe. What actually
 #: guards performance in CI is the opportunity audits below (server-independent)
 #: and the device matrix in test_performance.py.
-_SCORE_FLOOR = {"remote": (0.95, 2500), "ci": (0.50, 9000), "local": (0.70, 4500)}
+#:
+#: The CI numbers are deliberately absurd because CI's are: the same commit
+#: measured LCP 6.5s on one runner and 9.6s on another, minutes apart, and one
+#: build went red over a one-line template change that cannot cost nine
+#: seconds. Under simulated throttling on a shared two-core VM this is a
+#: measurement of the machine, so the budget is set where only a catastrophe
+#: reaches it.
+_SCORE_FLOOR = {"remote": (0.95, 2500), "ci": (0.50, 15000), "local": (0.70, 4500)}
 
 
 def _where() -> str:
