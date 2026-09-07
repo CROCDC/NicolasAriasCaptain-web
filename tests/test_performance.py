@@ -304,10 +304,33 @@ def test_js_heap_size(warm_samples: list[dict]) -> None:
 # These start from an empty cache to reflect a brand-new visitor.
 
 
+#: The shared Next Tech footer is a Web Component fetched from another origin.
+#: What it costs this page is one script tag; whether it answers is somebody
+#: else's uptime, and on a runner with no route to it every one of these tests
+#: turned red over a dependency they are not measuring. The visual suite
+#: already refuses to depend on it for the same reason (see tests/visual.py).
+#:
+#: Served empty rather than aborted: an aborted request is itself a console
+#: error, which is exactly what test_no_console_errors is looking for. An
+#: empty body reproduces what an outage looks like in production — the footer
+#: does not render and nothing else moves.
+THIRD_PARTY = "**://nexttech.com.ar/**"
+
+
+def _stub_third_party(page: Page) -> None:
+    """Answer the off-site footer locally so its host cannot decide a run."""
+    page.route(
+        THIRD_PARTY,
+        lambda route: route.fulfill(
+            status=200, content_type="application/javascript", body=""),
+    )
+
+
 def _fresh_load(browser: Browser, url: str) -> tuple[Page, list, list[str]]:
     """Navigate with a clean cache. Returns (page, responses, console_errors)."""
     context = browser.new_context()  # new context = no shared cache
     page = context.new_page()
+    _stub_third_party(page)
     responses: list = []
     console_errors: list[str] = []
     page.on("response", lambda r: responses.append(r))
