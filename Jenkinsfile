@@ -9,6 +9,12 @@ pipeline {
     // not the same across compose versions, so picking the first line ran the
     // suite inside promtail once a second service existed.
     TEST_IMAGE = 'nicolas-arias-web-app'
+    // Not localhost: Jenkins is itself a container with its own network
+    // namespace, so its localhost is Jenkins, not the Pi, and the host port
+    // mapping is unreachable from in here — the smoke check spent every deploy
+    // being refused in 0 ms. Both containers sit on the shared `proxy`
+    // network, so the app answers to its own name.
+    HEALTH_URL = 'http://nicolas-arias-web-app:7000/health'
   }
 
   stages {
@@ -113,8 +119,8 @@ pipeline {
     stage('Smoke') {
       steps {
         sh """
-          for attempt in 1 2 3 4 5 6 7 8 9 10; do
-            if curl -fsS http://localhost:7000/health > /dev/null; then
+          for attempt in \$(seq 1 20); do
+            if curl -fsS ${HEALTH_URL} > /dev/null; then
               echo "healthy"
               exit 0
             fi
