@@ -13,7 +13,6 @@
   },
   "stats": [
     { "number": "10+", "label": "Años en el agua" },
-    { "number": "40+", "label": "Traslados hechos" },
     { "number": "100%", "label": "Entregas en fecha" }
   ],
   "placeholders": [

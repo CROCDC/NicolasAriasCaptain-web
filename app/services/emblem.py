@@ -102,3 +102,15 @@ def gauge(values: list[float], span_deg: float = 148.0) -> list[dict[str, Any]]:
             "label_y": round(CENTRE + 33.0 * math.sin(angle), 3),
         })
     return markers
+
+
+def gauge_stops(count: int, inset: float = 0.12) -> list[float]:
+    """Evenly spread ``count`` markers along the arc, ``inset`` in from each end.
+
+    One marker sits straight up; more share the arc so each hangs over its
+    own column of figures.
+    """
+    if count <= 1:
+        return [0.5] * count
+    step = (1.0 - 2 * inset) / (count - 1)
+    return [round(inset + step * i, 6) for i in range(count)]
