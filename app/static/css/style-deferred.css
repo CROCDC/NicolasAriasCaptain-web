@@ -176,6 +176,16 @@
 
 .gauge-figure { text-align: center; }
 
+/* A lone figure has no open ends to hang under: it sits in the middle of the
+   dial instead, under the marker at twelve o'clock. */
+.gauge-figures.gauge-figures--single {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 22%;
+  margin-top: 0;
+}
+
 .gauge-number {
   display: block;
   font-family: var(--font-head);

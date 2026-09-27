@@ -200,7 +200,8 @@
             {%- endfor %}
           </svg>
 
-          <div class="gauge-figures" style="--figures: {{ site.stats | length }}">
+          <div class="gauge-figures{{ ' gauge-figures--single' if site.stats | length == 1 }}"
+               style="--figures: {{ site.stats | length }}">
             {%- for stat in site.stats %}
             <div class="gauge-figure">
               <span class="gauge-number">{{ stat.number }}</span>
