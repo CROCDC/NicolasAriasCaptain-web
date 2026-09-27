@@ -182,6 +182,7 @@ def create_app() -> Flask:
     app.jinja_env.globals["bezel_ticks"] = emblem.bezel_ticks
     app.jinja_env.globals["arc_path"] = emblem.arc_path
     app.jinja_env.globals["gauge"] = emblem.gauge
+    app.jinja_env.globals["gauge_stops"] = emblem.gauge_stops
 
     # --- Register routes inside app context ---
     with app.app_context():

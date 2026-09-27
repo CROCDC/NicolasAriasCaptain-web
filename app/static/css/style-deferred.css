@@ -147,7 +147,7 @@
 
 .ledger-value { font-size: 0.98rem; }
 
-/* The gauge: three figures read off an open arc, the way a bearing is read
+/* The gauge: the figures read off an open arc, the way a bearing is read
    off a card. It replaces the row of big numbers every other site has.
 
    It closes the story column rather than the instrument one: the prose ran
@@ -168,7 +168,7 @@
 
 .gauge-figures {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--figures, 3), minmax(0, 1fr));
   gap: 12px;
   /* The numbers hang just under the arc's open ends without touching them. */
   margin-top: -3.5%;

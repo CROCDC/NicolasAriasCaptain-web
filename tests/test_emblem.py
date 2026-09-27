@@ -80,3 +80,9 @@ def test_the_gauge_reads_left_to_right_with_the_middle_straight_up() -> None:
 def test_a_value_off_the_scale_is_clamped_onto_it() -> None:
     assert emblem.gauge([-3.0])[0] == emblem.gauge([0.0])[0]
     assert emblem.gauge([9.0])[0] == emblem.gauge([1.0])[0]
+
+
+def test_gauge_stops_spread_evenly_inside_the_arc_ends() -> None:
+    assert emblem.gauge_stops(3) == [0.12, 0.5, 0.88]
+    assert emblem.gauge_stops(2) == [0.12, 0.88]
+    assert emblem.gauge_stops(1) == [0.5]
