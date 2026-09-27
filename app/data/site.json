@@ -12,8 +12,7 @@
     "display": "+54 9 11 4409-0678"
   },
   "stats": [
-    { "number": "10+", "label": "Años en el agua" },
-    { "number": "100%", "label": "Entregas en fecha" }
+    { "number": "10+", "label": "Años en el agua" }
   ],
   "placeholders": [
     "email",
