@@ -125,3 +125,68 @@ def test_the_page_renders_the_photograph_once_it_arrives(
 ) -> None:
     body = client.get("/").get_data(as_text=True)
     assert f"/static/assets/photos/{photo_file['file']}" in body
+
+
+# ----- Photographs replaced from the content panel ----------------------------
+
+def _publish_override(app: Any, slot_id: str, url: str) -> None:
+    """What the panel does on "publish": a draft for the key, then made live."""
+    from sitecopy import resolver
+    from sitecopy.state import current_store
+
+    with app.test_request_context():
+        store = current_store()
+        store.set_draft(f"foto.{slot_id}", url)
+        store.publish([f"foto.{slot_id}"], {})
+        resolver.save()
+
+
+def test_uploads_land_on_the_volume_and_publishing_can_record_them(
+    app_instance: Any,
+) -> None:
+    """The upload store is the one docker-compose keeps across deploys.
+
+    It used to be passed as ``media_store=`` — sitecopy's *version history* —
+    so uploads fell back to static/sitecopy-uploads, inside the container, and
+    were gone after the next deploy; and publishing a photo 500'd, because the
+    history store it was handed has no ``record``.
+    """
+    from sitecopy.state import current_file_store, current_media_versions
+
+    with app_instance.app_context():
+        files = current_file_store()
+        versions = current_media_versions()
+    assert files.directory == os.path.join(
+        app_instance.static_folder, "assets", "subidas")
+    assert files.base_url == "/static/assets/subidas"
+    assert callable(getattr(versions, "record", None))
+
+
+def test_a_replaced_photo_whose_upload_is_gone_falls_back_to_the_shipped_one(
+    client: Any, app_instance: Any
+) -> None:
+    """A lost upload undoes the replacement instead of greying out the slot."""
+    slot, _ = _subject(app_instance)
+    _publish_override(app_instance, SUBJECT,
+                      "/static/assets/subidas/0000000000000000.jpg")
+    body = client.get("/").get_data(as_text=True)
+    assert "0000000000000000.jpg" not in body
+    assert f'src="/static/assets/photos/{slot["file"]}"' in body
+    assert f'data-file="{slot["file"]}"' not in body
+
+
+def test_a_replaced_photo_whose_upload_is_there_is_served(
+    client: Any, app_instance: Any
+) -> None:
+    directory = os.path.join(app_instance.static_folder, "assets", "subidas")
+    os.makedirs(directory, exist_ok=True)
+    path = os.path.join(directory, "test-subida.gif")
+    with open(path, "wb") as handle:
+        handle.write(ONE_PIXEL_GIF)
+    try:
+        _publish_override(app_instance, SUBJECT,
+                          "/static/assets/subidas/test-subida.gif")
+        body = client.get("/").get_data(as_text=True)
+        assert 'src="/static/assets/subidas/test-subida.gif"' in body
+    finally:
+        os.remove(path)

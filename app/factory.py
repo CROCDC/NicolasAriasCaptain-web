@@ -141,7 +141,13 @@ def create_app() -> Flask:
         # Uploads land in the static folder, so they are served and cached like
         # any other asset. See app/content.py for what a replaced photograph
         # does and does not keep.
-        media_store=LocalFileStore(
+        #
+        # `files=`, not `media_store=`: the latter is sitecopy's version-history
+        # store. Passed there, this store was never used for uploads — they fell
+        # back to static/sitecopy-uploads, outside the arias_uploads volume, and
+        # vanished on the next deploy — and every photo publish 500'd calling
+        # .record() on it. The version history keeps its default (the same db).
+        files=LocalFileStore(
             directory=os.path.join(app.static_folder, "assets", "subidas"),
             base_url=f"{app.static_url_path}/assets/subidas",
         ),
@@ -190,7 +196,7 @@ def create_app() -> Flask:
         from app.models import ContactMessage  # noqa: F401
 
         # Create all tables (only creates missing ones)
-        db.create_all()
+        _create_tables()
 
         # Apply one-time recorded schema migrations (see _run_migrations).
         _run_migrations(app)
@@ -199,6 +205,25 @@ def create_app() -> Flask:
         register_routes(app)
 
     return app
+
+
+def _create_tables() -> None:
+    """``db.create_all()``, tolerant of another worker creating the same table.
+
+    Gunicorn boots its workers side by side, and each one builds the app. When
+    a deploy brings a new table, both see it missing and both CREATE it; the
+    loser died on "table already exists", which took gunicorn and the container
+    down with it. A second pass finds the table and skips it.
+    """
+    from sqlalchemy.exc import OperationalError
+
+    try:
+        db.create_all()
+    except OperationalError as error:
+        if "already exists" not in str(error.orig):
+            raise
+        db.session.rollback()
+        db.create_all()
 
 
 def _add_columns_if_missing(engine, table: str, columns: dict[str, str]) -> list[str]:
