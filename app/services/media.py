@@ -76,14 +76,25 @@ def _resolve(app: Flask, slot: dict[str, Any]) -> dict[str, Any]:
         # folder, so its size can still be read — the height matters, it is what
         # stops the page jumping — but it has no responsive variants, because
         # those are generated ahead of time and an upload has none.
-        absolute = _static_path(app, url) or absolute
-        available = os.path.isfile(absolute)
-        width, height = _dimensions(absolute) if available else (None, None)
-        resolved = dict(slot)
-        resolved.update(available=available,
-                        url=_marked(slot["id"], url) if available else None,
-                        width=width, height=height, srcset=None)
-        return resolved
+        #
+        # When the uploaded file is gone (a deploy that did not keep it, a
+        # volume that was reset) the shipped photograph is shown rather than the
+        # grey placeholder: a replacement that went missing should undo itself,
+        # not blank a slot that has a perfectly good photo behind it.
+        uploaded = _static_path(app, url)
+        if uploaded and os.path.isfile(uploaded):
+            width, height = _dimensions(uploaded)
+            resolved = dict(slot)
+            resolved.update(available=True, url=_marked(slot["id"], url),
+                            width=width, height=height, srcset=None)
+            return resolved
+        if uploaded is None:
+            # An address pasted by hand, off this site: nothing on disk to
+            # measure or to find missing, so it is taken at its word.
+            resolved = dict(slot)
+            resolved.update(available=True, url=_marked(slot["id"], url),
+                            width=None, height=None, srcset=None)
+            return resolved
 
     available = os.path.isfile(absolute)
     resolved = dict(slot)
@@ -125,11 +136,16 @@ def _marked(slot_id: str, url: str) -> str:
     variant for values that get serialized into JSON, it deliberately emits no
     markers, and so every photograph was listed in the side panel but had
     nothing to click on the page.
-    """
-    try:
-        from sitecopy.resolver import editable
 
-        return editable(f"foto.{slot_id}")
+    The URL passed in is the one marked, not whatever the panel holds: when a
+    replaced photograph has gone missing the shipped one is shown instead, and
+    it is that one the editor must be able to click on to replace again.
+    """
+    key = f"foto.{slot_id}"
+    try:
+        from sitecopy.resolver import _needs_marker, _wrap
+
+        return _wrap(key, url) if _needs_marker(key) else url
     except Exception:
         return url
 

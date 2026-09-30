@@ -141,7 +141,13 @@ def create_app() -> Flask:
         # Uploads land in the static folder, so they are served and cached like
         # any other asset. See app/content.py for what a replaced photograph
         # does and does not keep.
-        media_store=LocalFileStore(
+        #
+        # `files=`, not `media_store=`: the latter is sitecopy's version-history
+        # store. Passed there, this store was never used for uploads — they fell
+        # back to static/sitecopy-uploads, outside the arias_uploads volume, and
+        # vanished on the next deploy — and every photo publish 500'd calling
+        # .record() on it. The version history keeps its default (the same db).
+        files=LocalFileStore(
             directory=os.path.join(app.static_folder, "assets", "subidas"),
             base_url=f"{app.static_url_path}/assets/subidas",
         ),
