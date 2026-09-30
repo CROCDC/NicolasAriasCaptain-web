@@ -196,7 +196,7 @@ def create_app() -> Flask:
         from app.models import ContactMessage  # noqa: F401
 
         # Create all tables (only creates missing ones)
-        db.create_all()
+        _create_tables()
 
         # Apply one-time recorded schema migrations (see _run_migrations).
         _run_migrations(app)
@@ -205,6 +205,25 @@ def create_app() -> Flask:
         register_routes(app)
 
     return app
+
+
+def _create_tables() -> None:
+    """``db.create_all()``, tolerant of another worker creating the same table.
+
+    Gunicorn boots its workers side by side, and each one builds the app. When
+    a deploy brings a new table, both see it missing and both CREATE it; the
+    loser died on "table already exists", which took gunicorn and the container
+    down with it. A second pass finds the table and skips it.
+    """
+    from sqlalchemy.exc import OperationalError
+
+    try:
+        db.create_all()
+    except OperationalError as error:
+        if "already exists" not in str(error.orig):
+            raise
+        db.session.rollback()
+        db.create_all()
 
 
 def _add_columns_if_missing(engine, table: str, columns: dict[str, str]) -> list[str]:
