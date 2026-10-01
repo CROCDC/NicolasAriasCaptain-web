@@ -272,7 +272,9 @@ def opened(browser: Browser, url: str, profile: str, settle: bool = True,
             context.route(pattern, lambda route: route.fulfill(
                 status=200, content_type="application/javascript", body=""))
         page = context.new_page()
-        page.goto(url, wait_until="networkidle")
+        # "load", not "networkidle": analytics and beacons on a deployed site can
+        # keep the network busy indefinitely; SETTLE_JS waits for what matters.
+        page.goto(url, wait_until="load")
         if settle:
             page.evaluate(SETTLE_JS)
         page.evaluate(HELPERS_JS)
@@ -441,7 +443,7 @@ def test_text_follows_the_users_font_size(browser, live_server, site_pages):
             cdp = page.context.new_cdp_session(page)
             cdp.send("Page.setFontSizes", {"fontSizes": {"standard": USER_FONT_PX,
                                                          "fixed": USER_FONT_PX}})
-            page.reload(wait_until="networkidle")
+            page.reload(wait_until="load")
             page.evaluate(SETTLE_JS)
             page.evaluate(HELPERS_JS)
             root = page.evaluate("() => parseFloat(getComputedStyle(document.documentElement)"
