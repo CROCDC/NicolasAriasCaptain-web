@@ -38,6 +38,7 @@ import pytest
 pytestmark = pytest.mark.slow
 
 LIGHTHOUSE_VERSION = "lighthouse@12"
+LIGHTHOUSE_ATTEMPTS = 2
 
 # Opportunity audits → max wasted KiB tolerated. Calibrate to your site: set to
 # current savings + headroom so the test catches *regressions* (bytes growing)
@@ -87,45 +88,44 @@ def _find_chrome(fallback: str | None = None) -> str | None:
 @pytest.fixture(scope="session")
 def lighthouse_report(live_server: str, playwright_driver) -> dict:
     """Run Lighthouse once against the live server and return the parsed report."""
-    # A tool that is absent is a skip, not a failure: this suite also runs
-    # inside the deployment image, which carries neither Node nor Chromium on
-    # purpose. A report that came back empty below is a different matter — that
-    # is Lighthouse having run and failed, and it stays a failure.
+    # A missing tool fails rather than skips: a skipped Lighthouse reads as green
+    # in CI while nothing was measured. The deployment image never gets here —
+    # Jenkins runs `-m 'not slow'`.
     if shutil.which("npx") is None:
-        pytest.skip("Lighthouse needs Node/npx on PATH. Install Node (https://nodejs.org).")
+        pytest.fail("Lighthouse needs Node/npx on PATH. Install Node (https://nodejs.org).")
     chrome = _find_chrome(playwright_driver.chromium.executable_path)
     if not chrome:
-        pytest.skip("No Chrome/Chromium found. Install Chrome or set CHROME_PATH.")
+        pytest.fail("No Chrome/Chromium found. Install Chrome or set CHROME_PATH.")
 
-    with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as tmp:
-        out_path = tmp.name
-    try:
-        cmd = [
-            "npx", "--yes", LIGHTHOUSE_VERSION, live_server,
-            "--quiet", "--output=json", f"--output-path={out_path}",
-            "--only-categories=performance",
-            "--throttling-method=devtools",
-            "--chrome-flags=--headless=new --no-sandbox",
-        ]
-        env = {**os.environ, "CHROME_PATH": chrome}
-        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=240, env=env)
-        with open(out_path) as fh:
-            content = fh.read()
-        if not content.strip():
-            # Chrome not coming up is the runner having a bad minute, not the
-            # site being slow: the same commit passes on the pull_request runner
-            # and fails on the push one. Skipping keeps that from turning every
-            # build red, and it is loud about which of the two happened — a
-            # report that *does* parse still fails on its budgets below.
-            if "unable to connect to chrome" in proc.stderr.lower():
-                pytest.skip(
-                    "Lighthouse could not start Chrome on this machine:\n"
-                    f"{proc.stderr[-500:]}")
-            pytest.fail(f"Lighthouse produced no report.\nstderr:\n{proc.stderr[-2000:]}")
-        return json.loads(content)
-    finally:
-        if os.path.exists(out_path):
-            os.unlink(out_path)
+    cmd = [
+        "npx", "--yes", LIGHTHOUSE_VERSION, live_server,
+        "--quiet", "--output=json",
+        "--only-categories=performance",
+        "--throttling-method=devtools",
+        "--chrome-flags=--headless=new --no-sandbox",
+    ]
+    env = {**os.environ, "CHROME_PATH": chrome}
+    stderr = ""
+    # Chrome failing to come up is the runner having a bad minute: the same
+    # commit passes on the pull_request runner and fails on the push one. One
+    # more attempt absorbs that; a second refusal is a real failure.
+    for _ in range(LIGHTHOUSE_ATTEMPTS):
+        with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as tmp:
+            out_path = tmp.name
+        try:
+            proc = subprocess.run(cmd + [f"--output-path={out_path}"], capture_output=True,
+                                  text=True, timeout=240, env=env)
+            with open(out_path) as fh:
+                content = fh.read()
+        finally:
+            if os.path.exists(out_path):
+                os.unlink(out_path)
+        if content.strip():
+            return json.loads(content)
+        stderr = proc.stderr
+        if "unable to connect to chrome" not in stderr.lower():
+            break
+    pytest.fail(f"Lighthouse produced no report.\nstderr:\n{stderr[-2000:]}")
 
 
 def _audit_savings_kb(report: dict, audit_id: str) -> float:
