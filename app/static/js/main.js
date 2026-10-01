@@ -141,6 +141,11 @@ const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').mat
     event.preventDefault();
     const top = target.getBoundingClientRect().top + window.scrollY - BAR_OFFSET;
     window.scrollTo({ top, behavior: REDUCED_MOTION ? 'auto' : 'smooth' });
+
+    // preventDefault also cancels the browser moving focus to the target, so
+    // a keyboard user who followed the skip link would Tab on from the header.
+    if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+    target.focus({ preventScroll: true });
   });
 })();
 

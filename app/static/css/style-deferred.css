@@ -38,7 +38,7 @@
 .shot-empty-text {
   max-width: 26ch;
   color: var(--box-text);
-  font-size: clamp(0.78rem, 1.6vw, 0.92rem);
+  font-size: clamp(0.875rem, 1.6vw, 0.95rem);
   line-height: 1.5;
 }
 
@@ -74,7 +74,8 @@
 .head-centred .head-mark::before,
 .head-centred .head-mark::after {
   content: '';
-  flex: 0 0 40px;
+  flex: 0 1 40px;
+  min-width: 12px;
   max-width: 40px;
   height: 1px;
   background: currentColor;
@@ -118,18 +119,18 @@
 .bitacora-portrait-caption {
   margin-top: 0.6rem;
   font-family: var(--font-seal);
-  font-size: 0.66rem;
+  font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--on-sand-soft);
 }
 
-.ledger { border-top: 1px solid var(--on-sand-line); }
+.ledger { border-top: 1px solid var(--on-sand-line); container-type: inline-size; }
 
 .ledger-row {
   display: grid;
-  grid-template-columns: 118px minmax(0, 1fr);
+  grid-template-columns: 11rem minmax(0, 1fr);
   gap: 1rem;
   align-items: baseline;
   padding-block: 0.95rem;
@@ -138,14 +139,18 @@
 
 .ledger-key {
   font-family: var(--font-seal);
-  font-size: 0.66rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--copper-deep);
 }
 
-.ledger-value { font-size: 0.98rem; }
+.ledger-value { font-size: 1rem; }
+
+@container (max-width: 24rem) {
+  .ledger-row { grid-template-columns: 1fr; gap: 0.15rem; }
+}
 
 /* The gauge: the figures read off an open arc, the way a bearing is read
    off a card. It replaces the row of big numbers every other site has.
@@ -198,7 +203,7 @@
   display: block;
   margin-top: 0.45rem;
   font-family: var(--font-seal);
-  font-size: 0.66rem;
+  font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.16em;
   text-indent: 0.16em;
@@ -244,7 +249,7 @@
   align-items: center;
   gap: 0.8rem;
   font-family: var(--font-seal);
-  font-size: 0.68rem;
+  font-size: 0.875rem;
   font-weight: 600;
   line-height: 1;
   letter-spacing: 0.24em;
@@ -286,7 +291,7 @@
 .entry-points li {
   position: relative;
   padding-left: 1.4rem;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 /* The tick: the same mark the bezel is made of, at text size. */
@@ -301,16 +306,19 @@
 }
 
 .entry-link {
-  display: inline-block;
-  margin-top: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 1rem;
   font-family: var(--font-seal);
-  font-size: 0.66rem;
+  font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--copper-deep);
-  border-bottom: 1px solid currentColor;
-  padding-bottom: 3px;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
 }
 
 .entry-link:hover { color: var(--on-sand); }
@@ -346,7 +354,7 @@
 
 .waypoint-index {
   font-family: var(--font-seal);
-  font-size: 0.66rem;
+  font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.24em;
   color: var(--copper-light);
@@ -362,7 +370,7 @@
 .waypoint-desc {
   margin-top: 0.55rem;
   text-wrap: balance;
-  font-size: 0.94rem;
+  font-size: 1rem;
   color: var(--on-petrol-soft);
 }
 
@@ -404,7 +412,7 @@
 .rail-caption {
   margin-top: 0.7rem;
   font-family: var(--font-seal);
-  font-size: 0.66rem;
+  font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -419,11 +427,11 @@
   gap: 0.5rem;
   margin-top: 1.2rem;
   font-family: var(--font-seal);
-  font-size: 0.66rem;
+  font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  opacity: 0.55;
+  color: var(--on-sand-soft);
 }
 
 /* -------------------------------------------------------------------------
@@ -470,7 +478,7 @@
 .contacto-key {
   display: block;
   font-family: var(--font-seal);
-  font-size: 0.66rem;
+  font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.2em;
   text-indent: 0.2em;
@@ -489,6 +497,8 @@
   overflow-wrap: anywhere;
 }
 
+a.contacto-value { padding-block: 0.7rem; margin-block: -0.7rem; }
+
 a.contacto-value:hover { color: var(--copper-deep); }
 
 /* Column gap only. With a row gap as well, two fields that sat side by side
@@ -506,17 +516,18 @@ a.contacto-value:hover { color: var(--copper-deep); }
   display: block;
   margin-bottom: 0.45rem;
   font-family: var(--font-seal);
-  font-size: 0.66rem;
+  font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--on-sand-soft);
 }
 
-.field-label em { font-style: normal; opacity: 0.7; }
+.field-label em { font-style: normal; }
 
 .control {
   width: 100%;
+  min-height: 44px;
   padding: 0.6rem 0.1rem;
   font-size: 1rem;
   color: var(--on-sand);
@@ -528,7 +539,7 @@ a.contacto-value:hover { color: var(--copper-deep); }
 
 .control::placeholder { color: rgba(18, 48, 58, 0.36); }
 
-.control:focus { outline: none; border-bottom-color: var(--copper); }
+.control:focus { outline: none; border-bottom-color: var(--copper); box-shadow: 0 2px 0 var(--copper); }
 
 /* A message under a field that itself looks untouched is easy to miss. The
    rule under the control carries the state too. */
@@ -559,14 +570,14 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
 .field-error {
   display: block;
   margin-top: 0.35rem;
-  min-height: 1.05rem;
-  font-size: 0.78rem;
+  min-height: 1.5rem;
+  font-size: 0.875rem;
   color: #9d2f1c;
 }
 
 .form-note {
   margin-top: 1.1rem;
-  font-size: 0.82rem;
+  font-size: 0.875rem;
   color: var(--on-sand-soft);
   text-align: center;
 }
@@ -576,7 +587,7 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
   padding: 0.9rem 1.1rem;
   border: 1px solid var(--copper);
   background: var(--sand-2);
-  font-size: 0.94rem;
+  font-size: 1rem;
   text-align: center;
 }
 
@@ -599,7 +610,7 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
 .pie-name {
   margin-top: 1rem;
   font-family: var(--font-seal);
-  font-size: 0.86rem;
+  font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.34em;
   text-indent: 0.34em;
@@ -617,10 +628,10 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.6rem 1.8rem;
-  margin-top: 2rem;
+  gap: 0 1.8rem;
+  margin-top: 1.4rem;
   font-family: var(--font-seal);
-  font-size: 0.66rem;
+  font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -628,7 +639,7 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
 
 .pie-links > *:last-child { margin-right: -0.2em; }
 
-.pie-links a { color: var(--on-petrol-soft); }
+.pie-links a { display: inline-block; padding-block: 0.65rem; color: var(--on-petrol-soft); }
 .pie-links a:hover { color: var(--copper-light); }
 
 .pie-social {
@@ -641,8 +652,8 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
 .pie-social a {
   display: grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   border: 1px solid var(--on-petrol-line);
   transition: border-color var(--fast), color var(--fast), background-color var(--fast);
 }
@@ -653,8 +664,8 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
   margin-top: 2.4rem;
   padding-top: 1.4rem;
   border-top: 1px solid var(--on-petrol-line);
-  font-size: 0.74rem;
-  color: rgba(240, 231, 213, 0.45);
+  font-size: 0.875rem;
+  color: var(--on-petrol-soft);
 }
 
 /* -------------------------------------------------------------------------
@@ -669,12 +680,12 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
   align-items: center;
   gap: 0.62rem;
   padding: 0.82rem 1.15rem;
-  background: var(--copper);
+  background: var(--copper-deep);
   color: var(--sand);
   font-family: var(--font-seal);
-  font-size: 0.62rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   /* Rounded on the side that is not against the glass, and lifted off the
      sand: flush and square on all four corners read as a rendering fault. */
@@ -694,7 +705,7 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
 }
 
 .wa-tab:hover {
-  background: var(--copper-deep);
+  background: var(--petrol);
   transform: translateX(-2px);
   box-shadow: -2px 3px 18px rgba(18, 48, 58, 0.24);
 }
@@ -785,8 +796,6 @@ select.control { appearance: none; border-radius: 0; cursor: pointer; }
   .rail-item { flex-basis: min(78vw, 340px); }
 
   .rail-item:nth-child(even) .shot { aspect-ratio: 3 / 4; }
-
-  .ledger-row { grid-template-columns: 1fr; gap: 0.15rem; }
 
   .derrota { grid-template-columns: 1fr; }
 

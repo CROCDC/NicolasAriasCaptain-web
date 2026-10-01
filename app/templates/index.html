@@ -76,7 +76,7 @@
 <!-- =====================================================================
      LA REGLA — barra fija: coordenadas, sello, y una sola perilla
 ====================================================================== -->
-<div class="bar" id="bar">
+<header class="bar" id="bar">
   <div class="bar-inner">
     <p class="bar-coords">{{ t('barra.coordenadas') }}</p>
 
@@ -85,12 +85,13 @@
       <span class="bar-name">{{ site.brand_short }}</span>
     </a>
 
-    <button class="bar-menu" id="menuOpen" aria-expanded="false" aria-controls="menu">
+    <button class="bar-menu" id="menuOpen" aria-expanded="false" aria-controls="menu"
+            aria-label="{{ t('barra.indice') }}">
       <span>{{ t('barra.indice') }}</span>
       <span class="bar-menu-bars" aria-hidden="true"><i></i><i></i><i></i></span>
     </button>
   </div>
-</div>
+</header>
 
 <!-- =====================================================================
      EL ÍNDICE — pantalla completa, numerado como una carta
@@ -129,7 +130,12 @@
 <!-- =====================================================================
      PORTADA — el medallón
 ====================================================================== -->
-<header class="portada" id="portada">
+<main>
+
+<a class="wa-tab" href="https://wa.me/{{ site.whatsapp.number }}" target="_blank"
+   rel="noopener noreferrer" aria-label="WhatsApp">{{ ui.icon_whatsapp() }} <span>WhatsApp</span></a>
+
+<section class="portada" id="portada">
   {{ ui.arc_text(t('portada.arco'), id='arc-portada',
                  css_class='portada-arc reveal') }}
 
@@ -156,11 +162,9 @@
     <span aria-hidden="true">·</span>
     <span>{{ t('portada.pie') }}</span>
   </p>
-</header>
+</section>
 
 <div class="gradrule" aria-hidden="true"></div>
-
-<main>
 
 <!-- =====================================================================
      I — BITÁCORA
@@ -493,9 +497,6 @@
   <script src="https://nexttech.com.ar/static/js/nexttechFooter.js"></script>
   <nexttech-footer source="nicolas-arias-web"></nexttech-footer>
 </footer>
-
-<a class="wa-tab" href="https://wa.me/{{ site.whatsapp.number }}" target="_blank"
-   rel="noopener noreferrer">{{ ui.icon_whatsapp() }} <span>WhatsApp</span></a>
 
 <script src="{{ asset('js/main.js') }}" defer></script>
 </body>
