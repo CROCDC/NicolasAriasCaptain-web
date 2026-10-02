@@ -38,7 +38,10 @@ import pytest
 pytestmark = pytest.mark.slow
 
 LIGHTHOUSE_VERSION = "lighthouse@12"
-LIGHTHOUSE_ATTEMPTS = 2
+LIGHTHOUSE_ATTEMPTS = 3
+#: How a Chrome that never came up shows in Lighthouse's stderr. The runner
+#: flake has more than one wording; both come from chrome-launcher.
+CHROME_START_FAILURES = ("unable to connect to chrome", "waiting for dynamic debugging port")
 
 # Opportunity audits → max wasted KiB tolerated. Calibrate to your site: set to
 # current savings + headroom so the test catches *regressions* (bytes growing)
@@ -107,8 +110,8 @@ def lighthouse_report(live_server: str, playwright_driver) -> dict:
     env = {**os.environ, "CHROME_PATH": chrome}
     stderr = ""
     # Chrome failing to come up is the runner having a bad minute: the same
-    # commit passes on the pull_request runner and fails on the push one. One
-    # more attempt absorbs that; a second refusal is a real failure.
+    # commit passes on the pull_request runner and fails on the push one. A
+    # couple more attempts absorb that; refusing every time is a real failure.
     for _ in range(LIGHTHOUSE_ATTEMPTS):
         with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as tmp:
             out_path = tmp.name
@@ -123,7 +126,7 @@ def lighthouse_report(live_server: str, playwright_driver) -> dict:
         if content.strip():
             return json.loads(content)
         stderr = proc.stderr
-        if "unable to connect to chrome" not in stderr.lower():
+        if not any(sign in stderr.lower() for sign in CHROME_START_FAILURES):
             break
     pytest.fail(f"Lighthouse produced no report.\nstderr:\n{stderr[-2000:]}")
 
