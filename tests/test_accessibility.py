@@ -58,6 +58,11 @@ AXE_EXCLUDE: list[str] = []
 
 MIN_TEXT_PX = 14              # any visible text
 MIN_BODY_TEXT_PX = 16         # running text
+#: Phones are held further from comfort than the WCAG floor suggests: 16px body
+#: copy passed the floor on a real site and still read as small on a phone,
+#: especially in a face with a low x-height. Touch profiles use these instead.
+MIN_TEXT_PX_TOUCH = 15
+MIN_BODY_TEXT_PX_TOUCH = 17
 BODY_COPY_MIN_CHARS = 80      # what counts as running text
 MIN_BODY_LINE_HEIGHT = 1.5
 MIN_TARGET_PX = 24            # WCAG 2.5.8 AA, pointer devices
@@ -383,14 +388,15 @@ def test_best_practice_rules_pass(browser, live_server, site_pages, axe_source, 
 
 @pytest.mark.parametrize("profile", ["mobile", "desktop"])
 def test_no_text_is_too_small(browser, live_server, site_pages, profile):
+    minimum = MIN_TEXT_PX_TOUCH if PROFILES[profile].get("has_touch") else MIN_TEXT_PX
     problems: set[str] = set()
     for path in site_pages:
         with opened(browser, live_server + path, profile) as page:
             for run in page.evaluate("() => __a11y.textRuns()"):
-                if run["size"] < MIN_TEXT_PX - 0.05:
+                if run["size"] < minimum - 0.05:
                     problems.add(f"{path}: {run['size']:.1f}px {run['selector']} "
                                  f"(\"{run['text']}\")")
-    assert not problems, _report(sorted(problems), f"Text smaller than {MIN_TEXT_PX}px")
+    assert not problems, _report(sorted(problems), f"Text smaller than {minimum}px")
 
 
 @pytest.mark.parametrize("profile", ["mobile", "desktop", "landscape"])
@@ -406,6 +412,7 @@ def test_no_text_overlaps_other_text(browser, live_server, site_pages, profile):
 
 @pytest.mark.parametrize("profile", ["mobile", "desktop"])
 def test_running_text_is_comfortable_to_read(browser, live_server, site_pages, profile):
+    minimum = MIN_BODY_TEXT_PX_TOUCH if PROFILES[profile].get("has_touch") else MIN_BODY_TEXT_PX
     problems: list[str] = []
     for path in site_pages:
         with opened(browser, live_server + path, profile) as page:
@@ -420,9 +427,9 @@ def test_running_text_is_comfortable_to_read(browser, live_server, site_pages, p
                     return {selector: __a11y.describe(el), size, lh}; })""",
                 BODY_COPY_MIN_CHARS)
             for b in blocks:
-                if b["size"] < MIN_BODY_TEXT_PX - 0.05:
+                if b["size"] < minimum - 0.05:
                     problems.append(f"{path}: {b['selector']} running text at {b['size']:.1f}px "
-                                    f"(< {MIN_BODY_TEXT_PX}px)")
+                                    f"(< {minimum}px)")
                 if b["lh"] < MIN_BODY_LINE_HEIGHT - 0.01:
                     problems.append(f"{path}: {b['selector']} line-height {b['lh']:.2f} "
                                     f"(< {MIN_BODY_LINE_HEIGHT})")
