@@ -11,14 +11,13 @@ services:
       dockerfile: Dockerfile
     image: nicolas-arias-web-app
     environment:
-      # The tunnel reaches nginx-proxy over HTTPS, so every host needs a
-      # certificate there. The nexttech subdomain already has one;
-      # orzadelplata.com.ar gets its own from Let's Encrypt, the same way
-      # kailuasailing.com.ar does. The old subdomain stays routed until the
-      # new domain has fully taken over.
+      # TLS terminates at the Cloudflare Tunnel, which reaches nginx-proxy for
+      # orzadelplata.com.ar over plain HTTP (port 80). noredirect keeps
+      # nginx-proxy from bouncing those requests back to HTTPS, which would
+      # loop through the tunnel. The old nexttech subdomain stays routed until
+      # the new domain has fully taken over.
       - VIRTUAL_HOST=orzadelplata.com.ar,www.orzadelplata.com.ar,nicolasarias.nexttech.com.ar
-      - LETSENCRYPT_HOST=orzadelplata.com.ar,www.orzadelplata.com.ar
-      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL:-ariasnicom@gmail.com}
+      - HTTPS_METHOD=noredirect
       - VIRTUAL_PORT=7000
       - DATABASE_URL=sqlite:////app/instance/arias.db
       - SECRET_KEY=${SECRET_KEY}
