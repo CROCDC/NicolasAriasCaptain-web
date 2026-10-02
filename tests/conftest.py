@@ -12,6 +12,7 @@ Import note: assumes pytest's DEFAULT import mode with ``tests/`` NOT a package
 from __future__ import annotations
 
 import os
+import shutil
 import socket
 import tempfile
 from collections.abc import Iterator
@@ -49,6 +50,7 @@ def database_url() -> Iterator[str]:
         for leftover in (path, f"{path}-journal", f"{path}-wal"):
             if os.path.exists(leftover):
                 os.remove(leftover)
+        shutil.rmtree(adapter.content_dir(f"sqlite:///{path}"), ignore_errors=True)
 
 
 @pytest.fixture(scope="session")
@@ -61,8 +63,13 @@ def app_instance(database_url: str) -> Iterator[Any]:
 
 @pytest.fixture()
 def db_clean(app_instance: Any) -> Iterator[None]:
-    """Empty every table after each test, keeping the schema warm."""
+    """Empty every table after each test, keeping the schema warm.
+
+    The content panel's edits are not in a table: they are JSON documents, and
+    the adapter deletes those too.
+    """
     yield
+    adapter.reset_content(app_instance)
     from sqlalchemy import text
 
     from app.factory import db

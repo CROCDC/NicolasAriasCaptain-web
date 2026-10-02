@@ -119,19 +119,25 @@ def create_app() -> Flask:
     app.jinja_env.globals["site"] = app.config["SITE"]
 
     # --- Editable copy ---
-    # Mounted before db.create_all() further down, because attaching the store
-    # is what declares its table; after it, the first edit would hit a table
-    # that does not exist yet.
+    # The overrides live in two JSON documents, not in the database: every page
+    # reads them, and a hosted database bills for every read that wakes it. Each
+    # process keeps its copy in memory and re-checks it at most every
+    # CONTENT_REFRESH_SECONDS — see app/services/json_store.py. Where they live
+    # is a directory (CONTENT_DIR, the instance folder by default) or Vercel Blob
+    # when BLOB_READ_WRITE_TOKEN is set. The database keeps the contact form.
     #
     # The panel reads ADMIN_PASSWORD from the environment, and an unset one
     # refuses every password — a deployment that forgot it is locked, not open.
-    # Every default lives in app/content.py, so an empty table renders the site
+    # Every default lives in app/content.py, so an empty document renders the site
     # exactly as the templates always did.
     from app.content import REGISTRY
+    from app.services.json_store import stores_from_env
+    text_store, media_history = stores_from_env(app)
+    app.extensions["content_stores"] = (text_store, media_history)
     SiteCopy(
         app,
         registry=REGISTRY,
-        db=db,
+        store=text_store,
         password=os.getenv("ADMIN_PASSWORD", ""),
         brand=app.config["SITE"]["brand"],
         site_url=app.config["SITE"]["url"],
@@ -148,11 +154,12 @@ def create_app() -> Flask:
         # store. Passed there, this store was never used for uploads — they fell
         # back to static/sitecopy-uploads, outside the arias_uploads volume, and
         # vanished on the next deploy — and every photo publish 500'd calling
-        # .record() on it. The version history keeps its default (the same db).
+        # .record() on it. The version history is the JSON one, passed below.
         files=LocalFileStore(
             directory=os.path.join(app.static_folder, "assets", "subidas"),
             base_url=f"{app.static_url_path}/assets/subidas",
         ),
+        media_store=media_history,
     )
 
     # --- Cache-busting for static assets ---

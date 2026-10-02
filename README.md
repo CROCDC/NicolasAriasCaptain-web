@@ -185,3 +185,26 @@ tests fallan, el sitio que está andando no se toca.
 
 Variables de entorno en producción: `SECRET_KEY` (obligatoria) y
 `DATABASE_URL` (por defecto SQLite en el volumen `/app/instance`).
+
+### Los textos del panel
+
+Lo que se edita en `/admin/content` no está en la base: son dos JSON,
+`texts.json` (los textos) y `media.json` (el historial de fotos). La base queda
+solo para el formulario de contacto. Cada proceso tiene su copia en memoria y la
+vuelve a mirar como mucho cada `CONTENT_REFRESH_SECONDS` (30 por defecto), así
+que una visita nunca espera a la base y una edición publicada llega a todos los
+procesos en ese lapso. El detalle está en `app/services/json_store.py`.
+
+Dónde viven los JSON:
+
+- **Vercel Blob**, si está `BLOB_READ_WRITE_TOKEN`. El nombre de cada archivo se
+  deriva de `SECRET_KEY`: cambiarla los "mueve", así que antes hay que copiarlos.
+- **Una carpeta** en cualquier otro caso: `CONTENT_DIR`, y si no está, la carpeta
+  `instance/` (en Docker, el mismo volumen que el SQLite).
+
+Para pasar las ediciones que ya estaban en el SQLite a los JSON, una sola vez:
+
+```bash
+docker cp nicolas-arias-web-app:/app/instance/arias.db /tmp/arias.db
+python scripts/export_content_to_json.py /tmp/arias.db   # con el destino en el entorno
+```
