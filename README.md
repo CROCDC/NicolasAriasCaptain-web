@@ -57,9 +57,8 @@ Detalle de tamaños y pesos: `app/static/assets/photos/README.md`.
 
 | Dónde | Qué |
 |---|---|
-| `app/data/site.json` | WhatsApp, email, Instagram, dominio y los números de la sección "Sobre mí". La clave `placeholders` lista exactamente cuáles siguen siendo de relleno. |
+| `app/data/site.json` | Instagram y los números de la sección "Sobre mí". La clave `placeholders` lista exactamente cuáles siguen siendo de relleno. |
 | `app/templates/index.html` | Los bloques marcados con `TODO copy` y `TODO datos`: la biografía real y la titulación exacta. |
-| `docker-compose.yml` | `VIRTUAL_HOST` / `LETSENCRYPT_HOST` con el dominio real. |
 | `app/static/assets/photos/` | Las fotos (ver arriba). |
 | `app/static/assets/favicon.svg` | Solo si más adelante se quiere otro ícono. |
 
