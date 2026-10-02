@@ -512,13 +512,13 @@ body.menu-open { overflow: hidden; }
 }
 
 @media (max-width: 900px) {
-  /* The foot is two lines here and is positioned, not laid out, so the
-     section has to reserve the height itself or the buttons sit on it. */
-  .portada { padding-bottom: 128px; }
-
   /* Two lines, each centred under the other, rather than one line clipped at
-     both edges. The dot between them is only a separator on one line. */
-  .portada-foot {
+     both edges. The dot between them is only a separator on one line. Laid
+     out under the buttons rather than pinned to the section's foot: once it
+     wraps, no fixed reserve of padding is tall enough at every width. */
+  .portada .portada-foot {
+    position: static;
+    margin-top: clamp(28px, 6vw, 40px);
     flex-direction: column;
     gap: 0.3rem;
     letter-spacing: 0.14em;
@@ -538,6 +538,8 @@ body.menu-open { overflow: hidden; }
   }
 
   .portada-foot { letter-spacing: 0.1em; text-indent: 0.1em; }
+
+  .portada-actions .btn { letter-spacing: 0.14em; text-indent: 0.14em; padding-inline: 1rem; }
 
   .portada-foot span { text-wrap: balance; }
 }
@@ -594,6 +596,10 @@ body.menu-open { overflow: hidden; }
    11. RESPONSIVE
    ------------------------------------------------------------------------- */
 @media (max-width: 720px) {
+  html { font-size: 112.5%; }
+
+  body { font-size: 1rem; }
+
   .bar-inner { grid-template-columns: auto 1fr; }
 
   .bar-coords { display: none; }
@@ -606,8 +612,6 @@ body.menu-open { overflow: hidden; }
 }
 
 @media (max-width: 420px) {
-  body { font-size: 1rem; }
-
   .bar-name { letter-spacing: 0.06em; text-indent: 0.06em; }
 
   .bar-menu span:not(.bar-menu-bars) { display: none; }
