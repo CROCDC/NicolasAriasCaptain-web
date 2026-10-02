@@ -13,7 +13,9 @@ services:
     environment:
       # TLS terminates at the Cloudflare Tunnel, so there is no LETSENCRYPT_*
       # here: nginx-proxy only has to route the host to this container.
-      - VIRTUAL_HOST=nicolasarias.nexttech.com.ar
+      # The old nexttech subdomain stays routed so it keeps working while
+      # orzadelplata.com.ar is brought up on the tunnel.
+      - VIRTUAL_HOST=orzadelplata.com.ar,www.orzadelplata.com.ar,nicolasarias.nexttech.com.ar
       - VIRTUAL_PORT=7000
       - DATABASE_URL=sqlite:////app/instance/arias.db
       - SECRET_KEY=${SECRET_KEY}
