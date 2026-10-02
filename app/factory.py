@@ -1,8 +1,10 @@
 """Flask application factory for the Capitán Nicolás Arias site."""
 
+import fcntl
 import hashlib
 import json
 import os
+from contextlib import contextmanager
 from flask import Flask, url_for
 from markupsafe import Markup
 from sitecopy import LocalFileStore, SiteCopy
@@ -195,16 +197,41 @@ def create_app() -> Flask:
         # Import models so SQLAlchemy is aware of them
         from app.models import ContactMessage  # noqa: F401
 
-        # Create all tables (only creates missing ones)
-        _create_tables()
+        with _schema_lock():
+            # Create all tables (only creates missing ones)
+            _create_tables()
 
-        # Apply one-time recorded schema migrations (see _run_migrations).
-        _run_migrations(app)
+            # Apply one-time recorded schema migrations (see _run_migrations).
+            _run_migrations(app)
 
         from app.routes import register_routes
         register_routes(app)
 
     return app
+
+
+@contextmanager
+def _schema_lock():
+    """Hold an exclusive file lock next to the SQLite file while the schema is set up.
+
+    Gunicorn workers boot side by side and each one inspects the schema and then
+    writes to it. Two connections that both read and then both try to write are
+    a deadlock to SQLite, and it answers the loser at once with "database is
+    locked" — the busy timeout never applies — which kills that worker and, with
+    it, the container. Taking turns here makes the second worker find the
+    schema already built.
+    """
+    url = db.engine.url
+    if url.get_backend_name() != "sqlite" or url.database in (None, "", ":memory:"):
+        yield
+        return
+    os.makedirs(os.path.dirname(os.path.abspath(url.database)), exist_ok=True)
+    with open(f"{url.database}.schema-lock", "a") as handle:
+        fcntl.flock(handle, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(handle, fcntl.LOCK_UN)
 
 
 def _create_tables() -> None:
