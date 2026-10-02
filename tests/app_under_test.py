@@ -31,12 +31,32 @@ def build_app(database_url: str) -> Any:
     """
     os.environ["DATABASE_URL"] = database_url
     os.environ["SECRET_KEY"] = "test-secret-key"
+    # The panel's JSON documents go next to the test database, and every read
+    # re-checks the file: a test that writes and then renders must see its write
+    # from any thread, not after the production refresh window.
+    os.environ["CONTENT_DIR"] = content_dir(database_url)
+    os.environ["CONTENT_REFRESH_SECONDS"] = "0"
+    os.environ.pop("BLOB_READ_WRITE_TOKEN", None)
 
     from app import create_app
 
     app = create_app()
     app.config["TESTING"] = True
     return app
+
+
+def content_dir(database_url: str) -> str:
+    """Where the panel's JSON documents live for a given test database."""
+    return database_url.removeprefix("sqlite:///") + ".content"
+
+
+def reset_content(app: Any) -> None:
+    """Delete the panel's documents and every process copy of them."""
+    import shutil
+
+    shutil.rmtree(os.environ["CONTENT_DIR"], ignore_errors=True)
+    for store in app.extensions["content_stores"]:
+        store.document.forget()
 
 
 def apply_migrations(app: Any, database_url: str) -> None:
