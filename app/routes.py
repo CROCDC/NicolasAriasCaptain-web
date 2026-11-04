@@ -6,6 +6,7 @@ from flask import (
     render_template,
     request,
     jsonify,
+    redirect,
     send_from_directory,
     url_for,
 )
@@ -60,6 +61,20 @@ def register_routes(app: Flask) -> None:
     def health() -> object:
         """Liveness probe for the proxy and the deploy pipeline."""
         return jsonify({"status": "ok"})
+
+    @app.route("/admin", methods=["GET"])
+    @app.route("/admin/", methods=["GET"])
+    @app.route("/admin/content", methods=["GET"])
+    def admin() -> Response:
+        """Send the short addresses to the content panel at /admin/content/.
+
+        Without these, /admin is a 404 and /admin/content gets Werkzeug's
+        trailing-slash redirect, which is built absolute from the forwarded
+        headers. Behind the tunnel those say http on port 443, so the browser
+        was sent to http://host:443/. A relative Location keeps whatever scheme
+        and host the browser already used.
+        """
+        return redirect(url_for("sitecopy.editor"))
 
     @app.route("/robots.txt", methods=["GET"])
     def robots() -> Response:
