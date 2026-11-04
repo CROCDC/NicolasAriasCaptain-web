@@ -1,4 +1,4 @@
-"""Entry point for the Capitán Nicolás Arias Flask application."""
+"""Entry point for the Nicolás Arias Flask application."""
 
 from app import app
 

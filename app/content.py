@@ -1,4 +1,4 @@
-"""The strings the captain can rewrite without waiting for a deploy.
+"""The strings Nicolás can rewrite without waiting for a deploy.
 
 Every default here is the text the page already showed, so a database with no
 overrides renders exactly what the templates rendered before — the registry is
@@ -69,7 +69,6 @@ REGISTRY = Registry(groups=(
             TextField("portada.arco", "Texto curvo sobre el medallón",
                       "Patrón de yates · Río de la Plata",
                       hint="Corto: va sobre un arco y el texto largo no entra."),
-            TextField("portada.titulo", "Palabra antes del nombre", "Capitán"),
             TextField("portada.tagline", "La frase bajo el nombre",
                       "El barco en manos de un patrón. El día, en las tuyas."),
             TextField("portada.cta_servicios", "Botón izquierdo", "Qué hago"),

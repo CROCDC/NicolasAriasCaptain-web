@@ -4,7 +4,7 @@ A key is the primary key of an override row, so the two ways this drifts are
 both silent. A ``t('typo')`` in a template is caught by the library, which
 raises on an unknown key outside production rather than rendering an empty
 heading. The other direction is not caught by anything: a registry entry no
-template uses is a field the captain can edit, save, and never see change.
+template uses is a field Nicolás can edit, save, and never see change.
 """
 
 from __future__ import annotations

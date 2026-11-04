@@ -1,5 +1,5 @@
 /* =========================================================================
-   Capitán Nicolás Arias — Deferred CSS
+   Nicolás Arias — Deferred CSS
    Everything below the portada. Loaded asynchronously; critical.css is inline.
    ========================================================================= */
 
@@ -439,7 +439,7 @@
    ------------------------------------------------------------------------- */
 .contacto-inner { max-width: 760px; margin-inline: auto; }
 
-/* Three equal cells split the address as "…capitannicolasari / as.com.ar".
+/* Three equal cells would split a long address in the middle of a word.
    The middle cell is given the extra width instead, since it is the only one
    holding something that cannot be hyphenated. */
 .contacto-rows {

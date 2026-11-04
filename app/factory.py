@@ -1,4 +1,4 @@
-"""Flask application factory for the Capitán Nicolás Arias site."""
+"""Flask application factory for the Nicolás Arias site."""
 
 import fcntl
 import hashlib
@@ -176,7 +176,7 @@ def create_app() -> Flask:
     app.jinja_env.globals["asset"] = asset
 
     # The photographs, and which of them have actually arrived. The site is
-    # built before the captain's own photos exist, so a slot with no file behind
+    # built before Nicolás's own photos exist, so a slot with no file behind
     # it renders as a framed placeholder rather than a broken image — see
     # app/services/media.py.
     from app.services import media

@@ -1,5 +1,5 @@
 /* =========================================================================
-   Capitán Nicolás Arias — Full stylesheet (no-JavaScript path only)
+   Nicolás Arias — Full stylesheet (no-JavaScript path only)
 
    The page inlines critical.css and loads style-deferred.css asynchronously,
    which needs JavaScript to swap the preload into a stylesheet. A browser with
