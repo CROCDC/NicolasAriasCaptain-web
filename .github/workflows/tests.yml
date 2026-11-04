@@ -34,3 +34,12 @@ jobs:
 
       - name: Test
         run: pytest tests/ -q
+
+      # TEMPORAL: sube las capturas nuevas para regenerar la línea base visual.
+      - name: Upload actual screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: actual-screenshots
+          path: tests/screenshots/linux-chromium/*.actual.png
+          retention-days: 1

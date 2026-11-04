@@ -10,7 +10,7 @@
   <!-- Open Graph / WhatsApp -->
   <meta property="og:type"        content="website" />
   <meta property="og:url"         content="{{ site.url }}/" />
-  <meta property="og:title"       content="{{ site.brand }} — {{ site.role }}" />
+  <meta property="og:title"       content="{{ site.brand }}" />
   <meta property="og:description" content="{{ site.description }}" />
   {%- set og = photo('og') %}
   {%- if og and og.available %}
@@ -26,13 +26,13 @@
 
   <!-- Twitter Card -->
   <meta name="twitter:card"        content="summary_large_image" />
-  <meta name="twitter:title"       content="{{ site.brand }} — {{ site.role }}" />
+  <meta name="twitter:title"       content="{{ site.brand }}" />
   <meta name="twitter:description" content="{{ site.description }}" />
   {%- if og and og.available %}
   <meta name="twitter:image"       content="{{ site.url }}{{ og.url }}" />
   {%- endif %}
 
-  <title>{{ site.brand }} — {{ site.role }}</title>
+  <title>{{ site.brand }}</title>
 
   {%- set hero = photo('hero') %}
   {%- if hero and hero.available %}
