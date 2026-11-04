@@ -1,6 +1,6 @@
 """The photographs the site expects, and which of them have arrived.
 
-The site is built before the captain's own photographs exist. A template that
+The site is built before Nicolás's own photographs exist. A template that
 simply points an ``<img>`` at a file that is not there yet gives every visitor a
 broken-image icon, and a site nobody can show is a site nobody finishes — so the
 photographs are declared in one manifest, ``app/static/data/gallery.json``, and
@@ -230,7 +230,7 @@ def photo(app: Flask, slot_id: str) -> dict[str, Any] | None:
 def missing(app: Flask) -> list[str]:
     """The filenames still to be dropped into the photos directory.
 
-    What ``make photos`` prints, so the captain can see at a glance what the
+    What ``make photos`` prints, so Nicolás can see at a glance what the
     site is still waiting for.
     """
     return [

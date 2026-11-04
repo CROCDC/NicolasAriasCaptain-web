@@ -1,5 +1,5 @@
 # =============================================================================
-# Capitán Nicolás Arias — Developer Makefile
+# Nicolás Arias — Developer Makefile
 # Usage: make <target>
 # =============================================================================
 
@@ -17,7 +17,7 @@ PORT   := $(shell awk 'BEGIN{srand(); print int(rand()*4000+5000)}')
 .PHONY: help
 help:
 	@echo ""
-	@echo "  Capitán Nicolás Arias — available targets"
+	@echo "  Nicolás Arias — available targets"
 	@echo ""
 	@echo "  make install    Create virtualenv and install dependencies"
 	@echo "  make dev        Start local dev server (random port 5000-9000)"

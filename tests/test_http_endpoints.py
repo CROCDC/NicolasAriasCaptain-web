@@ -14,7 +14,7 @@ def test_every_public_page_renders(client: Any) -> None:
         assert b"<html" in response.data.lower()
 
 
-def test_home_carries_the_captain_and_the_contact_form(client: Any) -> None:
+def test_home_carries_the_name_and_the_contact_form(client: Any) -> None:
     body = client.get("/").get_data(as_text=True)
     assert "Nicolás Arias" in body
     assert 'id="contactForm"' in body

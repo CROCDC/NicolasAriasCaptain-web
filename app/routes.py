@@ -1,4 +1,4 @@
-"""Route definitions for the Capitán Nicolás Arias application."""
+"""Route definitions for the Nicolás Arias application."""
 
 from flask import (
     Flask,
@@ -13,7 +13,7 @@ from app.repositories.contact_repository import ContactRepository
 
 #: The services the contact form may ask about. Kept in step with the enum on
 #: ContactMessage and with the <select> in the template — a value outside this
-#: set is rejected rather than stored as "otro", because a request the captain
+#: set is rejected rather than stored as "otro", because a request Nicolás
 #: never offered is a bug worth seeing.
 VALID_SERVICE_TYPES: set[str] = {"patron", "traslado", "salida", "otro"}
 

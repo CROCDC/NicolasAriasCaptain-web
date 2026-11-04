@@ -5,7 +5,7 @@
     "file": "hero.webp",
     "alt": "Nicolás Arias al timón de un velero en el Río de la Plata",
     "caption": "Al timón, rumbo al río abierto",
-    "notes": "Se recorta en círculo dentro del medallón de la portada: mandá una cuadrada o casi (1600x1600). Que el capitán no quede pegado al borde."
+    "notes": "Se recorta en círculo dentro del medallón de la portada: mandá una cuadrada o casi (1600x1600). Que Nicolás no quede pegado al borde."
   },
   {
     "id": "retrato",
@@ -85,7 +85,7 @@
     "id": "og",
     "kind": "social",
     "file": "og-image.jpg",
-    "alt": "Capitán Nicolás Arias al timón, en travesía por el Río de la Plata",
+    "alt": "Nicolás Arias al timón, en travesía por el Río de la Plata",
     "caption": "Imagen para redes",
     "notes": "1200x630 exactos. Es lo que se ve al compartir el link por WhatsApp."
   }

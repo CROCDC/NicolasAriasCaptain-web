@@ -68,7 +68,7 @@ def test_a_bad_email_is_refused(client: Any) -> None:
     assert "correo" in " ".join(response.get_json()["errors"]).lower()
 
 
-def test_a_service_the_captain_does_not_offer_is_refused(client: Any) -> None:
+def test_a_service_nicolas_does_not_offer_is_refused(client: Any) -> None:
     response = _post(client, service_type="submarino")
     assert response.status_code == 400
     assert "servicio" in " ".join(response.get_json()["errors"]).lower()

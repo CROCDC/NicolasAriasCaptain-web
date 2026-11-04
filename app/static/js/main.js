@@ -1,5 +1,5 @@
 /**
- * Capitán Nicolás Arias — Main JavaScript
+ * Nicolás Arias — Main JavaScript
  *
  * The bar's stuck state, the full-screen index, smooth scrolling, the reveal,
  * the links that preselect the form, the form itself. No framework and no

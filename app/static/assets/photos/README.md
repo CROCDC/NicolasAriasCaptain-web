@@ -1,6 +1,6 @@
 # Fotos del sitio
 
-Acá van las fotos del capitán. **No hay que tocar ningún template**: el sitio lee
+Acá van las fotos de Nicolás. **No hay que tocar ningún template**: el sitio lee
 `app/static/data/gallery.json`, y cada entrada dice qué nombre de archivo espera.
 Mientras el archivo no exista, ese lugar se muestra como un **cuadro gris con la
 descripción de la foto que va ahí** — la misma frase que después será su texto

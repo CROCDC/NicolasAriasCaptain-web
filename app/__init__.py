@@ -1,4 +1,4 @@
-"""Capitán Nicolás Arias application package."""
+"""Nicolás Arias application package."""
 
 from app.factory import create_app
 

@@ -1,4 +1,4 @@
-# Capitán Nicolás Arias — sitio web
+# Nicolás Arias — sitio web
 
 Sitio de presentación de **Nicolás Arias, patrón de yates**: quién es, qué
 servicios ofrece y un formulario de contacto que guarda las consultas.
@@ -70,7 +70,7 @@ dibujo propio (aguja de cuatro puntas dentro de un anillo graduado).
 
 ## Identidad visual
 
-El punto de partida fue el emblema circular del capitán: **inspiración, no
+El punto de partida fue el emblema circular de Nicolás: **inspiración, no
 copia**. De ahí sale el vocabulario — un anillo graduado, una aguja, letras
 montadas sobre un arco, tres líneas de agua — y de ahí sale la gama, corrida a
 propósito para no repetir sus colores exactos.
