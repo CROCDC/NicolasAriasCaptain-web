@@ -23,6 +23,17 @@ def test_home_carries_the_name_and_the_contact_form(client: Any) -> None:
     assert "--copper" in body
 
 
+def test_the_short_admin_addresses_reach_the_panel(client: Any) -> None:
+    # The headers the tunnel forwards: http, but on port 443. An absolute
+    # redirect built from them sends the browser to http://host:443/.
+    proxied = {"X-Forwarded-Proto": "http", "X-Forwarded-Port": "443",
+               "X-Forwarded-Host": "orzadelplata.com.ar"}
+    for path in ("/admin", "/admin/", "/admin/content"):
+        response = client.get(path, headers=proxied)
+        assert response.status_code == 302, f"{path} answered {response.status_code}"
+        assert response.headers["Location"] == "/admin/content/", path
+
+
 def test_health_is_json_ok(client: Any) -> None:
     response = client.get("/health")
     assert response.status_code == 200
